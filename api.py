@@ -1,5 +1,6 @@
+import logging
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from config import (
@@ -18,6 +19,7 @@ from pipeline import Pipeline
 from retriever import Retriever
 from vector_store import VectorStore
 
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -60,13 +62,24 @@ ingestion = Ingestion(
 
 
 @app.post("/upload")
-async def upload(file: UploadFile = File(...)):
+async def upload(file: UploadFile = File(...)) -> dict[str, str]:
     file_path = file.filename
+
+    logger.info("Uploading document: %s", file.filename)
 
     with open(file_path, "wb") as f:
         f.write(await file.read())
 
-    ingestion.ingest(file_path)
+    try:
+        ingestion.ingest(file_path)
+    except Exception as e:
+        logger.exception("Failed to index document: %s", file.filename)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to index document: {e}",
+        )
+
+    logger.info("Document indexed successfully: %s", file.filename)
 
     return {
         "message": "Document indexed successfully."
@@ -74,10 +87,20 @@ async def upload(file: UploadFile = File(...)):
 
 
 @app.post("/chat")
-def chat(request: ChatRequest):
-    answer = pipeline.run(request.question)
+def chat(request: ChatRequest) -> dict[str, str]:
+    logger.info("Received chat request")
+
+    try:
+        answer = pipeline.run(request.question)
+    except Exception as e:
+        logger.exception("Failed to generate response")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate response: {e}",
+        )
+
+    logger.info("Chat response generated successfully")
 
     return {
         "answer": answer,
     }
-

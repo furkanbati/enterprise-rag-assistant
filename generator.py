@@ -2,6 +2,9 @@ from ollama import Client
 
 
 class Generator:
+
+    """Generates answers from retrieved document chunks using an Ollama chat model."""
+
     SYSTEM_PROMPT = """
 You are a helpful AI assistant.
 
@@ -25,6 +28,10 @@ Be concise and accurate.
         question: str,
         documents: list[str],
     ) -> str:
+        logger.info(
+        "Generating response using %d retrieved document chunks",
+        len(documents),
+        )
         prompt = self._build_prompt(question, documents)
 
         response = self.client.chat(

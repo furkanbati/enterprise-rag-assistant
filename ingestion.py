@@ -1,10 +1,11 @@
 import fitz
-
+import logging
 from embedder import Embedder
 from vector_store import VectorStore
 
 
 class Ingestion:
+    """Processes PDF documents and stores their embeddings in the vector database."""
     def __init__(
         self,
         embedder: Embedder,
@@ -22,12 +23,16 @@ class Ingestion:
 
         documents = self._chunk(text)
 
+        logger.info("Extracted %d chunks", len(documents))
+
         embeddings = self.embedder.embed_batch(documents)
 
         self.vector_store.add(
             documents=documents,
             embeddings=embeddings,
         )
+
+        logger.info("Stored %d embeddings", len(embeddings))
 
     def _extract_text(self, pdf_path: str) -> str:
         document = fitz.open(pdf_path)

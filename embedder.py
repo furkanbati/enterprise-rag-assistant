@@ -2,6 +2,7 @@ from ollama import Client
 
 
 class Embedder:
+    """Generates embeddings using an Ollama embedding model."""
     def __init__(
         self,
         model: str,
@@ -19,6 +20,7 @@ class Embedder:
         return response.embeddings[0]
 
     def embed_batch(self, texts: list[str]) -> list[list[float]]:
+        logger.info("Generating embeddings for %d document chunks", len(texts))
         response = self.client.embed(
             model=self.model,
             input=texts,

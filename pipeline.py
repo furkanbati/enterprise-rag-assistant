@@ -4,6 +4,7 @@ from generator import Generator
 
 
 class Pipeline:
+    """Coordinates the RAG workflow from query embedding to answer generation."""
     def __init__(
         self,
         embedder: Embedder,
@@ -15,6 +16,8 @@ class Pipeline:
         self.generator = generator
 
     def run(self, question: str) -> str:
+        logger.info("Processing question through RAG pipeline")
+        
         query_embedding = self.embedder.embed(question)
 
         documents = self.retriever.search(query_embedding)

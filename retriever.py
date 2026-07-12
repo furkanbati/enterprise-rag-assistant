@@ -2,6 +2,7 @@ from vector_store import VectorStore
 
 
 class Retriever:
+    """Retrieves the most relevant document chunks from the vector store."""
     def __init__(
         self,
         vector_store: VectorStore,

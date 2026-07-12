@@ -4,6 +4,7 @@ import chromadb
 
 
 class VectorStore:
+    """Stores and retrieves document embeddings using ChromaDB."""
     def __init__(
         self,
         path: str = "./data/chroma",
@@ -20,6 +21,7 @@ class VectorStore:
         documents: list[str],
         embeddings: list[list[float]],
     ) -> None:
+        logger.info("Adding %d document chunks to vector store", len(documents))
         ids = [
             str(uuid4())
             for _ in documents
@@ -36,6 +38,7 @@ class VectorStore:
         embedding: list[float],
         top_k: int,
     ) -> list[str]:
+        logger.info("Retrieving top %d documents from vector store", top_k)
         results = self.collection.query(
             query_embeddings=[embedding],
             n_results=top_k,

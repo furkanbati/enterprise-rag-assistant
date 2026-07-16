@@ -20,11 +20,11 @@ class Pipeline:
         
         query_embedding = self.embedder.embed(question)
 
-        documents = self.retriever.search(query_embedding)
+        retrieved_chunks = self.retriever.search(query_embedding)
 
         answer = self.generator.generate(
             question=question,
-            documents=documents,
+            chunks=retrieved_chunks,
         )
 
         return answer

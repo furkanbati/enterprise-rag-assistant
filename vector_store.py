@@ -1,10 +1,17 @@
+import logging
+from dataclasses import asdict
 from uuid import uuid4
 
 import chromadb
 
+from models import ChunkMetadata, RetrievedChunk
+
+logger = logging.getLogger(__name__)
+
 
 class VectorStore:
     """Stores and retrieves document embeddings using ChromaDB."""
+
     def __init__(
         self,
         path: str = "./data/chroma",
@@ -20,8 +27,10 @@ class VectorStore:
         self,
         documents: list[str],
         embeddings: list[list[float]],
+        metadatas: list[ChunkMetadata],
     ) -> None:
         logger.info("Adding %d document chunks to vector store", len(documents))
+
         ids = [
             str(uuid4())
             for _ in documents
@@ -31,17 +40,38 @@ class VectorStore:
             ids=ids,
             documents=documents,
             embeddings=embeddings,
+            metadatas=[
+                asdict(metadata)
+                for metadata in metadatas
+            ],
         )
 
     def query(
         self,
         embedding: list[float],
         top_k: int,
-    ) -> list[str]:
-        logger.info("Retrieving top %d documents from vector store", top_k)
+    ) -> list[RetrievedChunk]:
+        logger.info(
+            "Retrieving top %d document chunks from vector store",
+            top_k,
+        )
+
         results = self.collection.query(
             query_embeddings=[embedding],
             n_results=top_k,
+            include=[
+                "documents",
+                "metadatas",
+            ],
         )
 
-        return results["documents"][0]
+        documents = results["documents"][0]
+        metadatas = results["metadatas"][0]
+
+        return [
+            RetrievedChunk(
+                document=document,
+                metadata=ChunkMetadata(**metadata),
+            )
+            for document, metadata in zip(documents, metadatas)
+        ]

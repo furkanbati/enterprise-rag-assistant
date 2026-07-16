@@ -1,8 +1,10 @@
 from vector_store import VectorStore
+from models import RetrievedChunk
 
 
 class Retriever:
     """Retrieves the most relevant document chunks from the vector store."""
+
     def __init__(
         self,
         vector_store: VectorStore,
@@ -14,7 +16,7 @@ class Retriever:
     def search(
         self,
         embedding: list[float],
-    ) -> list[str]:
+    ) -> list[RetrievedChunk]:
         return self.vector_store.query(
             embedding=embedding,
             top_k=self.top_k,

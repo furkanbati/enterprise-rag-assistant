@@ -1,8 +1,13 @@
+import logging
+
 from ollama import Client
+
+from models import RetrievedChunk
+
+logger = logging.getLogger(__name__)
 
 
 class Generator:
-
     """Generates answers from retrieved document chunks using an Ollama chat model."""
 
     SYSTEM_PROMPT = """
@@ -26,13 +31,17 @@ Be concise and accurate.
     def generate(
         self,
         question: str,
-        documents: list[str],
+        chunks: list[RetrievedChunk],
     ) -> str:
         logger.info(
-        "Generating response using %d retrieved document chunks",
-        len(documents),
+            "Generating response using %d retrieved document chunks",
+            len(chunks),
         )
-        prompt = self._build_prompt(question, documents)
+
+        prompt = self._build_prompt(
+            question=question,
+            chunks=chunks,
+        )
 
         response = self.client.chat(
             model=self.model,
@@ -53,9 +62,12 @@ Be concise and accurate.
     def _build_prompt(
         self,
         question: str,
-        documents: list[str],
+        chunks: list[RetrievedChunk],
     ) -> str:
-        context = "\n\n".join(documents)
+        context = "\n\n".join(
+            chunk.document
+            for chunk in chunks
+        )
 
         return (
             f"Context:\n{context}\n\n"

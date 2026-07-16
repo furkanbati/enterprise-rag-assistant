@@ -1,5 +1,7 @@
 from ollama import Client
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Embedder:
     """Generates embeddings using an Ollama embedding model."""

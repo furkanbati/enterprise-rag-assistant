@@ -5,6 +5,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - .:/app
       - ./data/chroma:/app/data/chroma
     depends_on:
       - ollama

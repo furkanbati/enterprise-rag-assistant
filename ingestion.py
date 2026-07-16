@@ -1,11 +1,18 @@
-import fitz
 import logging
+from pathlib import Path
+
+import fitz
+
 from embedder import Embedder
+from models import ChunkMetadata, Page
 from vector_store import VectorStore
+
+logger = logging.getLogger(__name__)
 
 
 class Ingestion:
     """Processes PDF documents and stores their embeddings in the vector database."""
+
     def __init__(
         self,
         embedder: Embedder,
@@ -19,42 +26,69 @@ class Ingestion:
         self.overlap = overlap
 
     def ingest(self, pdf_path: str) -> None:
-        text = self._extract_text(pdf_path)
+        pages = self._extract_text(pdf_path)
 
-        documents = self._chunk(text)
+        documents, metadatas = self._chunk(
+            pages=pages,
+            source=Path(pdf_path).name,
+        )
 
-        logger.info("Extracted %d chunks", len(documents))
+        logger.info("Extracted %d document chunks", len(documents))
 
         embeddings = self.embedder.embed_batch(documents)
 
         self.vector_store.add(
             documents=documents,
             embeddings=embeddings,
+            metadatas=metadatas,
         )
 
-        logger.info("Stored %d embeddings", len(embeddings))
+        logger.info("Stored %d document chunks", len(documents))
 
-    def _extract_text(self, pdf_path: str) -> str:
+    def _extract_text(self, pdf_path: str) -> list[Page]:
         document = fitz.open(pdf_path)
 
-        text = ""
+        pages: list[Page] = []
 
-        for page in document:
-            text += page.get_text()
+        for page_number, page in enumerate(document, start=1):
+            pages.append(
+                Page(
+                    page=page_number,
+                    text=page.get_text(),
+                )
+            )
 
         document.close()
 
-        return text
+        return pages
 
-    def _chunk(self, text: str) -> list[str]:
-        chunks = []
-        start = 0
+    def _chunk(
+        self,
+        pages: list[Page],
+        source: str,
+    ) -> tuple[list[str], list[ChunkMetadata]]:
+        documents: list[str] = []
+        metadatas: list[ChunkMetadata] = []
 
-        while start < len(text):
-            end = start + self.chunk_size
+        chunk_id = 0
 
-            chunks.append(text[start:end])
+        for page in pages:
+            start = 0
 
-            start = end - self.overlap
+            while start < len(page.text):
+                end = start + self.chunk_size
 
-        return chunks
+                documents.append(page.text[start:end])
+
+                metadatas.append(
+                    ChunkMetadata(
+                        source=source,
+                        page=page.page,
+                        chunk=chunk_id,
+                    )
+                )
+
+                chunk_id += 1
+                start = end - self.overlap
+
+        return documents, metadatas

@@ -91,7 +91,7 @@ def chat(request: ChatRequest) -> dict[str, str]:
     logger.info("Received chat request")
 
     try:
-        answer = pipeline.run(request.question)
+        result = pipeline.run(request.question)
     except Exception as e:
         logger.exception("Failed to generate response")
         raise HTTPException(
@@ -102,5 +102,5 @@ def chat(request: ChatRequest) -> dict[str, str]:
     logger.info("Chat response generated successfully")
 
     return {
-        "answer": answer,
+        "answer": result.answer,
     }

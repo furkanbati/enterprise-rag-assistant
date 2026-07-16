@@ -1,7 +1,7 @@
 from embedder import Embedder
 from retriever import Retriever
 from generator import Generator
-
+from app.models import PipelineResult, RetrievedChunk
 
 class Pipeline:
     """Coordinates the RAG workflow from query embedding to answer generation."""
@@ -15,9 +15,9 @@ class Pipeline:
         self.retriever = retriever
         self.generator = generator
 
-    def run(self, question: str) -> str:
+    def run(self, question: str) -> PipelineResult:
         logger.info("Processing question through RAG pipeline")
-        
+
         query_embedding = self.embedder.embed(question)
 
         retrieved_chunks = self.retriever.search(query_embedding)
@@ -27,4 +27,7 @@ class Pipeline:
             chunks=retrieved_chunks,
         )
 
-        return answer
+        return PipelineResult(
+            answer=answer,
+            chunks=retrieved_chunks,
+        )

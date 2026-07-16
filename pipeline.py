@@ -1,7 +1,10 @@
 from embedder import Embedder
 from retriever import Retriever
 from generator import Generator
-from app.models import PipelineResult, RetrievedChunk
+from models import PipelineResult, RetrievedChunk
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Pipeline:
     """Coordinates the RAG workflow from query embedding to answer generation."""

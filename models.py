@@ -18,3 +18,8 @@ class ChunkMetadata:
 class RetrievedChunk:
     document: str
     metadata: ChunkMetadata
+
+@dataclass
+class PipelineResult:
+    answer: str
+    chunks: list[RetrievedChunk]

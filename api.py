@@ -2,7 +2,7 @@ import logging
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel
-
+from models import ChatResponse, SourceResponse
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,

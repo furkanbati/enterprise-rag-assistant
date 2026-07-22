@@ -85,22 +85,28 @@ async def upload(file: UploadFile = File(...)) -> dict[str, str]:
         "message": "Document indexed successfully."
     }
 
-
-@app.post("/chat")
-def chat(request: ChatRequest) -> dict[str, str]:
-    logger.info("Received chat request")
+@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest) -> ChatResponse:
+    """
+    Generate an answer for the given question using the RAG pipeline.
+    """
 
     try:
         result = pipeline.run(request.question)
-    except Exception as e:
-        logger.exception("Failed to generate response")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to generate response: {e}",
+
+        return ChatResponse(
+            answer=result.answer,
+            sources=[
+                SourceResponse(
+                    source=chunk.metadata.source,
+                    page=chunk.metadata.page,
+                    chunk=chunk.metadata.chunk,
+                )
+                for chunk in result.chunks
+            ],
         )
 
-    logger.info("Chat response generated successfully")
+    except Exception as e:
+        logger.exception("Failed to generate response")
+        raise HTTPException(status_code=500, detail=str(e))
 
-    return {
-        "answer": result.answer,
-    }

@@ -101,6 +101,7 @@ async def chat(request: ChatRequest) -> ChatResponse:
                     source=chunk.metadata.source,
                     page=chunk.metadata.page,
                     chunk=chunk.metadata.chunk,
+                    distance=chunk.distance,
                 )
                 for chunk in result.chunks
             ],

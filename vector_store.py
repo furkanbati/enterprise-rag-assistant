@@ -62,16 +62,23 @@ class VectorStore:
             include=[
                 "documents",
                 "metadatas",
+                "distances",
             ],
         )
 
         documents = results["documents"][0]
         metadatas = results["metadatas"][0]
+        distances = results["distances"][0]
 
         return [
             RetrievedChunk(
                 document=document,
                 metadata=ChunkMetadata(**metadata),
+                distance=distance,
             )
-            for document, metadata in zip(documents, metadatas)
+            for document, metadata, distance in zip(
+                documents,
+                metadatas,
+                distances,
+            )
         ]

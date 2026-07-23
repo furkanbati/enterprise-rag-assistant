@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from pydantic import BaseModel
 
 
@@ -19,6 +20,7 @@ class ChunkMetadata:
 class RetrievedChunk:
     document: str
     metadata: ChunkMetadata
+    distance: float
 
 
 @dataclass
@@ -35,6 +37,7 @@ class SourceResponse(BaseModel):
     source: str
     page: int
     chunk: int
+    distance: float
 
 
 class ChatResponse(BaseModel):

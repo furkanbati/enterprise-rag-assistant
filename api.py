@@ -11,6 +11,8 @@ from config import (
     EMBED_MODEL,
     OLLAMA_HOST,
     OVERLAP,
+    TOP_K,
+    MAX_DISTANCE
 )
 from embedder import Embedder
 from generator import Generator
@@ -40,6 +42,8 @@ embedder = Embedder(
 
 retriever = Retriever(
     vector_store=vector_store,
+    top_k=TOP_K,
+    max_distance=MAX_DISTANCE
 )
 
 generator = Generator(

@@ -38,6 +38,7 @@ class SourceResponse(BaseModel):
     page: int
     chunk: int
     distance: float
+    preview: str
 
 
 class ChatResponse(BaseModel):

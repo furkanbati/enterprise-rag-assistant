@@ -12,7 +12,9 @@ from config import (
     OLLAMA_HOST,
     OVERLAP,
     TOP_K,
-    MAX_DISTANCE
+    MAX_DISTANCE,
+    MIN_CHUNK_SIZE,
+    SIMILARITY_THRESHOLD,
 )
 from embedder import Embedder
 from generator import Generator
@@ -20,6 +22,7 @@ from ingestion import Ingestion
 from pipeline import Pipeline
 from retriever import Retriever
 from vector_store import VectorStore
+from chunking import SemanticChunker
 
 logger = logging.getLogger(__name__)
 
@@ -57,11 +60,17 @@ pipeline = Pipeline(
     generator=generator,
 )
 
+chunker = SemanticChunker(
+    embedder=embedder,
+    chunk_size=CHUNK_SIZE,
+    min_chunk_size=MIN_CHUNK_SIZE,
+    similarity_threshold=SIMILARITY_THRESHOLD,
+)
+
 ingestion = Ingestion(
     embedder=embedder,
     vector_store=vector_store,
-    chunk_size=CHUNK_SIZE,
-    overlap=OVERLAP,
+    chunker=chunker,
 )
 
 

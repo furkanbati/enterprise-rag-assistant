@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 import fitz
-
+from chunking import SemanticChunker
 from embedder import Embedder
 from models import ChunkMetadata, Page
 from vector_store import VectorStore
@@ -17,18 +17,17 @@ class Ingestion:
         self,
         embedder: Embedder,
         vector_store: VectorStore,
-        chunk_size: int = 1000,
-        overlap: int = 200,
+        chunker: SemanticChunker,
+        
     ) -> None:
         self.embedder = embedder
         self.vector_store = vector_store
-        self.chunk_size = chunk_size
-        self.overlap = overlap
+        self.chunker = chunker
 
     def ingest(self, pdf_path: str) -> None:
         pages = self._extract_text(pdf_path)
 
-        documents, metadatas = self._chunk(
+        documents, metadatas = self.chunker.chunk(
             pages=pages,
             source=Path(pdf_path).name,
         )
@@ -53,7 +52,7 @@ class Ingestion:
         for page_number, page in enumerate(document, start=1):
             pages.append(
                 Page(
-                    page=page_number,
+                    number=page_number,
                     text=page.get_text(),
                 )
             )
@@ -83,7 +82,7 @@ class Ingestion:
                 metadatas.append(
                     ChunkMetadata(
                         source=source,
-                        page=page.page,
+                        page=page.number,
                         chunk=chunk_id,
                     )
                 )

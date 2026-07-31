@@ -114,8 +114,15 @@ async def chat(request: ChatRequest) -> ChatResponse:
                     source=chunk.metadata.source,
                     page=chunk.metadata.page,
                     chunk=chunk.metadata.chunk,
+                    heading=chunk.metadata.heading,
                     distance=chunk.distance,
-                    preview=chunk.document[:200]
+                    preview=(
+                        chunk.document.removeprefix(
+                            f"{chunk.metadata.heading}\n\n"
+                        )[:200]
+                        if chunk.metadata.heading
+                        else chunk.document[:200]
+                    ),
                 )
                 for chunk in result.chunks
             ],

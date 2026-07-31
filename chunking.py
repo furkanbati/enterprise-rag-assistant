@@ -2,7 +2,7 @@ import re
 import math
 
 from embedder import Embedder
-from models import ChunkMetadata, Page
+from models import ChunkMetadata, Section
 
 
 class SemanticChunker:
@@ -20,7 +20,7 @@ class SemanticChunker:
 
     def chunk(
         self,
-        pages: list[Page],
+        sections: list[Section],
         source: str,
     ) -> tuple[list[str], list[ChunkMetadata]]:
         """
@@ -32,13 +32,13 @@ class SemanticChunker:
 
         chunk_id = 0
 
-        for page in pages:
-            text = self._clean_text(page.text)
+        for section in sections:
+            text = self._clean_text(section.text)
 
             if not text:
                 continue
 
-            sentences = self._split_sentences(text)
+            sentences = self._split_sentences(section.text)
 
             similarities = self._calculate_similarities(sentences)
 
@@ -48,13 +48,18 @@ class SemanticChunker:
             )
 
             for chunk in chunks:
-                documents.append(chunk)
+                document = chunk
+                if section.heading:
+                    document = f"{section.heading}\n\n{chunk}"
+                documents.append(document)
 
                 metadatas.append(
                     ChunkMetadata(
                         source=source,
-                        page=page.number,
+                        page=section.page,
                         chunk=chunk_id,
+                        heading=section.heading,
+                        level=section.level,
                     )
                 )
 

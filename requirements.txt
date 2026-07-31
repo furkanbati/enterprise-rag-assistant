@@ -4,3 +4,4 @@ chromadb
 ollama
 pymupdf
 python-multipart
+docling==2.53.0

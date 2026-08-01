@@ -6,7 +6,6 @@ CHAT_MODEL = "llama3"
 CHROMA_PATH = "./data/chroma"
 COLLECTION_NAME = "documents"
 
-OVERLAP = 200
 TOP_K = 3
 CHUNK_SIZE = 700
 

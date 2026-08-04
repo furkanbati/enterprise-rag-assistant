@@ -9,12 +9,12 @@ class SemanticChunker:
     def __init__(
         self,
         embedder: Embedder,
-        chunk_size: int,
+        max_chunk_size: int,
         min_chunk_size: int,
         similarity_threshold: float,
     ) -> None:
         self.embedder = embedder
-        self.chunk_size = chunk_size
+        self.max_chunk_size = max_chunk_size
         self.min_chunk_size = min_chunk_size
         self.similarity_threshold = similarity_threshold
 
@@ -122,7 +122,7 @@ class SemanticChunker:
                 similarity < self.similarity_threshold
                 and current_length >= self.min_chunk_size
             ) or (
-                current_length + len(sentence) > self.chunk_size
+                current_length + len(sentence) > self.max_chunk_size
             )
 
             if should_split:

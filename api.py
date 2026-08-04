@@ -10,7 +10,6 @@ from config import (
     COLLECTION_NAME,
     EMBED_MODEL,
     OLLAMA_HOST,
-    OVERLAP,
     TOP_K,
     MAX_DISTANCE,
     MIN_CHUNK_SIZE,

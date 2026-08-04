@@ -23,6 +23,9 @@ class RetrievedChunk:
     document: str
     metadata: ChunkMetadata
     distance: float
+    vector_score: float | None = None
+    keyword_score: float | None = None
+    fusion_score: float | None = None
 
 
 @dataclass
@@ -46,7 +49,12 @@ class SourceResponse(BaseModel):
     page: int
     chunk: int
     heading: str
+
+    vector_score: float | None = None
+    keyword_score: float | None = None
+    fusion_score: float | None = None
     distance: float
+    
     preview: str
 
 

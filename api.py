@@ -42,8 +42,14 @@ embedder = Embedder(
     host=OLLAMA_HOST,
 )
 
-retriever = Retriever(
+vector_store = VectorStore(...)
+
+vector_search = VectorSearch(
     vector_store=vector_store,
+)
+
+retriever = Retriever(
+    vector_search=vector_search,
     top_k=TOP_K,
     max_distance=MAX_DISTANCE
 )

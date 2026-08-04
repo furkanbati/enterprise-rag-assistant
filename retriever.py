@@ -9,8 +9,8 @@ class Retriever:
     Retrieves the most relevant document chunks from the vector store.
     """
 
-    def __init__(self, vector_store: VectorStore, top_k: int , max_distance: float ):
-        self.vector_store = vector_store
+    def __init__(self, vector_search: VectorSearch, top_k: int , max_distance: float ):
+        self.vector_search = vector_search
         self.top_k = top_k
         self.max_distance = max_distance
 
@@ -48,7 +48,8 @@ class Retriever:
         return [
             chunk
             for chunk in chunks
-            if chunk.distance <= self.max_distance
+            if (chunk.vector_score is not None
+                and chunk.vector_score <= self.max_distance)
         ]
 
     def _deduplicate(

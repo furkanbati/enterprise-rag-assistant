@@ -74,7 +74,7 @@ class VectorStore:
             RetrievedChunk(
                 document=document,
                 metadata=ChunkMetadata(**metadata),
-                distance=distance,
+                vector_score=distance,
             )
             for document, metadata, distance in zip(
                 documents,

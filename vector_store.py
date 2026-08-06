@@ -82,3 +82,16 @@ class VectorStore:
                 distances,
             )
         ]
+
+    def get_all_chunks(self) -> tuple[list[str], list[ChunkMetadata]]:
+        result = self.collection.get(include=["documents", "metadatas"])
+        print(result.keys())
+        print(len(result["documents"]))
+        print(len(result["metadatas"]))
+        documents = result["documents"] or []
+        metadatas = [
+            ChunkMetadata(**metadata)
+            for metadata in result["metadatas"] or []
+        ]
+
+        return documents, metadatas

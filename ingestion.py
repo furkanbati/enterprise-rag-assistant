@@ -5,7 +5,7 @@ from chunking import SemanticChunker
 from document_parser import DocumentParser
 from embedder import Embedder
 from vector_store import VectorStore
-
+from retrieval.keyword_search import KeywordSearch
 logger = logging.getLogger(__name__)
 
 
@@ -17,10 +17,12 @@ class Ingestion:
         embedder: Embedder,
         vector_store: VectorStore,
         chunker: SemanticChunker,
+        keyword_search: KeywordSearch,
     ) -> None:
         self.embedder = embedder
         self.vector_store = vector_store
         self.chunker = chunker
+        self.keyword_search = keyword_search
         self.document_parser = DocumentParser()
 
     def ingest(self, pdf_path: str) -> None:
@@ -40,5 +42,5 @@ class Ingestion:
             embeddings=embeddings,
             metadatas=metadatas,
         )
-
+        self.keyword_search.rebuild()
         logger.info("Stored %d document chunks", len(documents))

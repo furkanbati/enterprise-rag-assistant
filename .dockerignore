@@ -1,14 +1,19 @@
-__pycache__/
+.git
+.gitignore
+
+.venv
+venv
+
+__pycache__
 *.pyc
-*.pyo
-*.pyd
 
-.venv/
-venv/
+data/chroma
 
-.git/
+uploads
 
-data/chroma/
+.idea
+.vscode
 
-.idea/
-.vscode/
+.env
+
+README.md

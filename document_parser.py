@@ -1,4 +1,3 @@
-from docling.document_converter import DocumentConverter
 from docling_core.types.doc import DocItemLabel
 from docling.document_converter import (
     DocumentConverter,
@@ -18,7 +17,9 @@ class DocumentParser:
         options.do_table_structure = False
         options.generate_parsed_pages = False
 
-
+        options.do_picture_description = False
+        options.do_code_enrichment = False
+        
         self.converter = DocumentConverter(
             format_options={
                 InputFormat.PDF: PdfFormatOption(

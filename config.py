@@ -7,7 +7,7 @@ CHROMA_PATH = "./data/chroma"
 COLLECTION_NAME = "documents"
 
 TOP_K = 3
-CHUNK_SIZE = 700
+MAX_CHUNK_SIZE = 1000
 
 MIN_CHUNK_SIZE = 300
 

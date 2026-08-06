@@ -6,7 +6,7 @@ from models import ChatResponse, SourceResponse
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,
-    CHUNK_SIZE,
+    MAX_CHUNK_SIZE,
     COLLECTION_NAME,
     EMBED_MODEL,
     OLLAMA_HOST,
@@ -15,13 +15,17 @@ from config import (
     MIN_CHUNK_SIZE,
     SIMILARITY_THRESHOLD,
 )
+from retrieval.vector_search import VectorSearch
+from retrieval.keyword_search import KeywordSearch
+
 from embedder import Embedder
 from generator import Generator
 from ingestion import Ingestion
 from pipeline import Pipeline
-from retriever import Retriever
+from retrieval.retriever import Retriever
 from vector_store import VectorStore
 from chunking import SemanticChunker
+from retrieval.fusion import ReciprocalRankFusion
 
 logger = logging.getLogger(__name__)
 
@@ -42,16 +46,20 @@ embedder = Embedder(
     host=OLLAMA_HOST,
 )
 
-vector_store = VectorStore(...)
-
 vector_search = VectorSearch(
     vector_store=vector_store,
 )
 
+keyword_search = KeywordSearch(vector_store)
+
+fusion = ReciprocalRankFusion()
+
 retriever = Retriever(
     vector_search=vector_search,
+    keyword_search=keyword_search,
+    fusion=fusion,
     top_k=TOP_K,
-    max_distance=MAX_DISTANCE
+    max_distance=MAX_DISTANCE,
 )
 
 generator = Generator(
@@ -67,12 +75,13 @@ pipeline = Pipeline(
 
 chunker = SemanticChunker(
     embedder=embedder,
-    chunk_size=CHUNK_SIZE,
+    max_chunk_size=MAX_CHUNK_SIZE,
     min_chunk_size=MIN_CHUNK_SIZE,
     similarity_threshold=SIMILARITY_THRESHOLD,
 )
 
 ingestion = Ingestion(
+    keyword_search=keyword_search,
     embedder=embedder,
     vector_store=vector_store,
     chunker=chunker,
@@ -120,7 +129,9 @@ async def chat(request: ChatRequest) -> ChatResponse:
                     page=chunk.metadata.page,
                     chunk=chunk.metadata.chunk,
                     heading=chunk.metadata.heading,
-                    distance=chunk.distance,
+                    vector_score=chunk.vector_score,
+                    keyword_score=chunk.keyword_score,
+                    fusion_score=chunk.fusion_score,
                     preview=(
                         chunk.document.removeprefix(
                             f"{chunk.metadata.heading}\n\n"

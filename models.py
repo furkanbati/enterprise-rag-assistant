@@ -22,7 +22,6 @@ class ChunkMetadata:
 class RetrievedChunk:
     document: str
     metadata: ChunkMetadata
-    distance: float
     vector_score: float | None = None
     keyword_score: float | None = None
     fusion_score: float | None = None
@@ -53,7 +52,6 @@ class SourceResponse(BaseModel):
     vector_score: float | None = None
     keyword_score: float | None = None
     fusion_score: float | None = None
-    distance: float
     
     preview: str
 

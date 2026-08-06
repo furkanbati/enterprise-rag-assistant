@@ -1,5 +1,5 @@
 from embedder import Embedder
-from retriever import Retriever
+from retrieval.retriever import Retriever
 from generator import Generator
 from models import PipelineResult, RetrievedChunk
 import logging
@@ -23,7 +23,10 @@ class Pipeline:
 
         query_embedding = self.embedder.embed(question)
 
-        retrieved_chunks = self.retriever.search(query_embedding)
+        retrieved_chunks = self.retriever.search(
+            query = question,
+            embedding=query_embedding
+        )
 
         answer = self.generator.generate(
             question=question,

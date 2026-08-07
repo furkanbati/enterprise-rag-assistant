@@ -3,6 +3,8 @@ import logging
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel
 from models import ChatResponse, SourceResponse
+from retrieval.reranker import CrossEncoderReranker
+
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,
@@ -10,14 +12,14 @@ from config import (
     COLLECTION_NAME,
     EMBED_MODEL,
     OLLAMA_HOST,
-    TOP_K,
-    MAX_DISTANCE,
     MIN_CHUNK_SIZE,
     SIMILARITY_THRESHOLD,
+    RERANK_MODEL,
+    RETRIEVAL_TOP_K,
+    FINAL_TOP_K
 )
 from retrieval.vector_search import VectorSearch
 from retrieval.keyword_search import KeywordSearch
-
 from embedder import Embedder
 from generator import Generator
 from ingestion import Ingestion
@@ -51,15 +53,19 @@ vector_search = VectorSearch(
 )
 
 keyword_search = KeywordSearch(vector_store)
+keyword_search.rebuild()
 
 fusion = ReciprocalRankFusion()
+
+reranker = CrossEncoderReranker(RERANK_MODEL)
 
 retriever = Retriever(
     vector_search=vector_search,
     keyword_search=keyword_search,
     fusion=fusion,
-    top_k=TOP_K,
-    max_distance=MAX_DISTANCE,
+    reranker=reranker,
+    retrieval_top_k=RETRIEVAL_TOP_K,
+    final_top_k=FINAL_TOP_K,
 )
 
 generator = Generator(
@@ -132,6 +138,7 @@ async def chat(request: ChatRequest) -> ChatResponse:
                     vector_score=chunk.vector_score,
                     keyword_score=chunk.keyword_score,
                     fusion_score=chunk.fusion_score,
+                    rerank_score=chunk.rerank_score,
                     preview=(
                         chunk.document.removeprefix(
                             f"{chunk.metadata.heading}\n\n"

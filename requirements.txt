@@ -6,3 +6,4 @@ pymupdf
 python-multipart
 docling==2.53.0
 rank-bm25
+sentence-transformers==5.1.0

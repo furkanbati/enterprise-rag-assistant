@@ -25,7 +25,7 @@ class RetrievedChunk:
     vector_score: float | None = None
     keyword_score: float | None = None
     fusion_score: float | None = None
-
+    rerank_score: float | None = None
 
 @dataclass
 class PipelineResult:
@@ -52,7 +52,7 @@ class SourceResponse(BaseModel):
     vector_score: float | None = None
     keyword_score: float | None = None
     fusion_score: float | None = None
-    
+    rerank_score: float | None = None
     preview: str
 
 

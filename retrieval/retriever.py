@@ -2,8 +2,13 @@ from models import RetrievedChunk
 from retrieval.vector_search import VectorSearch
 from retrieval.keyword_search import KeywordSearch
 from retrieval.fusion import ReciprocalRankFusion
-import logging
+from retrieval.reranker import CrossEncoderReranker
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 
@@ -17,14 +22,16 @@ class Retriever:
         vector_search: VectorSearch,
         keyword_search: KeywordSearch,
         fusion: ReciprocalRankFusion,
-        top_k: int,
-        max_distance: float,
+        reranker: CrossEncoderReranker,
+        retrieval_top_k: int,
+        final_top_k: int,
     ):
         self.vector_search = vector_search
         self.keyword_search = keyword_search
         self.fusion = fusion
-        self.top_k = top_k
-        self.max_distance = max_distance
+        self.reranker = reranker
+        self.retrieval_top_k = retrieval_top_k
+        self.final_top_k = final_top_k
 
     def search(
         self,
@@ -34,87 +41,62 @@ class Retriever:
 
         vector_chunks = self.vector_search.search(
             embedding=embedding,
-            top_k=self.top_k,
+            top_k=self.retrieval_top_k,
         )
-
-        print("\n========== VECTOR RESULTS ==========")
-        for chunk in vector_chunks:
-            print(chunk)
-        for chunk in vector_chunks:
-            logger.info(
-                "chunk=%s | vector=%s | keyword=%s | fusion=%s",
-                chunk.metadata.chunk,
-                chunk.vector_score,
-                chunk.keyword_score,
-                chunk.fusion_score,
-            )
 
         keyword_chunks = self.keyword_search.search(
             query=query,
-            top_k=self.top_k,
+            top_k=self.retrieval_top_k,
         )
 
-        print("\n========== KEYWORD RESULTS ==========")
+        print("Vector Results")
+        for chunk in vector_chunks:
+            print(chunk.metadata.chunk, chunk.vector_score)
+
+        print("BM25 Results")
         for chunk in keyword_chunks:
-            print(chunk)
-        for chunk in keyword_chunks:
-            logger.info(
-                "chunk=%s | vector=%s | keyword=%s | fusion=%s",
-                chunk.metadata.chunk,
-                chunk.vector_score,
-                chunk.keyword_score,
-                chunk.fusion_score,
-            )
+            print(chunk.metadata.chunk, chunk.keyword_score)
 
         chunks = self.fusion.fuse(
             vector_chunks,
             keyword_chunks,
         )
-
-        print("\n========== FUSION RESULTS ==========")
-        for chunk in chunks:
-            print(chunk)
-        for chunk in chunks:
+        logger.info("After Fusion")
+        for i, chunk in enumerate(chunks, start=1):
             logger.info(
-                "chunk=%s | vector=%s | keyword=%s | fusion=%s",
+                "%d. chunk=%d vector=%s keyword=%s fusion=%.6f",
+                i,
                 chunk.metadata.chunk,
-                chunk.vector_score,
-                chunk.keyword_score,
+                (
+                    f"{chunk.vector_score:.3f}"
+                    if chunk.vector_score is not None
+                    else "-"
+                ),
+                (
+                    f"{chunk.keyword_score:.3f}"
+                    if chunk.keyword_score is not None
+                    else "-"
+                ),
                 chunk.fusion_score,
             )
-
         if not chunks:
             logger.warning("No chunks found.")
             return []
 
-        filtered_chunks = self._filter_by_distance(chunks)
 
-        if filtered_chunks:
-            return filtered_chunks[: self.top_k]
-
-        logger.warning(
-            "No chunks passed distance threshold %.2f. Returning best available chunk.",
-            self.max_distance,
+        chunks = self.reranker.rerank(
+            question=query,
+            chunks=chunks,
+            top_k=self.final_top_k,
         )
 
-        return chunks[:1]
-
-    def _filter_by_distance(
-        self,
-        chunks: list[RetrievedChunk],
-    ) -> list[RetrievedChunk]:
-        """
-        Remove chunks whose retrieval distance exceeds the configured threshold.
-        """
-
-        return [
-            chunk
-            for chunk in chunks
-            if (
-                chunk.vector_score is None
-                or chunk.vector_score <= self.max_distance
+        print("After Rerank")
+        for i, chunk in enumerate(chunks, start=1):
+            print(
+                f"{i}. chunk={chunk.metadata.chunk} "
+                f"rerank={chunk.rerank_score:.6f}"
             )
-        ]
+        return chunks
 
     def _deduplicate(
         self,

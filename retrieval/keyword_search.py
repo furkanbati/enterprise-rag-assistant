@@ -14,7 +14,8 @@ class KeywordSearch:
 
     def rebuild(self) -> None:
         documents, metadatas = self.vector_store.get_all_chunks()
-
+        print(f"Indexed documents: {len(documents)}")
+        print(documents[:2])
         tokenized_documents = [
             self._tokenize(document)
             for document in documents
@@ -30,8 +31,12 @@ class KeywordSearch:
         top_k: int,
     ) -> list[RetrievedChunk]:
         if self._bm25 is None:
+            print("BM25 IS NONE")
             return []
 
+        print("BM25 READY")
+        print(f"BM25 initialized: {self._bm25 is not None}")
+        print(f"Indexed docs: {len(self._documents)}")
         tokenized_query = self._tokenize(query)
 
         scores = self._bm25.get_scores(tokenized_query)

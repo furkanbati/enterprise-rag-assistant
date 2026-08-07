@@ -1,7 +1,7 @@
 from embedder import Embedder
 from retrieval.retriever import Retriever
 from generator import Generator
-from models import PipelineResult, RetrievedChunk
+from models import PipelineResult
 import logging
 
 logger = logging.getLogger(__name__)

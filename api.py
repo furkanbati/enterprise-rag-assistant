@@ -135,10 +135,6 @@ async def chat(request: ChatRequest) -> ChatResponse:
                     page=chunk.metadata.page,
                     chunk=chunk.metadata.chunk,
                     heading=chunk.metadata.heading,
-                    vector_score=chunk.vector_score,
-                    keyword_score=chunk.keyword_score,
-                    fusion_score=chunk.fusion_score,
-                    rerank_score=chunk.rerank_score,
                     preview=(
                         chunk.document.removeprefix(
                             f"{chunk.metadata.heading}\n\n"

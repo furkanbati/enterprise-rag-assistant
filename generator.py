@@ -33,10 +33,6 @@ Be concise and accurate.
         question: str,
         chunks: list[RetrievedChunk],
     ) -> str:
-        logger.info(
-            "Generating response using %d retrieved document chunks",
-            len(chunks),
-        )
 
         prompt = self._build_prompt(
             question=question,

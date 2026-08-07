@@ -49,36 +49,11 @@ class Retriever:
             top_k=self.retrieval_top_k,
         )
 
-        print("Vector Results")
-        for chunk in vector_chunks:
-            print(chunk.metadata.chunk, chunk.vector_score)
-
-        print("BM25 Results")
-        for chunk in keyword_chunks:
-            print(chunk.metadata.chunk, chunk.keyword_score)
-
         chunks = self.fusion.fuse(
             vector_chunks,
             keyword_chunks,
         )
-        logger.info("After Fusion")
-        for i, chunk in enumerate(chunks, start=1):
-            logger.info(
-                "%d. chunk=%d vector=%s keyword=%s fusion=%.6f",
-                i,
-                chunk.metadata.chunk,
-                (
-                    f"{chunk.vector_score:.3f}"
-                    if chunk.vector_score is not None
-                    else "-"
-                ),
-                (
-                    f"{chunk.keyword_score:.3f}"
-                    if chunk.keyword_score is not None
-                    else "-"
-                ),
-                chunk.fusion_score,
-            )
+
         if not chunks:
             logger.warning("No chunks found.")
             return []
@@ -90,12 +65,6 @@ class Retriever:
             top_k=self.final_top_k,
         )
 
-        print("After Rerank")
-        for i, chunk in enumerate(chunks, start=1):
-            print(
-                f"{i}. chunk={chunk.metadata.chunk} "
-                f"rerank={chunk.rerank_score:.6f}"
-            )
         return chunks
 
     def _deduplicate(

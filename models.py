@@ -48,11 +48,6 @@ class SourceResponse(BaseModel):
     page: int
     chunk: int
     heading: str
-
-    vector_score: float | None = None
-    keyword_score: float | None = None
-    fusion_score: float | None = None
-    rerank_score: float | None = None
     preview: str
 
 

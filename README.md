@@ -1,502 +1,383 @@
 # Enterprise RAG Assistant
 
-A lightweight, containerized Retrieval-Augmented Generation (RAG) backend built with FastAPI, Ollama, and ChromaDB.
+A production-ready Retrieval-Augmented Generation (RAG) assistant built with **FastAPI**, **Ollama**, **ChromaDB**, and **Docker**. The project supports PDF ingestion, heading-aware semantic chunking, hybrid retrieval, reranking, and source-aware responses.
 
-The system ingests PDF documents, converts their content into vector embeddings, stores them in a persistent vector database, retrieves relevant document context for user questions, and generates grounded answers using a locally hosted Large Language Model.
+---
 
-The project focuses on a simple and explicit architecture without unnecessary abstraction layers.
+# Features
 
-## Architecture
+* PDF document ingestion
+* Heading-aware semantic chunking
+* Metadata extraction (source, page, heading, chunk)
+* Batch embedding generation
+* Persistent ChromaDB vector storage
+* Hybrid Retrieval (Vector Search + BM25)
+* Reciprocal Rank Fusion (RRF)
+* Cross-encoder reranking
+* Source-aware answers
+* Source preview snippets
+* FastAPI REST API
+* Swagger/OpenAPI documentation
+* Dockerized deployment
 
-```text
-                        ┌──────────────────────┐
-                        │        Client        │
-                        │   Swagger / HTTP     │
-                        └──────────┬───────────┘
-                                   │
-                                   ▼
-                        ┌──────────────────────┐
-                        │       FastAPI        │
-                        │        api.py        │
-                        └──────────┬───────────┘
-                                   │
-                 ┌─────────────────┴─────────────────┐
-                 │                                   │
-                 ▼                                   ▼
-        Document Ingestion                      RAG Pipeline
-                 │                                   │
-                 ▼                                   ▼
-        PDF Text Extraction                         Query
-                 │                                   │
-                 ▼                                   ▼
-             Chunking                            Embedder
-                 │                                   │
-                 ▼                                   ▼
-             Embedder                            Retriever
-                 │                                   │
-                 ▼                                   ▼
-        Ollama Embedding Model                    ChromaDB
-                 │                                   │
-                 ▼                                   ▼
-             ChromaDB                      Relevant Documents
-                                                     │
-                                                     ▼
-                                                  Generator
-                                                     │
-                                                     ▼
-                                             Ollama Chat Model
-                                                     │
-                                                     ▼
-                                                   Answer
+---
+
+# Architecture
+
+```
+                    +------------------+
+                    |      Client      |
+                    +------------------+
+                              |
+                              v
+                      FastAPI REST API
+                              |
+                              v
+                        RAG Pipeline
+                              |
+        +---------------------+----------------------+
+        |                                            |
+        v                                            v
+ Question Embedding                         Document Ingestion
+        |                                            |
+        |                                    PDF Parsing
+        |                                            |
+        |                             Heading-aware Semantic Chunking
+        |                                            |
+        |                               Metadata Extraction
+        |                                            |
+        |                                Batch Embedding
+        |                                            |
+        |                                   ChromaDB Storage
+        |
+        v
++--------------------+
+|  Vector Search     |
++--------------------+
+          |
+          |
++--------------------+
+|    BM25 Search     |
++--------------------+
+          |
+          v
++----------------------------+
+| Reciprocal Rank Fusion     |
++----------------------------+
+          |
+          v
++----------------------------+
+| Cross Encoder Reranker     |
++----------------------------+
+          |
+          v
+ Prompt Construction
+          |
+          v
+      Llama 3
+          |
+          v
+       Response
 ```
 
-## RAG Workflow
+---
 
-### Document ingestion
+# Retrieval Pipeline
 
-When a PDF document is uploaded:
+The retrieval pipeline combines semantic and lexical search to improve retrieval quality.
 
-```text
+1. Generate an embedding for the user query.
+2. Perform Vector Search on ChromaDB.
+3. Perform BM25 keyword search.
+4. Merge results using Reciprocal Rank Fusion (RRF).
+5. Rerank retrieved documents using a Cross Encoder.
+6. Build the prompt using the highest ranked chunks.
+7. Generate the final answer using Llama 3.
+
+---
+
+# Document Ingestion Pipeline
+
+```
 PDF
- ↓
-Text Extraction
- ↓
-Chunking
- ↓
-Batch Embedding
- ↓
-Vector Storage
+ │
+ ▼
+Document Parsing
+ │
+ ▼
+Heading-aware Semantic Chunking
+ │
+ ▼
+Metadata Extraction
+ │
+ ▼
+Batch Embedding Generation
+ │
+ ▼
+Persistent ChromaDB Storage
 ```
 
-The ingestion layer extracts text from the PDF using PyMuPDF.
+Each stored chunk includes metadata such as:
 
-The extracted text is divided into overlapping chunks. Each chunk is converted into a vector embedding using the configured Ollama embedding model.
+* Source document
+* Page number
+* Section heading
+* Chunk identifier
 
-The documents and their embeddings are then persisted in ChromaDB.
+---
 
-### Question answering
+# Project Structure
 
-When a user submits a question:
-
-```text
-Question
- ↓
-Query Embedding
- ↓
-Vector Search
- ↓
-Relevant Documents
- ↓
-Prompt Construction
- ↓
-LLM Generation
- ↓
-Answer
 ```
-
-The question is embedded using the same embedding model used during ingestion.
-
-The retriever searches ChromaDB for semantically relevant document chunks.
-
-The generator combines the retrieved context with the original question and sends the resulting prompt to the configured Ollama chat model.
-
-The generated answer is returned through the API.
-
-## Project Structure
-
-```text
-enterprise_rag_v2/
+enterprise-rag-assistant/
 │
 ├── api.py
 ├── config.py
 ├── embedder.py
 ├── generator.py
 ├── ingestion.py
+├── parser.py
 ├── pipeline.py
-├── retriever.py
 ├── vector_store.py
+├── models.py
+│
+├── retrieval/
+│   ├── vector_search.py
+│   ├── keyword_search.py
+│   ├── fusion.py
+│   ├── reranker.py
+│   └── retriever.py
 │
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
-├── .dockerignore
 └── README.md
 ```
 
-### `api.py`
+---
 
-Application entry point and composition root.
+# Module Overview
 
-Responsible for:
+### api.py
 
-* Creating the FastAPI application
-* Initializing application dependencies
-* Connecting configuration values to application components
-* Exposing document upload and chat endpoints
+Exposes the REST API endpoints.
 
-### `config.py`
+### pipeline.py
 
-Central application configuration.
+Coordinates the complete RAG workflow.
 
-Controls:
+### parser.py
 
-* Embedding model
-* Chat model
-* Ollama host
-* Chunk size
-* Chunk overlap
-* ChromaDB persistence path
-* ChromaDB collection name
+Parses PDF documents and extracts structured sections.
 
-Application behavior can be changed without modifying the core modules.
+### ingestion.py
 
-### `embedder.py`
+Processes uploaded documents and stores them into the vector database.
 
-Handles communication with the Ollama embedding API.
+### embedder.py
 
-Supports:
+Generates embeddings using Ollama.
 
-* Single-text embedding
-* Batch embedding
+### vector_store.py
 
-### `ingestion.py`
+Handles ChromaDB storage and retrieval.
 
-Handles the document indexing workflow.
+### generator.py
 
-Responsible for:
+Generates final answers using Llama 3.
 
-* PDF text extraction
-* Text chunking
-* Chunk overlap
-* Batch embedding
-* Vector storage
+### retrieval/vector_search.py
 
-### `vector_store.py`
+Performs semantic vector retrieval.
 
-Encapsulates ChromaDB operations.
+### retrieval/keyword_search.py
 
-Responsible for:
+Performs BM25 keyword retrieval.
 
-* Persistent vector storage
-* Document insertion
-* Semantic vector queries
+### retrieval/fusion.py
 
-### `retriever.py`
+Combines search results using Reciprocal Rank Fusion.
 
-Retrieves relevant document chunks from the vector store using a query embedding.
+### retrieval/reranker.py
 
-### `generator.py`
+Ranks retrieved chunks using a Cross Encoder.
 
-Builds the RAG prompt and communicates with the Ollama chat model.
+### retrieval/retriever.py
 
-The generator receives:
+Coordinates the complete retrieval pipeline.
 
-```text
-Question
-+
-Retrieved Documents
-```
+---
 
-and produces a grounded answer based on the retrieved context.
+# Technology Stack
 
-### `pipeline.py`
+| Technology             | Purpose                |
+| ---------------------- | ---------------------- |
+| Python                 | Backend                |
+| FastAPI                | REST API               |
+| Ollama                 | Local LLM & Embeddings |
+| Llama 3                | Response generation    |
+| nomic-embed-text       | Embedding model        |
+| ChromaDB               | Vector database        |
+| Docling                | PDF parsing            |
+| rank-bm25              | Keyword retrieval      |
+| Cross Encoder Reranker | Result reranking       |
+| Docker                 | Containerization       |
 
-Coordinates the question-answering workflow.
+---
 
-```text
-Embed Question
-      ↓
-Retrieve Documents
-      ↓
-Generate Answer
-```
+# Installation
 
-The pipeline keeps orchestration separate from infrastructure-specific logic.
-
-## Technology Stack
-
-| Technology       | Purpose                       |
-| ---------------- | ----------------------------- |
-| Python           | Application language          |
-| FastAPI          | HTTP API                      |
-| Ollama           | Local model runtime           |
-| Llama 3          | Answer generation             |
-| nomic-embed-text | Vector embeddings             |
-| ChromaDB         | Vector database               |
-| PyMuPDF          | PDF text extraction           |
-| Docker           | Application containerization  |
-| Docker Compose   | Multi-container orchestration |
-
-## Requirements
-
-The only host dependency required is:
-
-* Docker Desktop
-
-Python and Ollama do not need to be installed directly on the host machine.
-
-## Running the Project
-
-Clone the repository:
+## Clone the repository
 
 ```bash
-git clone <repository-url>
-cd enterprise_rag_v2
+git clone https://github.com/<your-username>/enterprise-rag-assistant.git
+cd enterprise-rag-assistant
 ```
 
-Build and start the containers:
+---
+
+## Start the application
 
 ```bash
 docker compose up --build -d
 ```
 
-Verify that the containers are running:
+---
 
-```bash
-docker ps
-```
+## Download the required Ollama models
 
-The following containers should be available:
-
-```text
-rag-api
-ollama
-```
-
-## Download Ollama Models
-
-The application uses two models.
-
-Embedding model:
-
-```text
-nomic-embed-text
-```
-
-Chat model:
-
-```text
-llama3
-```
-
-Download the models inside the Ollama container:
+Embedding model
 
 ```bash
 docker exec -it ollama ollama pull nomic-embed-text
 ```
 
+Chat model
+
 ```bash
 docker exec -it ollama ollama pull llama3
 ```
 
-Verify the installed models:
+---
 
-```bash
-docker exec -it ollama ollama list
+## Open Swagger UI
+
 ```
-
-Expected models:
-
-```text
-nomic-embed-text
-llama3
-```
-
-## API Documentation
-
-After the containers are running, open the FastAPI Swagger interface:
-
-```text
 http://localhost:8000/docs
 ```
 
-The API currently exposes two main endpoints.
+---
 
-## Upload a Document
+# Usage
 
-```text
+## Upload a PDF
+
+```
 POST /upload
 ```
 
-Uploads and indexes a PDF document.
+Example:
 
-The document passes through the complete ingestion pipeline:
-
-```text
-PDF
- ↓
-Extract Text
- ↓
-Chunk Text
- ↓
-Generate Embeddings
- ↓
-Store in ChromaDB
+```
+NIST.AI.100-1.pdf
 ```
 
-Example response:
+---
 
-```json
-{
-  "message": "Document indexed successfully."
-}
+## Ask a question
+
 ```
-
-## Ask a Question
-
-```text
 POST /chat
 ```
 
-Example request:
+Request
 
 ```json
 {
-  "question": "What are the core functions of the AI RMF?"
+  "question": "Which AI RMF function enables the other functions?"
 }
 ```
 
-Example response:
+Response
 
 ```json
 {
-  "answer": "The AI RMF Core provides four high-level functions: GOVERN, MAP, MEASURE, and MANAGE."
+  "answer": "The answer is GOVERN.",
+  "sources": [
+    {
+      "source": "NIST.AI.100-1.pdf",
+      "page": 25,
+      "chunk": 133,
+      "heading": "5. AI RMF Core",
+      "preview": "After instituting the outcomes in GOVERN..."
+    }
+  ]
 }
 ```
 
-The answer is generated using document chunks retrieved from ChromaDB.
+---
 
-## Configuration
+# Configuration
 
-Application configuration is centralized in `config.py`.
+Configuration is centralized in `config.py`.
 
-Example:
+Typical settings include:
 
-```python
-EMBED_MODEL = "nomic-embed-text"
-CHAT_MODEL = "llama3"
+* Chat model
+* Embedding model
+* Chunk size
+* Chunk overlap
+* Vector search top-k
+* BM25 top-k
+* Reranker top-k
+* ChromaDB storage path
+* Collection name
+* Ollama host
+* Logging level
 
-CHUNK_SIZE = 1000
-OVERLAP = 200
+---
 
-CHROMA_PATH = "./data/chroma"
-COLLECTION_NAME = "documents"
+# Current Capabilities
 
-OLLAMA_HOST = "http://ollama:11434"
-```
-
-For example, changing the chat model only requires updating:
-
-```python
-CHAT_MODEL = "llama3"
-```
-
-Core application modules do not need to be modified.
-
-## Persistent Storage
-
-ChromaDB data is persisted on the host machine:
-
-```text
-./data/chroma
-```
-
-Ollama models are stored in a Docker volume:
-
-```text
-ollama
-```
-
-Stopping or recreating the containers does not require downloading the models again.
-
-## Useful Docker Commands
-
-Start the application:
-
-```bash
-docker compose up -d
-```
-
-Rebuild after code changes:
-
-```bash
-docker compose up --build -d
-```
-
-View API logs:
-
-```bash
-docker compose logs -f api
-```
-
-View all logs:
-
-```bash
-docker compose logs -f
-```
-
-Stop and remove the containers:
-
-```bash
-docker compose down
-```
-
-List running containers:
-
-```bash
-docker ps
-```
-
-List installed Ollama models:
-
-```bash
-docker exec -it ollama ollama list
-```
-
-## Design Principles
-
-This project intentionally follows a small set of architectural principles:
-
-* Explicit dependency construction
-* Centralized configuration
-* Minimal abstraction
-* Clear module responsibilities
-* Persistent vector storage
-* Local model execution
-* Containerized runtime
-* Independently replaceable RAG components
-
-The architecture avoids unnecessary framework layers and keeps the complete RAG workflow visible in the codebase.
-
-## Current Capabilities
-
-* PDF document ingestion
-* PDF text extraction
-* Overlapping text chunking
-* Batch embedding generation
-* Persistent vector storage
 * Semantic document retrieval
-* Context-based prompt generation
-* Local LLM inference
-* REST API
-* Swagger API documentation
-* Dockerized deployment
-
-## Roadmap
-
-Planned improvements include:
-
-* Retrieval score visibility
-* Retrieval quality evaluation
-* Document metadata
+* Heading-aware semantic chunking
+* Metadata-aware indexing
+* Hybrid retrieval
+* Reciprocal Rank Fusion
+* Cross-encoder reranking
 * Source-aware responses
-* Duplicate document handling
-* Improved document validation
-* Configurable retrieval limits
-* Health checks
-* Automated tests
-* RAG evaluation pipeline
+* Source preview generation
+* Persistent vector storage
+* Docker deployment
+* REST API
+* Interactive Swagger documentation
 
-## License
+---
 
-This project is available for educational, research, and development purposes.
+# Future Improvements
+
+Possible future enhancements include:
+
+* Query expansion
+* Streaming responses
+* Evaluation pipeline (RAGAS / DeepEval)
+* Authentication & authorization
+* Multi-format document support
+* Multi-modal RAG
+* Monitoring & observability
+
+---
+
+# Why Hybrid Retrieval?
+
+Vector search excels at semantic similarity but may miss exact keyword matches.
+
+BM25 excels at lexical matching but lacks semantic understanding.
+
+By combining both approaches with Reciprocal Rank Fusion and a Cross Encoder reranker, the assistant achieves significantly more reliable retrieval quality.
+
+---
+
+# License
+
+This project is intended for educational and portfolio purposes. Feel free to modify and extend it for your own use.

@@ -1,6 +1,8 @@
 # Enterprise RAG Assistant
 
-A production-ready Retrieval-Augmented Generation (RAG) assistant built with **FastAPI**, **Ollama**, **ChromaDB**, and **Docker**. The project supports PDF ingestion, heading-aware semantic chunking, hybrid retrieval, reranking, and source-aware responses.
+A production-oriented Retrieval-Augmented Generation (RAG) assistant built with **FastAPI**, **Ollama**, **ChromaDB**, and **Docker**.
+
+The project supports PDF ingestion, heading-aware semantic chunking, hybrid retrieval, Reciprocal Rank Fusion (RRF), cross-encoder reranking, and source-aware responses.
 
 ---
 
@@ -24,7 +26,7 @@ A production-ready Retrieval-Augmented Generation (RAG) assistant built with **F
 
 # Architecture
 
-```
+```text
                     +------------------+
                     |      Client      |
                     +------------------+
@@ -71,10 +73,10 @@ A production-ready Retrieval-Augmented Generation (RAG) assistant built with **F
 +----------------------------+
           |
           v
- Prompt Construction
+   Prompt Construction
           |
           v
-      Llama 3
+       Llama 3
           |
           v
        Response
@@ -91,14 +93,14 @@ The retrieval pipeline combines semantic and lexical search to improve retrieval
 3. Perform BM25 keyword search.
 4. Merge results using Reciprocal Rank Fusion (RRF).
 5. Rerank retrieved documents using a Cross Encoder.
-6. Build the prompt using the highest ranked chunks.
+6. Build the prompt using the highest-ranked chunks.
 7. Generate the final answer using Llama 3.
 
 ---
 
 # Document Ingestion Pipeline
 
-```
+```text
 PDF
  │
  ▼
@@ -128,18 +130,20 @@ Each stored chunk includes metadata such as:
 
 # Project Structure
 
-```
+```text
 enterprise-rag-assistant/
 │
 ├── api.py
+├── chunking.py
 ├── config.py
+├── document_parser.py
 ├── embedder.py
 ├── generator.py
 ├── ingestion.py
-├── parser.py
-├── pipeline.py
-├── vector_store.py
 ├── models.py
+├── pipeline.py
+├── utils.py
+├── vector_store.py
 │
 ├── retrieval/
 │   ├── vector_search.py
@@ -160,19 +164,23 @@ enterprise-rag-assistant/
 
 ### api.py
 
-Exposes the REST API endpoints.
+Exposes the REST API endpoints for document upload and question answering.
 
 ### pipeline.py
 
-Coordinates the complete RAG workflow.
+Coordinates the retrieval and answer-generation workflow.
 
-### parser.py
+### document_parser.py
 
-Parses PDF documents and extracts structured sections.
+Parses PDF documents with Docling and extracts structured document sections.
+
+### chunking.py
+
+Creates heading-aware semantic chunks using sentence-level embedding similarity.
 
 ### ingestion.py
 
-Processes uploaded documents and stores them into the vector database.
+Processes uploaded documents, generates embeddings, and stores chunks and metadata.
 
 ### embedder.py
 
@@ -180,11 +188,11 @@ Generates embeddings using Ollama.
 
 ### vector_store.py
 
-Handles ChromaDB storage and retrieval.
+Handles persistent ChromaDB storage and vector retrieval.
 
 ### generator.py
 
-Generates final answers using Llama 3.
+Generates final answers using Llama 3 through Ollama.
 
 ### retrieval/vector_search.py
 
@@ -196,32 +204,32 @@ Performs BM25 keyword retrieval.
 
 ### retrieval/fusion.py
 
-Combines search results using Reciprocal Rank Fusion.
+Combines vector and keyword results using Reciprocal Rank Fusion.
 
 ### retrieval/reranker.py
 
-Ranks retrieved chunks using a Cross Encoder.
+Reranks retrieved chunks using a cross-encoder model.
 
 ### retrieval/retriever.py
 
-Coordinates the complete retrieval pipeline.
+Coordinates vector search, BM25 retrieval, result fusion, and reranking.
 
 ---
 
 # Technology Stack
 
-| Technology             | Purpose                |
-| ---------------------- | ---------------------- |
-| Python                 | Backend                |
-| FastAPI                | REST API               |
-| Ollama                 | Local LLM & Embeddings |
-| Llama 3                | Response generation    |
-| nomic-embed-text       | Embedding model        |
-| ChromaDB               | Vector database        |
-| Docling                | PDF parsing            |
-| rank-bm25              | Keyword retrieval      |
-| Cross Encoder Reranker | Result reranking       |
-| Docker                 | Containerization       |
+| Technology            | Purpose                          |
+| --------------------- | -------------------------------- |
+| Python                | Backend                          |
+| FastAPI               | REST API                         |
+| Ollama                | Local LLM and embedding provider |
+| Llama 3               | Response generation              |
+| nomic-embed-text      | Embedding model                  |
+| ChromaDB              | Persistent vector database       |
+| Docling               | PDF parsing                      |
+| rank-bm25             | Keyword retrieval                |
+| Sentence Transformers | Cross-encoder reranking          |
+| Docker                | Containerization                 |
 
 ---
 
@@ -230,7 +238,7 @@ Coordinates the complete retrieval pipeline.
 ## Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/enterprise-rag-assistant.git
+git clone https://github.com/furkanbati/enterprise-rag-assistant.git
 cd enterprise-rag-assistant
 ```
 
@@ -246,13 +254,13 @@ docker compose up --build -d
 
 ## Download the required Ollama models
 
-Embedding model
+Embedding model:
 
 ```bash
 docker exec -it ollama ollama pull nomic-embed-text
 ```
 
-Chat model
+Chat model:
 
 ```bash
 docker exec -it ollama ollama pull llama3
@@ -262,7 +270,7 @@ docker exec -it ollama ollama pull llama3
 
 ## Open Swagger UI
 
-```
+```text
 http://localhost:8000/docs
 ```
 
@@ -272,25 +280,27 @@ http://localhost:8000/docs
 
 ## Upload a PDF
 
-```
+```text
 POST /upload
 ```
 
-Example:
+Example document:
 
-```
+```text
 NIST.AI.100-1.pdf
 ```
+
+The document is parsed, semantically chunked, embedded, and stored in ChromaDB.
 
 ---
 
 ## Ask a question
 
-```
+```text
 POST /chat
 ```
 
-Request
+Request:
 
 ```json
 {
@@ -298,7 +308,7 @@ Request
 }
 ```
 
-Response
+Example response:
 
 ```json
 {
@@ -315,6 +325,8 @@ Response
 }
 ```
 
+The response includes source metadata and a preview of the retrieved supporting chunk.
+
 ---
 
 # Configuration
@@ -325,15 +337,15 @@ Typical settings include:
 
 * Chat model
 * Embedding model
+* Reranker model
 * Chunk size
-* Chunk overlap
-* Vector search top-k
-* BM25 top-k
-* Reranker top-k
+* Minimum chunk size
+* Similarity threshold
+* Retrieval top-k
+* Final top-k
 * ChromaDB storage path
 * Collection name
 * Ollama host
-* Logging level
 
 ---
 
@@ -354,30 +366,46 @@ Typical settings include:
 
 ---
 
+# Why Hybrid Retrieval?
+
+Vector search is effective at semantic matching but may miss exact lexical matches.
+
+BM25 is effective at keyword matching but does not capture semantic similarity.
+
+Combining both approaches with Reciprocal Rank Fusion provides a broader candidate set, while cross-encoder reranking performs a final relevance-focused ranking before answer generation.
+
+---
+
+# Current Scope
+
+The current implementation focuses on PDF-based document question answering using local Ollama inference.
+
+The project currently does not include:
+
+* Authentication and authorization
+* Automated RAG evaluation and benchmarking
+* Web-based user interface
+* Persistent conversation history
+
+These are intentionally outside the current scope and can be added in future iterations.
+
+---
+
 # Future Improvements
 
 Possible future enhancements include:
 
+* RAG evaluation and benchmarking
+* Vector vs. hybrid vs. reranked retrieval comparison
 * Query expansion
 * Streaming responses
-* Evaluation pipeline (RAGAS / DeepEval)
-* Authentication & authorization
+* Authentication and authorization
 * Multi-format document support
 * Multi-modal RAG
-* Monitoring & observability
-
----
-
-# Why Hybrid Retrieval?
-
-Vector search excels at semantic similarity but may miss exact keyword matches.
-
-BM25 excels at lexical matching but lacks semantic understanding.
-
-By combining both approaches with Reciprocal Rank Fusion and a Cross Encoder reranker, the assistant achieves significantly more reliable retrieval quality.
+* Monitoring and observability
 
 ---
 
 # License
 
-This project is intended for educational and portfolio purposes. Feel free to modify and extend it for your own use.
+This project is licensed under the MIT License. See the `LICENSE` file for details.

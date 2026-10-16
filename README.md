@@ -19,6 +19,7 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 - Source-aware answers with page metadata and preview snippets
 - FastAPI REST endpoints and interactive Swagger documentation
 - Docker Compose-based application setup
+- Built-in evaluation harness comparing retrieval strategies and scoring generated answers
 
 ## Architecture
 
@@ -221,9 +222,68 @@ Application settings are centralized in `config.py`.
 
 The default configuration uses the Ollama service provided by Docker Compose.
 
+## Evaluation
+
+The `evaluation/` package measures retrieval and answer quality against a labelled question set, so changes to chunking, retrieval, or prompts can be compared with numbers instead of impressions.
+
+The bundled dataset, [`evaluation/datasets/nist_ai_rmf.jsonl`](evaluation/datasets/nist_ai_rmf.jsonl), contains 22 questions about the NIST AI RMF 1.0 document: 20 answerable questions labelled with their relevant pages and expected answer keywords, and 2 questions the document cannot answer.
+
+The harness runs each question through four retrieval strategies, built from the same components the API uses:
+
+| Strategy | Description |
+|---|---|
+| `vector` | ChromaDB vector search only |
+| `bm25` | BM25 keyword search only |
+| `hybrid_rrf` | Vector + BM25 combined with Reciprocal Rank Fusion |
+| `hybrid_rrf_rerank` | Hybrid retrieval followed by cross-encoder reranking (the production setup) |
+
+### Metrics
+
+- **Hit@k:** whether any of the top-k chunks comes from a relevant page
+- **Recall@k:** share of the relevant pages covered by the top-k chunks
+- **MRR:** mean reciprocal rank of the first relevant chunk
+- **Keyword recall:** share of expected keywords present in the generated answer (a lexical proxy, not a judge of correctness)
+- **Answer rate / abstention rate:** whether the model answers answerable questions and declines unanswerable ones
+
+### Running the evaluation
+
+Upload `nist.ai.100-1.pdf` through `POST /upload`, then run:
+
+```bash
+# Retrieval metrics only
+docker compose exec api python -m evaluation
+
+# Retrieval metrics and generated-answer scoring
+docker compose exec api python -m evaluation --generate
+```
+
+Reports are written to `evaluation/results/report.md` and `evaluation/results/report.json`. Use `--dataset` to evaluate another labelled JSONL file and `--ks` to change the cut-offs.
+
+### Baseline results
+
+Measured locally with `nomic-embed-text`, `BAAI/bge-reranker-base`, and `llama3` on the NIST AI RMF document (20 answerable questions).
+
+| Strategy | Hit@1 | Hit@3 | Recall@5 | MRR@5 |
+|---|---|---|---|---|
+| `vector` | 0.950 | 0.950 | 0.925 | 0.950 |
+| `bm25` | 0.700 | 0.850 | 0.850 | 0.785 |
+| `hybrid_rrf` | 0.800 | 0.900 | 0.975 | 0.873 |
+| `hybrid_rrf_rerank` | 0.950 | 0.950 | 0.950 | 0.950 |
+
+Answer generation with `hybrid_rrf_rerank` and the top 3 chunks: keyword recall 0.958, answer rate 0.950, abstention rate on unanswerable questions 1.000.
+
+Observations:
+
+- RRF fusion widens coverage (the best Recall@5) but places weaker BM25 matches near the top; the cross-encoder restores top-rank precision.
+- On this single, well-structured document, vector search alone already performs strongly, so the hybrid pipeline matches it at the top ranks rather than surpassing it. A larger or more keyword-heavy corpus is needed to show the benefit of hybrid retrieval.
+- The one consistent miss (`q11`, "Which function is cross-cutting?") is a retrieval failure: the relevant GOVERN passage is not ranked in the top 5, and the model correctly answers that it does not know.
+- Reranking adds about 2 seconds per query on average on CPU in this setup (including the first model load).
+
+The dataset is small and labelled by hand, so these numbers are a regression baseline for this project, not a general benchmark.
+
 ## Running the Tests
 
-The project includes automated tests for the API, document parsing, chunking, ingestion, retrieval, generation, and vector storage.
+The project includes automated tests for the API, document parsing, chunking, ingestion, retrieval, generation, vector storage, and the evaluation harness.
 
 Run the test suite with:
 
@@ -231,7 +291,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 41 tests passed.
+**Verified locally:** 60 tests passed.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 
@@ -255,6 +315,16 @@ enterprise-rag-assistant/
 │   ├── fusion.py
 │   ├── reranker.py
 │   └── retriever.py
+├── evaluation/
+│   ├── datasets/
+│   │   └── nist_ai_rmf.jsonl
+│   ├── results/
+│   ├── dataset.py
+│   ├── metrics.py
+│   ├── strategies.py
+│   ├── evaluator.py
+│   ├── report.py
+│   └── __main__.py
 ├── tests/
 ├── Dockerfile
 ├── Dockerfile.test
@@ -283,14 +353,13 @@ The current implementation focuses on PDF-based question answering. It does not 
 - User authentication or authorization
 - A dedicated web frontend
 - Persistent conversation history
-- An automated RAG evaluation and benchmarking framework
 - Production-scale deployment guarantees
 
 Answers depend on document quality, retrieval relevance, and model behavior. Source metadata helps inspect the retrieved material but does not guarantee that every generated claim is correct.
 
 ## Future Directions
 
-Potential extensions include retrieval-quality evaluation, streaming responses, authentication, additional document formats, and monitoring.
+Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring, streaming responses, authentication, additional document formats, and monitoring.
 
 ## License
 

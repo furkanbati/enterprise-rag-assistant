@@ -97,3 +97,26 @@ def test_search_respects_top_k():
 
     assert len(results) == 1
     assert results[0].document in documents[:2]
+
+
+def test_tokenize_strips_punctuation_and_stopwords():
+    search = KeywordSearch(FakeVectorStore())
+
+    assert search._tokenize(
+        "Which AI RMF function is described as cross-cutting?"
+    ) == ["ai", "rmf", "function", "described", "cross-cutting"]
+
+
+def test_search_matches_terms_followed_by_punctuation():
+    documents = [
+        "GOVERN is a cross-cutting function.",
+        "Which function is described here? It is the MAP function.",
+        "fresh cooking ingredients",
+    ]
+    metadatas = [make_metadata(i) for i in range(len(documents))]
+    search = KeywordSearch(FakeVectorStore(documents, metadatas))
+    search.rebuild()
+
+    results = search.search("Which function is cross-cutting?", top_k=1)
+
+    assert results[0].document == documents[0]

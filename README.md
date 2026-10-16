@@ -142,7 +142,7 @@ docker compose exec ollama ollama pull nomic-embed-text
 docker compose exec ollama ollama pull llama3
 ```
 
-The cross-encoder model is configured as `BAAI/bge-reranker-base` and is loaded when reranking is first needed. Its initial use may require downloading the model.
+The cross-encoder model is configured as `cross-encoder/ms-marco-MiniLM-L-6-v2` and is loaded when reranking is first needed. Its initial use may require downloading the model.
 
 ### 4. Open the API documentation
 
@@ -261,25 +261,37 @@ Reports are written to `evaluation/results/report.md` and `evaluation/results/re
 
 ### Baseline results
 
-Measured locally with `nomic-embed-text`, `BAAI/bge-reranker-base`, and `llama3` on the NIST AI RMF document (20 answerable questions).
+Measured locally with `nomic-embed-text`, `cross-encoder/ms-marco-MiniLM-L-6-v2`, and `llama3` on the NIST AI RMF document (20 answerable questions). See the [full report](evaluation/results/report.md) for per-question results and generated answers.
 
 | Strategy | Hit@1 | Hit@3 | Recall@5 | MRR@5 |
 |---|---|---|---|---|
 | `vector` | 0.950 | 0.950 | 0.925 | 0.950 |
-| `bm25` | 0.700 | 0.850 | 0.850 | 0.785 |
-| `hybrid_rrf` | 0.800 | 0.900 | 0.975 | 0.873 |
-| `hybrid_rrf_rerank` | 0.950 | 0.950 | 0.950 | 0.950 |
+| `bm25` | 0.750 | 0.900 | 0.900 | 0.825 |
+| `hybrid_rrf` | 0.850 | 0.900 | 0.975 | 0.900 |
+| `hybrid_rrf_rerank` | 1.000 | 1.000 | 0.975 | 1.000 |
 
-Answer generation with `hybrid_rrf_rerank` and the top 3 chunks: keyword recall 0.958, answer rate 0.950, abstention rate on unanswerable questions 1.000.
+Answer generation with `hybrid_rrf_rerank` and the top 3 chunks: keyword recall 0.950, answer rate 1.000, abstention rate on unanswerable questions 1.000.
 
 Observations:
 
-- RRF fusion widens coverage (the best Recall@5) but places weaker BM25 matches near the top; the cross-encoder restores top-rank precision.
-- On this single, well-structured document, vector search alone already performs strongly, so the hybrid pipeline matches it at the top ranks rather than surpassing it. A larger or more keyword-heavy corpus is needed to show the benefit of hybrid retrieval.
-- The one consistent miss (`q11`, "Which function is cross-cutting?") is a retrieval failure: the relevant GOVERN passage is not ranked in the top 5, and the model correctly answers that it does not know.
-- Reranking adds about 2 seconds per query on average on CPU in this setup (including the first model load).
+- RRF fusion widens coverage (the best Recall@5 among the first-stage strategies) but places weaker BM25 matches near the top; the cross-encoder restores top-rank precision.
+- The full pipeline is the only strategy that ranks a relevant chunk first for every question. Vector search alone misses `q11`, which depends on the exact term "cross-cutting".
+- Reranking adds roughly 0.7 seconds per query on CPU in this setup.
 
 The dataset is small and labelled by hand, so these numbers are a regression baseline for this project, not a general benchmark.
+
+### Fixing a retrieval miss with the evaluation
+
+The first evaluation run exposed one consistent miss: for `q11` ("Which AI RMF function is described as cross-cutting?") the GOVERN passage never reached the top 5, so the model answered that it did not know. Tracing each stage showed two causes:
+
+1. **BM25 tokenization.** Text was split on whitespace only, so the query token `cross-cutting?` never matched `cross-cutting` in the document, and function words such as "which", "is", and "as" dominated the scores. The tokenizer now extracts word tokens (keeping hyphenated terms) and drops common stopwords, which moved the passage from rank 18 to rank 6 in BM25.
+2. **Reranker.** `BAAI/bge-reranker-base` scored an unrelated "cross-sectoral profiles" chunk above the GOVERN passage. `cross-encoder/ms-marco-MiniLM-L-6-v2` ranks the GOVERN passage first.
+
+| Change | BM25 MRR | Hybrid RRF MRR | Full pipeline MRR | Rerank latency |
+|---|---|---|---|---|
+| Initial | 0.785 | 0.873 | 0.950 | ~2.2 s |
+| + BM25 tokenizer | 0.825 | 0.900 | 0.950 | ~2.0 s |
+| + MiniLM reranker | 0.825 | 0.900 | **1.000** | **~0.7 s** |
 
 ## Running the Tests
 

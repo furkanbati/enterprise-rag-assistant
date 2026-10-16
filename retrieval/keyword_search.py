@@ -1,7 +1,24 @@
+import re
+
 from rank_bm25 import BM25Okapi
 
 from models import ChunkMetadata, RetrievedChunk
 from vector_store import VectorStore
+
+# Words, optionally joined by hyphens, so "cross-cutting?" -> "cross-cutting".
+TOKEN_PATTERN = re.compile(r"\w+(?:-\w+)*")
+
+# Common English function words. They carry no topical signal but appear in
+# almost every question ("which", "is", "as"), so they skew BM25 scores toward
+# chunks that merely repeat them.
+STOPWORDS = frozenset(
+    """
+    a an and are as at be been being but by can could did do does for from
+    had has have how if in into is it its may might of on or should so than
+    that the their then there these they this those to was were what when
+    where which while who whom why will with would
+    """.split()
+)
 
 
 class KeywordSearch:
@@ -57,4 +74,8 @@ class KeywordSearch:
         ]
 
     def _tokenize(self, text: str) -> list[str]:
-        return text.lower().split()
+        return [
+            token
+            for token in TOKEN_PATTERN.findall(text.lower())
+            if token not in STOPWORDS
+        ]

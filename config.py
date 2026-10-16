@@ -1,5 +1,5 @@
 OLLAMA_HOST = "http://ollama:11434"
-RERANK_MODEL = "BAAI/bge-reranker-base"
+RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 EMBED_MODEL = "nomic-embed-text"
 CHAT_MODEL = "llama3"
 

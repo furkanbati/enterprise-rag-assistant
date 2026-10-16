@@ -1,0 +1,22 @@
+{"id": "q01", "question": "What are the four core functions of the NIST AI Risk Management Framework?", "relevant_pages": [6, 25], "expected_keywords": ["GOVERN", "MAP", "MEASURE", "MANAGE"]}
+{"id": "q02", "question": "How does the AI RMF define risk?", "relevant_pages": [9], "expected_keywords": ["probability", "magnitude", "consequences"]}
+{"id": "q03", "question": "What are the characteristics of trustworthy AI systems?", "relevant_pages": [6, 17], "expected_keywords": ["valid", "reliable", "safe", "secure", "resilient", "accountable", "transparent", "explainable", "interpretable", "privacy", "fair"]}
+{"id": "q04", "question": "How is validation defined in the context of AI systems?", "relevant_pages": [18], "expected_keywords": ["objective evidence", "intended use"]}
+{"id": "q05", "question": "What is the definition of reliability used by the framework?", "relevant_pages": [18], "expected_keywords": ["without failure", "time interval", "conditions"]}
+{"id": "q06", "question": "What are common security concerns for AI systems?", "relevant_pages": [20], "expected_keywords": ["adversarial examples", "data poisoning", "exfiltration"]}
+{"id": "q07", "question": "What is the difference between explainability and interpretability?", "relevant_pages": [21], "expected_keywords": ["mechanisms", "meaning"]}
+{"id": "q08", "question": "What are the three major categories of AI bias identified by NIST?", "relevant_pages": [22], "expected_keywords": ["systemic", "computational", "statistical", "human-cognitive"]}
+{"id": "q09", "question": "What does risk tolerance refer to?", "relevant_pages": [12], "expected_keywords": ["readiness", "bear the risk", "objectives"]}
+{"id": "q10", "question": "What should happen when an AI system presents unacceptable negative risk levels?", "relevant_pages": [12], "expected_keywords": ["cease", "safe manner"]}
+{"id": "q11", "question": "Which AI RMF function is described as cross-cutting?", "relevant_pages": [5, 26], "expected_keywords": ["GOVERN"]}
+{"id": "q12", "question": "What is the purpose of the MAP function?", "relevant_pages": [29], "expected_keywords": ["context", "risks"]}
+{"id": "q13", "question": "What does the MEASURE function do?", "relevant_pages": [33], "expected_keywords": ["quantitative", "qualitative", "monitor"]}
+{"id": "q14", "question": "What does the MANAGE function entail?", "relevant_pages": [36], "expected_keywords": ["allocating risk resources", "mapped", "measured"]}
+{"id": "q15", "question": "What is a Target Profile in the AI RMF?", "relevant_pages": [38], "expected_keywords": ["outcomes", "target", "goals"]}
+{"id": "q16", "question": "What does TEVV stand for and when are TEVV tasks performed?", "relevant_pages": [14, 40], "expected_keywords": ["test", "evaluation", "verification", "validation", "lifecycle"]}
+{"id": "q17", "question": "What versioning system will the AI RMF use to track changes?", "relevant_pages": [3], "expected_keywords": ["two-number", "major", "minor"]}
+{"id": "q18", "question": "How does the OECD define AI actors?", "relevant_pages": [6], "expected_keywords": ["active role", "lifecycle"]}
+{"id": "q19", "question": "How can pre-trained models increase AI-specific risks compared to traditional software?", "relevant_pages": [43], "expected_keywords": ["statistical uncertainty", "bias", "reproducibility"]}
+{"id": "q20", "question": "What causes inscrutability in AI systems and why does it matter for risk measurement?", "relevant_pages": [10], "expected_keywords": ["opaque", "transparency", "uncertainties"]}
+{"id": "q21", "question": "How much funding did NIST allocate to develop the AI RMF?", "answerable": false}
+{"id": "q22", "question": "Which programming language does NIST recommend for building machine learning models?", "answerable": false}

@@ -1,3 +1,4 @@
+
 services:
   api:
     build: .
@@ -6,18 +7,40 @@ services:
     ports:
       - "8000:8000"
 
+    environment:
+      HF_HOME: /root/.cache/huggingface
+
     volumes:
       - .:/app
       - ./data/chroma:/app/data/chroma
+      - huggingface_cache:/root/.cache/huggingface
 
     depends_on:
       - ollama
 
     restart: unless-stopped
 
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+
+    profiles:
+      - test
+
+    environment:
+      HF_HOME: /root/.cache/huggingface
+
+    volumes:
+      - .:/app
+      - ./data/chroma:/app/data/chroma
+      - huggingface_cache:/root/.cache/huggingface
+
+    depends_on:
+      - ollama
+
   ollama:
     image: ollama/ollama
-    container_name: ollama
 
     volumes:
       - ollama:/root/.ollama
@@ -26,3 +49,4 @@ services:
 
 volumes:
   ollama:
+  huggingface_cache:

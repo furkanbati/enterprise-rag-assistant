@@ -14,14 +14,20 @@ class KeywordSearch:
 
     def rebuild(self) -> None:
         documents, metadatas = self.vector_store.get_all_chunks()
+
+        self._documents = documents
+        self._metadatas = metadatas
+
+        if not documents:
+            self._bm25 = None
+            return
+
         tokenized_documents = [
             self._tokenize(document)
             for document in documents
         ]
 
         self._bm25 = BM25Okapi(tokenized_documents)
-        self._documents = documents
-        self._metadatas = metadatas
 
     def search(
         self,

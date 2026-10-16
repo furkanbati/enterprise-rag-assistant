@@ -1,3 +1,4 @@
+
 from sentence_transformers import CrossEncoder
 
 from models import RetrievedChunk
@@ -5,7 +6,8 @@ from models import RetrievedChunk
 
 class CrossEncoderReranker:
     def __init__(self, model_name: str):
-        self.model = CrossEncoder(model_name)
+        self.model_name = model_name
+        self.model: CrossEncoder | None = None
 
     def rerank(
         self,
@@ -16,6 +18,9 @@ class CrossEncoderReranker:
         if not chunks:
             return []
 
+        if self.model is None:
+            self.model = CrossEncoder(self.model_name)
+
         pairs = [
             (question, chunk.document)
             for chunk in chunks
@@ -24,7 +29,7 @@ class CrossEncoderReranker:
         scores = self.model.predict(
             pairs,
             batch_size=16,
-            )
+        )
 
         for chunk, score in zip(chunks, scores):
             chunk.rerank_score = float(score)

@@ -53,7 +53,7 @@ class SentenceChunker:
             if not text:
                 continue
 
-            sentences = self._split_sentences(section.text)
+            sentences = self._split_sentences(text)
 
             for chunk in self._split(sentences):
                 document = chunk

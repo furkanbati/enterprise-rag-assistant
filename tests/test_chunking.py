@@ -101,6 +101,15 @@ def test_chunk_never_exceeds_maximum_size_when_sentences_fit():
     assert " ".join(documents) == section.text
 
 
+def test_chunks_are_built_from_cleaned_text():
+    chunker = make_chunker(min_chunk_size=1000)
+    section = make_section("First  sentence\twith   gaps.\r\nSecond one.", heading="")
+
+    documents, _ = chunker.chunk([section], source="guide.pdf")
+
+    assert documents == ["First sentence with gaps. Second one."]
+
+
 def test_build_chunker_returns_sentence_chunker_without_using_embedder():
     embedder = Mock()
 

@@ -8,13 +8,13 @@ from retrieval.reranker import CrossEncoderReranker
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,
+    CHUNKING_STRATEGY,
     MAX_CHUNK_SIZE,
     COLLECTION_NAME,
     EMBED_MODEL,
     EMBED_PROVIDER,
     LLM_PROVIDER,
     MIN_CHUNK_SIZE,
-    SIMILARITY_THRESHOLD,
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
     FINAL_TOP_K
@@ -27,7 +27,7 @@ from pipeline import Pipeline
 from providers.factory import build_chat_client, build_embedder
 from retrieval.retriever import Retriever
 from vector_store import VectorStore, collection_name_for
-from chunking import SemanticChunker
+from chunking import build_chunker
 from retrieval.fusion import ReciprocalRankFusion
 
 logger = logging.getLogger(__name__)
@@ -45,6 +45,7 @@ vector_store = VectorStore(
         COLLECTION_NAME,
         EMBED_PROVIDER,
         EMBED_MODEL,
+        CHUNKING_STRATEGY,
     ),
     embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
 )
@@ -87,11 +88,11 @@ pipeline = Pipeline(
     generator=generator,
 )
 
-chunker = SemanticChunker(
+chunker = build_chunker(
+    strategy=CHUNKING_STRATEGY,
     embedder=embedder,
     max_chunk_size=MAX_CHUNK_SIZE,
     min_chunk_size=MIN_CHUNK_SIZE,
-    similarity_threshold=SIMILARITY_THRESHOLD,
 )
 
 ingestion = Ingestion(

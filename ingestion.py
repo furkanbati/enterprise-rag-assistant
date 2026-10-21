@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from chunking import SemanticChunker
+from chunking import Chunker
 from document_parser import DocumentParser
 from providers.base import Embedder
 from vector_store import VectorStore
@@ -16,7 +16,7 @@ class Ingestion:
         self,
         embedder: Embedder,
         vector_store: VectorStore,
-        chunker: SemanticChunker,
+        chunker: Chunker,
         keyword_search: KeywordSearch,
     ) -> None:
         self.embedder = embedder

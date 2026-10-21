@@ -1,22 +1,37 @@
 import re
-import math
+from typing import Protocol
 
 from providers.base import Embedder
 from models import ChunkMetadata, Section
 
+CHUNKING_STRATEGIES = ("sentence",)
 
-class SemanticChunker:
+
+class Chunker(Protocol):
+    """Splits parsed document sections into chunks with metadata."""
+
+    def chunk(
+        self,
+        sections: list[Section],
+        source: str,
+    ) -> tuple[list[str], list[ChunkMetadata]]: ...
+
+
+class SentenceChunker:
+    """Packs the whole sentences of each section into chunks of roughly
+    min_chunk_size to max_chunk_size characters.
+
+    Chunks never cross a section boundary, and each chunk is prefixed with
+    its section heading.
+    """
+
     def __init__(
         self,
-        embedder: Embedder,
         max_chunk_size: int,
         min_chunk_size: int,
-        similarity_threshold: float,
     ) -> None:
-        self.embedder = embedder
         self.max_chunk_size = max_chunk_size
         self.min_chunk_size = min_chunk_size
-        self.similarity_threshold = similarity_threshold
 
     def chunk(
         self,
@@ -40,14 +55,7 @@ class SemanticChunker:
 
             sentences = self._split_sentences(section.text)
 
-            similarities = self._calculate_similarities(sentences)
-
-            chunks = self._build_chunks(
-                sentences=sentences,
-                similarities=similarities,
-            )
-
-            for chunk in chunks:
+            for chunk in self._split(sentences):
                 document = chunk
                 if section.heading:
                     document = f"{section.heading}\n\n{chunk}"
@@ -66,6 +74,43 @@ class SemanticChunker:
                 chunk_id += 1
 
         return documents, metadatas
+
+    def _split(self, sentences: list[str]) -> list[str]:
+        """
+        Pack consecutive sentences into chunks.
+
+        A new chunk is started when:
+        - the current chunk has reached the minimum chunk size
+        - the maximum chunk size would be exceeded
+        """
+
+        if not sentences:
+            return []
+
+        chunks: list[str] = []
+
+        current_chunk = [sentences[0]]
+        current_length = len(sentences[0])
+
+        for sentence in sentences[1:]:
+            should_split = (
+                current_length >= self.min_chunk_size
+                or current_length + len(sentence) > self.max_chunk_size
+            )
+
+            if should_split:
+                chunks.append(" ".join(current_chunk))
+
+                current_chunk = [sentence]
+                current_length = len(sentence)
+
+            else:
+                current_chunk.append(sentence)
+                current_length += len(sentence)
+
+        chunks.append(" ".join(current_chunk))
+
+        return chunks
 
     def _clean_text(self, text: str) -> str:
         """
@@ -93,96 +138,20 @@ class SemanticChunker:
 
         return [s.strip() for s in sentences if s.strip()]
 
-    def _build_chunks(
-        self,
-        sentences: list[str],
-        similarities: list[float],
-    ) -> list[str]:
-        """
-        Build semantic chunks using sentence similarity.
 
-        A new chunk is started when:
-        - similarity drops below the configured threshold
-        - maximum chunk size would be exceeded
-        """
+def build_chunker(
+    strategy: str,
+    embedder: Embedder,
+    max_chunk_size: int,
+    min_chunk_size: int,
+) -> Chunker:
+    if strategy == "sentence":
+        return SentenceChunker(
+            max_chunk_size=max_chunk_size,
+            min_chunk_size=min_chunk_size,
+        )
 
-        if not sentences:
-            return []
-
-        chunks: list[str] = []
-
-        current_chunk = [sentences[0]]
-        current_length = len(sentences[0])
-
-        for i in range(1, len(sentences)):
-            sentence = sentences[i]
-            similarity = similarities[i - 1]
-
-            should_split = (
-                similarity < self.similarity_threshold
-                and current_length >= self.min_chunk_size
-            ) or (
-                current_length + len(sentence) > self.max_chunk_size
-            )
-
-            if should_split:
-                chunks.append(" ".join(current_chunk))
-
-                current_chunk = [sentence]
-                current_length = len(sentence)
-
-            else:
-                current_chunk.append(sentence)
-                current_length += len(sentence)
-
-        if current_chunk:
-            chunks.append(" ".join(current_chunk))
-
-        return chunks
-
-
-
-    def _calculate_similarities(
-        self,
-        sentences: list[str],
-    ) -> list[float]:
-        """
-        Calculate cosine similarity between consecutive sentence embeddings.
-        """
-
-        if len(sentences) < 2:
-            return []
-
-        embeddings = self.embedder.embed_batch(sentences)
-
-        similarities: list[float] = []
-
-        for i in range(len(embeddings) - 1):
-            similarities.append(
-                self._cosine_similarity(
-                    embeddings[i],
-                    embeddings[i + 1],
-                )
-            )
-
-        return similarities
-
-
-    def _cosine_similarity(
-        self,
-        vector1: list[float],
-        vector2: list[float],
-    ) -> float:
-        """
-        Compute cosine similarity between two vectors.
-        """
-
-        dot_product = sum(a * b for a, b in zip(vector1, vector2))
-
-        magnitude1 = math.sqrt(sum(a * a for a in vector1))
-        magnitude2 = math.sqrt(sum(b * b for b in vector2))
-
-        if magnitude1 == 0 or magnitude2 == 0:
-            return 0.0
-
-        return dot_product / (magnitude1 * magnitude2)
+    choices = " or ".join(f"'{name}'" for name in CHUNKING_STRATEGIES)
+    raise ValueError(
+        f"Unknown chunking strategy '{strategy}'. Use {choices}."
+    )

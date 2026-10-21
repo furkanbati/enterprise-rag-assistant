@@ -15,6 +15,7 @@ from pathlib import Path
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,
+    CHUNKING_STRATEGY,
     COLLECTION_NAME,
     EMBED_MODEL,
     EMBED_PROVIDER,
@@ -85,6 +86,7 @@ def main() -> None:
             COLLECTION_NAME,
             EMBED_PROVIDER,
             EMBED_MODEL,
+            CHUNKING_STRATEGY,
         ),
         embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
     )
@@ -150,6 +152,7 @@ def main() -> None:
         "Date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "Dataset": args.dataset.name,
         "Embedding model": f"{EMBED_PROVIDER}/{EMBED_MODEL}",
+        "Chunking": CHUNKING_STRATEGY,
         "Reranker": args.rerank_model,
         "Chat model": (
             f"{LLM_PROVIDER}/{CHAT_MODEL}" if args.generate else "not evaluated"

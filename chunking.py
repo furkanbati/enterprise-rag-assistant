@@ -278,7 +278,8 @@ class SemanticChunker(SentenceChunker):
             and _length(merged[-1]) < self.min_chunk_size
             and _length(merged[-2] + merged[-1]) <= self.max_chunk_size
         ):
-            merged[-2] = merged[-2] + merged.pop()
+            last = merged.pop()
+            merged[-1] = merged[-1] + last
 
         return merged
 

@@ -228,6 +228,22 @@ def test_semantic_chunker_merges_segments_below_minimum_size():
     assert documents == [CATS_THEN_DOGS]
 
 
+def test_short_last_segment_joins_the_previous_one():
+    chunker = make_semantic_chunker(min_chunk_size=10)
+
+    merged = chunker._merge_small_segments([["a" * 30], ["b" * 5]])
+
+    assert merged == [["a" * 30, "b" * 5]]
+
+
+def test_short_last_segment_joins_its_own_neighbour():
+    chunker = make_semantic_chunker(min_chunk_size=10)
+
+    merged = chunker._merge_small_segments([["x" * 30], ["y" * 30], ["z" * 5]])
+
+    assert merged == [["x" * 30], ["y" * 30, "z" * 5]]
+
+
 def test_semantic_chunker_splits_large_segments_into_balanced_parts():
     chunker = make_semantic_chunker(max_chunk_size=40)
     text = "Cats purr. Cats nap. Cats hunt. Cats sleep. Cats eat. Cats play."

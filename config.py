@@ -11,10 +11,22 @@ def _env_float(name: str, default: float) -> float:
     return float(value) if value else default
 
 
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
+EMBED_PROVIDER = os.getenv("EMBED_PROVIDER", "ollama")
+
+_DEFAULT_CHAT_MODELS = {"ollama": "llama3", "openai": "gpt-6-luna"}
+_DEFAULT_EMBED_MODELS = {"ollama": "nomic-embed-text", "openai": "text-embedding-3-small"}
+
+CHAT_MODEL = os.getenv("CHAT_MODEL") or _DEFAULT_CHAT_MODELS.get(LLM_PROVIDER, "")
+EMBED_MODEL = os.getenv("EMBED_MODEL") or _DEFAULT_EMBED_MODELS.get(EMBED_PROVIDER, "")
+
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL") or None
+OPENAI_REASONING_EFFORT = os.getenv("OPENAI_REASONING_EFFORT", "low") or None
+
 RERANK_MODEL = os.getenv("RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
-EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
-CHAT_MODEL = os.getenv("CHAT_MODEL", "llama3")
 
 CHROMA_PATH = os.getenv("CHROMA_PATH", "./data/chroma")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "documents")

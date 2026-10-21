@@ -1,7 +1,7 @@
 import re
 import math
 
-from embedder import Embedder
+from providers.base import Embedder
 from models import ChunkMetadata, Section
 
 

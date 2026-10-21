@@ -22,7 +22,6 @@ from config import (
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
 )
-from embedder import Embedder
 from evaluation.dataset import load_dataset
 from evaluation.evaluator import Evaluator
 from evaluation.report import write_reports
@@ -33,6 +32,7 @@ from evaluation.strategies import (
     VectorOnlyStrategy,
 )
 from generator import Generator
+from providers.ollama import OllamaChatClient, OllamaEmbedder
 from retrieval.fusion import ReciprocalRankFusion
 from retrieval.keyword_search import KeywordSearch
 from retrieval.reranker import CrossEncoderReranker
@@ -88,7 +88,7 @@ def main() -> None:
             "through POST /upload before running the evaluation."
         )
 
-    embedder = Embedder(model=EMBED_MODEL, host=OLLAMA_HOST)
+    embedder = OllamaEmbedder(model=EMBED_MODEL, host=OLLAMA_HOST)
     vector_search = VectorSearch(vector_store)
     keyword_search = KeywordSearch(vector_store)
     keyword_search.rebuild()
@@ -117,7 +117,9 @@ def main() -> None:
         strategies=strategies,
         ks=args.ks,
         generator=(
-            Generator(model=CHAT_MODEL, host=OLLAMA_HOST)
+            Generator(
+                client=OllamaChatClient(model=CHAT_MODEL, host=OLLAMA_HOST)
+            )
             if args.generate
             else None
         ),

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from chunking import SemanticChunker
 from document_parser import DocumentParser
-from embedder import Embedder
+from providers.base import Embedder
 from vector_store import VectorStore
 from retrieval.keyword_search import KeywordSearch
 logger = logging.getLogger(__name__)

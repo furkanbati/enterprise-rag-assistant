@@ -20,10 +20,10 @@ from config import (
 )
 from retrieval.vector_search import VectorSearch
 from retrieval.keyword_search import KeywordSearch
-from embedder import Embedder
 from generator import Generator
 from ingestion import Ingestion
 from pipeline import Pipeline
+from providers.ollama import OllamaChatClient, OllamaEmbedder
 from retrieval.retriever import Retriever
 from vector_store import VectorStore
 from chunking import SemanticChunker
@@ -43,7 +43,7 @@ vector_store = VectorStore(
     collection_name=COLLECTION_NAME,
 )
 
-embedder = Embedder(
+embedder = OllamaEmbedder(
     model=EMBED_MODEL,
     host=OLLAMA_HOST,
 )
@@ -69,8 +69,10 @@ retriever = Retriever(
 )
 
 generator = Generator(
-    model=CHAT_MODEL,
-    host=OLLAMA_HOST,
+    client=OllamaChatClient(
+        model=CHAT_MODEL,
+        host=OLLAMA_HOST,
+    ),
 )
 
 pipeline = Pipeline(

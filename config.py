@@ -31,6 +31,10 @@ RETRIEVAL_TOP_K = _env_int("RETRIEVAL_TOP_K", max(FINAL_TOP_K * 4, 10))
 
 CHUNKING_STRATEGY = os.getenv("CHUNKING_STRATEGY", "sentence")
 
+# Used by the semantic strategy only.
+SEMANTIC_PERCENTILE = _env_int("SEMANTIC_PERCENTILE", 90)
+SEMANTIC_WINDOW = _env_int("SEMANTIC_WINDOW", 1)
+
 MAX_CHUNK_SIZE = _env_int("MAX_CHUNK_SIZE", 1000)
 
 MIN_CHUNK_SIZE = _env_int("MIN_CHUNK_SIZE", 300)

@@ -1,10 +1,11 @@
+import math
 import re
 from typing import Protocol
 
 from providers.base import Embedder
 from models import ChunkMetadata, Section
 
-CHUNKING_STRATEGIES = ("sentence",)
+CHUNKING_STRATEGIES = ("sentence", "semantic")
 
 
 class Chunker(Protocol):
@@ -42,20 +43,25 @@ class SentenceChunker:
         Main entry point for document chunking.
         """
 
+        prepared: list[tuple[Section, list[str]]] = []
+
+        for section in sections:
+            text = self._clean_text(section.text)
+
+            if text:
+                prepared.append((section, self._split_sentences(text)))
+
+        section_chunks = self._split_document(
+            [sentences for _, sentences in prepared]
+        )
+
         documents: list[str] = []
         metadatas: list[ChunkMetadata] = []
 
         chunk_id = 0
 
-        for section in sections:
-            text = self._clean_text(section.text)
-
-            if not text:
-                continue
-
-            sentences = self._split_sentences(text)
-
-            for chunk in self._split(sentences):
+        for (section, _), chunks in zip(prepared, section_chunks):
+            for chunk in chunks:
                 document = chunk
                 if section.heading:
                     document = f"{section.heading}\n\n{chunk}"
@@ -74,6 +80,14 @@ class SentenceChunker:
                 chunk_id += 1
 
         return documents, metadatas
+
+    def _split_document(
+        self,
+        sections: list[list[str]],
+    ) -> list[list[str]]:
+        """Split the sentences of every section of one document into chunks."""
+
+        return [self._split(sentences) for sentences in sections]
 
     def _split(self, sentences: list[str]) -> list[str]:
         """
@@ -139,11 +153,177 @@ class SentenceChunker:
         return [s.strip() for s in sentences if s.strip()]
 
 
+class SemanticChunker(SentenceChunker):
+    """Splits sections where the topic shifts.
+
+    Each sentence is embedded together with its neighbours (``window``
+    sentences on each side), and the distance between consecutive windows
+    measures how much the topic changes at each sentence boundary. A
+    boundary becomes a breakpoint when its distance is above the given
+    percentile of all boundary distances in the document, so the threshold
+    adapts to the document and the embedding model instead of being a fixed
+    similarity value.
+
+    Segments shorter than min_chunk_size are merged with the next segment,
+    and segments longer than max_chunk_size are split into balanced parts at
+    sentence boundaries.
+    """
+
+    def __init__(
+        self,
+        embedder: Embedder,
+        max_chunk_size: int,
+        min_chunk_size: int,
+        breakpoint_percentile: int,
+        window: int,
+    ) -> None:
+        super().__init__(
+            max_chunk_size=max_chunk_size,
+            min_chunk_size=min_chunk_size,
+        )
+
+        if not 0 < breakpoint_percentile < 100:
+            raise ValueError("breakpoint_percentile must be between 0 and 100.")
+
+        if window < 0:
+            raise ValueError("window must not be negative.")
+
+        self.embedder = embedder
+        self.breakpoint_percentile = breakpoint_percentile
+        self.window = window
+
+    def _split_document(
+        self,
+        sections: list[list[str]],
+    ) -> list[list[str]]:
+        distances = [self._distances(sentences) for sentences in sections]
+        all_distances = [
+            distance
+            for section_distances in distances
+            for distance in section_distances
+        ]
+
+        threshold = (
+            _percentile(all_distances, self.breakpoint_percentile)
+            if all_distances
+            else math.inf
+        )
+
+        return [
+            self._split_at_breakpoints(sentences, section_distances, threshold)
+            for sentences, section_distances in zip(sections, distances)
+        ]
+
+    def _distances(self, sentences: list[str]) -> list[float]:
+        """Distance between the windows around each pair of consecutive
+        sentences."""
+
+        if len(sentences) < 2:
+            return []
+
+        windows = [
+            " ".join(sentences[max(0, i - self.window):i + self.window + 1])
+            for i in range(len(sentences))
+        ]
+        embeddings = self.embedder.embed_batch(windows)
+
+        return [
+            1 - _cosine_similarity(current, following)
+            for current, following in zip(embeddings, embeddings[1:])
+        ]
+
+    def _split_at_breakpoints(
+        self,
+        sentences: list[str],
+        distances: list[float],
+        threshold: float,
+    ) -> list[str]:
+        if not sentences:
+            return []
+
+        segments = [[sentences[0]]]
+
+        for sentence, distance in zip(sentences[1:], distances):
+            if distance > threshold:
+                segments.append([sentence])
+            else:
+                segments[-1].append(sentence)
+
+        chunks: list[str] = []
+
+        for segment in self._merge_small_segments(segments):
+            chunks.extend(self._split_large_segment(segment))
+
+        return chunks
+
+    def _merge_small_segments(
+        self,
+        segments: list[list[str]],
+    ) -> list[list[str]]:
+        merged: list[list[str]] = []
+
+        for segment in segments:
+            if (
+                merged
+                and _length(merged[-1]) < self.min_chunk_size
+                and _length(merged[-1] + segment) <= self.max_chunk_size
+            ):
+                merged[-1] = merged[-1] + segment
+            else:
+                merged.append(segment)
+
+        # A short last segment has no next segment, so it joins the previous one.
+        if (
+            len(merged) > 1
+            and _length(merged[-1]) < self.min_chunk_size
+            and _length(merged[-2] + merged[-1]) <= self.max_chunk_size
+        ):
+            merged[-2] = merged[-2] + merged.pop()
+
+        return merged
+
+    def _split_large_segment(self, segment: list[str]) -> list[str]:
+        """Split a segment into parts of similar length, each at most
+        max_chunk_size characters unless a single sentence is longer."""
+
+        total = _length(segment)
+        parts = math.ceil(total / self.max_chunk_size)
+        target = total / parts
+
+        chunks: list[str] = []
+        current: list[str] = []
+
+        for sentence in segment:
+            if current and (
+                _length(current + [sentence]) > self.max_chunk_size
+                or _length(current) >= target
+            ):
+                chunks.append(" ".join(current))
+                current = []
+
+            current.append(sentence)
+
+        chunks.append(" ".join(current))
+
+        return chunks
+
+
+def chunking_id(strategy: str, breakpoint_percentile: int, window: int) -> str:
+    """Name a chunking configuration, for example in collection names."""
+
+    if strategy == "semantic":
+        return f"semantic-p{breakpoint_percentile}-w{window}"
+
+    return strategy
+
+
 def build_chunker(
     strategy: str,
     embedder: Embedder,
     max_chunk_size: int,
     min_chunk_size: int,
+    breakpoint_percentile: int = 90,
+    window: int = 1,
 ) -> Chunker:
     if strategy == "sentence":
         return SentenceChunker(
@@ -151,7 +331,45 @@ def build_chunker(
             min_chunk_size=min_chunk_size,
         )
 
+    if strategy == "semantic":
+        return SemanticChunker(
+            embedder=embedder,
+            max_chunk_size=max_chunk_size,
+            min_chunk_size=min_chunk_size,
+            breakpoint_percentile=breakpoint_percentile,
+            window=window,
+        )
+
     choices = " or ".join(f"'{name}'" for name in CHUNKING_STRATEGIES)
     raise ValueError(
         f"Unknown chunking strategy '{strategy}'. Use {choices}."
     )
+
+
+def _length(sentences: list[str]) -> int:
+    """Length of the sentences joined into one chunk."""
+
+    return len(" ".join(sentences))
+
+
+def _percentile(values: list[float], percentile: float) -> float:
+    """Percentile with linear interpolation between the closest ranks."""
+
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * percentile / 100
+    lower = math.floor(position)
+    upper = math.ceil(position)
+
+    return ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
+
+
+def _cosine_similarity(vector1: list[float], vector2: list[float]) -> float:
+    dot_product = sum(a * b for a, b in zip(vector1, vector2))
+
+    magnitude1 = math.sqrt(sum(a * a for a in vector1))
+    magnitude2 = math.sqrt(sum(b * b for b in vector2))
+
+    if magnitude1 == 0 or magnitude2 == 0:
+        return 0.0
+
+    return dot_product / (magnitude1 * magnitude2)

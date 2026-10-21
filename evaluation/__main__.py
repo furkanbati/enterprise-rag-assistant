@@ -23,7 +23,10 @@ from config import (
     LLM_PROVIDER,
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
+    SEMANTIC_PERCENTILE,
+    SEMANTIC_WINDOW,
 )
+from chunking import chunking_id
 from evaluation import metrics
 from evaluation.dataset import load_dataset
 from evaluation.evaluator import Evaluator
@@ -80,13 +83,15 @@ def main() -> None:
 
     samples = load_dataset(args.dataset)
 
+    chunking = chunking_id(CHUNKING_STRATEGY, SEMANTIC_PERCENTILE, SEMANTIC_WINDOW)
+
     vector_store = VectorStore(
         path=CHROMA_PATH,
         collection_name=collection_name_for(
             COLLECTION_NAME,
             EMBED_PROVIDER,
             EMBED_MODEL,
-            CHUNKING_STRATEGY,
+            chunking,
         ),
         embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
     )
@@ -152,7 +157,7 @@ def main() -> None:
         "Date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "Dataset": args.dataset.name,
         "Embedding model": f"{EMBED_PROVIDER}/{EMBED_MODEL}",
-        "Chunking": CHUNKING_STRATEGY,
+        "Chunking": chunking,
         "Reranker": args.rerank_model,
         "Chat model": (
             f"{LLM_PROVIDER}/{CHAT_MODEL}" if args.generate else "not evaluated"

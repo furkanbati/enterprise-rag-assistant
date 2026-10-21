@@ -23,6 +23,7 @@ from config import (
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
 )
+from evaluation import metrics
 from evaluation.dataset import load_dataset
 from evaluation.evaluator import Evaluator
 from evaluation.report import write_reports
@@ -90,7 +91,7 @@ def main() -> None:
 
     if vector_store.collection.count() == 0:
         raise SystemExit(
-            "The vector store is empty. Upload the evaluation document "
+            "The vector store is empty. Upload the documents of the dataset "
             "through POST /upload before running the evaluation."
         )
 
@@ -134,6 +135,16 @@ def main() -> None:
     )
 
     report = evaluator.evaluate(samples)
+
+    documents, _ = vector_store.get_all_chunks()
+    report.missing_evidence = metrics.missing_evidence(samples, documents)
+
+    if report.missing_evidence:
+        logging.getLogger("evaluation").warning(
+            "%d evidence sentences were not found in the index; "
+            "see the Missing Evidence section of the report.",
+            len(report.missing_evidence),
+        )
 
     metadata = {
         "Date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),

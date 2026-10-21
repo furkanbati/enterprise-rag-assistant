@@ -70,6 +70,9 @@ def render_markdown(report: EvaluationReport, metadata: dict) -> str:
             )
         )
 
+    if _has_evidence(report):
+        lines += _render_evidence(report)
+
     if report.generation is not None:
         generation = report.generation
         lines += [
@@ -142,6 +145,88 @@ def render_markdown(report: EvaluationReport, metadata: dict) -> str:
             ]
 
     return "\n".join(lines).rstrip() + "\n"
+
+
+def _has_evidence(report: EvaluationReport) -> bool:
+    return any(
+        value is not None
+        for summary in report.strategies
+        for value in summary.evidence_recall.values()
+    ) or bool(report.missing_evidence)
+
+
+def _render_evidence(report: EvaluationReport) -> list[str]:
+    max_k = max(report.ks)
+    lines = [
+        "",
+        "## Evidence Coverage",
+        "",
+        "Share of the labelled evidence sentences found in the top-k chunks. "
+        "Unlike the page-level metrics above, this changes with chunking. "
+        "Context chars is the text the top-k chunks send to the model; "
+        "larger chunks raise recall by sending more.",
+        "",
+    ]
+
+    lines += _table_header(
+        ["Strategy"]
+        + [f"Evidence@{k}" for k in report.ks]
+        + [f"Context chars@{k}" for k in report.ks]
+    )
+
+    for summary in report.strategies:
+        lines.append(
+            _table_row(
+                [f"`{summary.strategy}`"]
+                + [_fmt(summary.evidence_recall[k]) for k in report.ks]
+                + [f"{summary.mean_context_chars[k]:.0f}" for k in report.ks]
+            )
+        )
+
+    results = [
+        result
+        for result in report.retrieval_results
+        if result.evidence_recall[max_k] is not None
+    ]
+    sources = list(dict.fromkeys(result.source or "-" for result in results))
+
+    if sources:
+        lines += [
+            "",
+            f"### Evidence@{max_k} by Source",
+            "",
+        ]
+        lines += _table_header(["Strategy"] + sources)
+
+        for summary in report.strategies:
+            cells = []
+
+            for source in sources:
+                values = [
+                    result.evidence_recall[max_k]
+                    for result in results
+                    if result.strategy == summary.strategy
+                    and (result.source or "-") == source
+                ]
+                cells.append(_fmt(sum(values) / len(values)))
+
+            lines.append(_table_row([f"`{summary.strategy}`"] + cells))
+
+    if report.missing_evidence:
+        lines += [
+            "",
+            "## Missing Evidence",
+            "",
+            "These evidence sentences were not found in any indexed chunk, "
+            "which points to a labelling or parsing problem.",
+            "",
+            *[
+                f"- `{sample_id}`: {' '.join(sentence.split())}"
+                for sample_id, sentence in report.missing_evidence
+            ],
+        ]
+
+    return lines
 
 
 def _table_header(columns: list[str]) -> list[str]:

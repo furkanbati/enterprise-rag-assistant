@@ -81,6 +81,67 @@ def reciprocal_rank(
     return 0.0
 
 
+def evidence_recall_at_k(
+    chunks: list[RetrievedChunk],
+    sample: EvalSample,
+    k: int,
+) -> float | None:
+    """Fraction of the evidence sentences found in the top-k chunks.
+
+    Evidence that a chunker splits across several chunks only counts in full
+    when every chunk holding part of it is retrieved. Returns None when the
+    sample has no evidence labels.
+    """
+
+    if not sample.evidence:
+        return None
+
+    texts = [
+        _normalize(chunk.document)
+        for chunk in chunks[:k]
+        if sample.source is None or chunk.metadata.source == sample.source
+    ]
+
+    found = sum(
+        any(_normalize(sentence) in text for text in texts)
+        for sentence in sample.evidence
+    )
+
+    return found / len(sample.evidence)
+
+
+def context_chars_at_k(
+    chunks: list[RetrievedChunk],
+    k: int,
+) -> int:
+    """Characters passed to the model by the top-k chunks.
+
+    Reported next to evidence recall, because larger chunks raise recall
+    simply by sending more text.
+    """
+
+    return sum(len(chunk.document) for chunk in chunks[:k])
+
+
+def missing_evidence(
+    samples: list[EvalSample],
+    documents: list[str],
+) -> list[tuple[str, str]]:
+    """Evidence sentences that appear in none of the indexed chunks.
+
+    These point to a labelling or parsing problem rather than to retrieval.
+    """
+
+    texts = [_normalize(document) for document in documents]
+
+    return [
+        (sample.id, sentence)
+        for sample in samples
+        for sentence in sample.evidence
+        if not any(_normalize(sentence) in text for text in texts)
+    ]
+
+
 def keyword_recall(answer: str, keywords: list[str]) -> float:
     """Fraction of expected keywords that appear in the answer."""
 

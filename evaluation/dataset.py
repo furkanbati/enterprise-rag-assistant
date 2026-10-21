@@ -10,6 +10,10 @@ class EvalSample:
     Relevance is labelled at page level: a retrieved chunk is relevant when
     its page metadata matches one of ``relevant_pages``. Pages refer to the
     page metadata assigned during ingestion (the page where a section starts).
+
+    ``evidence`` optionally lists sentences, copied verbatim from the parsed
+    document, that contain the answer. Unlike pages, evidence is sensitive to
+    how a document is chunked.
     """
 
     id: str
@@ -18,6 +22,7 @@ class EvalSample:
     expected_keywords: list[str] = field(default_factory=list)
     source: str | None = None
     answerable: bool = True
+    evidence: list[str] = field(default_factory=list)
 
 
 def load_dataset(path: str | Path) -> list[EvalSample]:

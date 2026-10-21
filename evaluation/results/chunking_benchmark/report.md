@@ -1,8 +1,9 @@
 # RAG Evaluation Report
 
-- **Date:** 2026-10-21 19:36 UTC
+- **Date:** 2026-10-21 20:11 UTC
 - **Dataset:** chunking_benchmark.jsonl
 - **Embedding model:** ollama/nomic-embed-text
+- **Chunking:** sentence
 - **Reranker:** cross-encoder/ms-marco-MiniLM-L-6-v2
 - **Chat model:** not evaluated
 - **Candidates per retriever:** 12
@@ -14,10 +15,10 @@ Relevance is judged at page level against the labelled dataset. Unanswerable que
 
 | Strategy | Hit@1 | Hit@3 | Hit@5 | Recall@1 | Recall@3 | Recall@5 | MRR@5 | Latency (ms) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `vector` | 0.875 | 0.958 | 0.958 | 0.781 | 0.917 | 0.917 | 0.913 | 8 |
-| `bm25` | 0.833 | 0.938 | 0.938 | 0.740 | 0.865 | 0.885 | 0.882 | 1 |
-| `hybrid_rrf` | 0.896 | 0.938 | 0.979 | 0.792 | 0.875 | 0.927 | 0.924 | 10 |
-| `hybrid_rrf_rerank` | 0.958 | 0.979 | 1.000 | 0.833 | 0.927 | 0.958 | 0.970 | 554 |
+| `vector` | 0.875 | 0.958 | 0.958 | 0.781 | 0.906 | 0.917 | 0.913 | 8 |
+| `bm25` | 0.854 | 0.938 | 0.938 | 0.750 | 0.854 | 0.885 | 0.896 | 1 |
+| `hybrid_rrf` | 0.896 | 0.958 | 0.979 | 0.792 | 0.885 | 0.927 | 0.925 | 9 |
+| `hybrid_rrf_rerank` | 0.958 | 0.979 | 1.000 | 0.833 | 0.927 | 0.958 | 0.970 | 461 |
 
 ## Evidence Coverage
 
@@ -25,10 +26,10 @@ Share of the labelled evidence sentences found in the top-k chunks. Unlike the p
 
 | Strategy | Evidence@1 | Evidence@3 | Evidence@5 | Context chars@1 | Context chars@3 | Context chars@5 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `vector` | 0.549 | 0.810 | 0.851 | 381 | 1200 | 2001 |
-| `bm25` | 0.556 | 0.768 | 0.778 | 399 | 1216 | 2023 |
-| `hybrid_rrf` | 0.626 | 0.825 | 0.872 | 400 | 1228 | 1999 |
-| `hybrid_rrf_rerank` | 0.680 | 0.878 | 0.896 | 410 | 1267 | 2084 |
+| `vector` | 0.549 | 0.789 | 0.851 | 377 | 1193 | 1988 |
+| `bm25` | 0.556 | 0.747 | 0.778 | 391 | 1202 | 2006 |
+| `hybrid_rrf` | 0.626 | 0.825 | 0.872 | 391 | 1205 | 1974 |
+| `hybrid_rrf_rerank` | 0.680 | 0.878 | 0.896 | 401 | 1247 | 2066 |
 
 ### Evidence@5 by Source
 
@@ -44,7 +45,7 @@ Share of the labelled evidence sentences found in the top-k chunks. Unlike the p
 | Question | vector | bm25 | hybrid_rrf | hybrid_rrf_rerank |
 | --- | --- | --- | --- | --- |
 | q01 | 1.000 | 1.000 | 1.000 | 1.000 |
-| q02 | 1.000 | 0.000 | 0.250 | 1.000 |
+| q02 | 1.000 | 0.000 | 0.333 | 1.000 |
 | q03 | 1.000 | 1.000 | 1.000 | 1.000 |
 | q04 | 1.000 | 0.000 | 1.000 | 1.000 |
 | q05 | 1.000 | 1.000 | 1.000 | 1.000 |
@@ -64,7 +65,7 @@ Share of the labelled evidence sentences found in the top-k chunks. Unlike the p
 | q19 | 1.000 | 1.000 | 1.000 | 1.000 |
 | q20 | 1.000 | 1.000 | 1.000 | 1.000 |
 | c01 | 0.333 | 0.500 | 0.333 | 0.333 |
-| c02 | 1.000 | 0.333 | 1.000 | 1.000 |
+| c02 | 1.000 | 1.000 | 1.000 | 1.000 |
 | c03 | 1.000 | 1.000 | 1.000 | 1.000 |
 | c04 | 0.500 | 1.000 | 0.500 | 1.000 |
 | c05 | 1.000 | 1.000 | 1.000 | 1.000 |

@@ -1,4 +1,5 @@
 import logging
+import re
 from dataclasses import asdict
 from uuid import uuid4
 
@@ -9,6 +10,15 @@ from models import ChunkMetadata, RetrievedChunk
 logger = logging.getLogger(__name__)
 
 
+def collection_name_for(base: str, provider: str, model: str) -> str:
+    """Name a collection after its embedding model, so vectors from
+    different models never end up in the same collection."""
+
+    suffix = re.sub(r"[^a-zA-Z0-9._-]+", "-", f"{provider}__{model}")
+
+    return f"{base}__{suffix.strip('-.')}"
+
+
 class VectorStore:
     """Stores and retrieves document embeddings using ChromaDB."""
 
@@ -16,12 +26,30 @@ class VectorStore:
         self,
         path: str = "./data/chroma",
         collection_name: str = "documents",
+        embedding_model: str | None = None,
     ) -> None:
         self.client = chromadb.PersistentClient(path=path)
 
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
+            metadata=(
+                {"embedding_model": embedding_model}
+                if embedding_model
+                else None
+            ),
         )
+
+        # Chroma keeps the metadata of an existing collection, so a
+        # collection filled by another embedding model has to be caught here.
+        stored_model = (self.collection.metadata or {}).get("embedding_model")
+
+        if embedding_model and stored_model and stored_model != embedding_model:
+            raise ValueError(
+                f"Collection '{collection_name}' holds embeddings from "
+                f"'{stored_model}', but the configured embedding model is "
+                f"'{embedding_model}'. Upload the documents again or change "
+                "the embedding settings."
+            )
 
     def add(
         self,

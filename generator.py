@@ -1,14 +1,13 @@
 import logging
 
-from ollama import Client
-
 from models import RetrievedChunk
+from providers.base import ChatClient
 
 logger = logging.getLogger(__name__)
 
 
 class Generator:
-    """Generates answers from retrieved document chunks using an Ollama chat model."""
+    """Generates answers from retrieved document chunks using a chat model."""
 
     SYSTEM_PROMPT = """
 You are a helpful AI assistant.
@@ -22,11 +21,9 @@ Be concise and accurate.
 
     def __init__(
         self,
-        model: str,
-        host: str = "http://localhost:11434",
+        client: ChatClient,
     ) -> None:
-        self.client = Client(host=host)
-        self.model = model
+        self.client = client
 
     def generate(
         self,
@@ -39,21 +36,10 @@ Be concise and accurate.
             chunks=chunks,
         )
 
-        response = self.client.chat(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": self.SYSTEM_PROMPT,
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
-            ],
+        return self.client.complete(
+            system=self.SYSTEM_PROMPT,
+            user=prompt,
         )
-
-        return response.message.content
 
     def _build_prompt(
         self,

@@ -1,4 +1,4 @@
-from embedder import Embedder
+from providers.base import Embedder
 from retrieval.retriever import Retriever
 from generator import Generator
 from models import PipelineResult

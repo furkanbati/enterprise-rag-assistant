@@ -3,11 +3,11 @@ import time
 from dataclasses import dataclass, field
 from statistics import mean
 
-from embedder import Embedder
 from evaluation import metrics
 from evaluation.dataset import EvalSample
 from evaluation.strategies import RetrievalStrategy
 from generator import Generator
+from providers.base import Embedder
 
 logger = logging.getLogger(__name__)
 

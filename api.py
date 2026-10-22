@@ -11,7 +11,8 @@ from config import (
     MAX_CHUNK_SIZE,
     COLLECTION_NAME,
     EMBED_MODEL,
-    OLLAMA_HOST,
+    EMBED_PROVIDER,
+    LLM_PROVIDER,
     MIN_CHUNK_SIZE,
     SIMILARITY_THRESHOLD,
     RERANK_MODEL,
@@ -20,12 +21,12 @@ from config import (
 )
 from retrieval.vector_search import VectorSearch
 from retrieval.keyword_search import KeywordSearch
-from embedder import Embedder
 from generator import Generator
 from ingestion import Ingestion
 from pipeline import Pipeline
+from providers.factory import build_chat_client, build_embedder
 from retrieval.retriever import Retriever
-from vector_store import VectorStore
+from vector_store import VectorStore, collection_name_for
 from chunking import SemanticChunker
 from retrieval.fusion import ReciprocalRankFusion
 
@@ -40,12 +41,17 @@ class ChatRequest(BaseModel):
 
 vector_store = VectorStore(
     path=CHROMA_PATH,
-    collection_name=COLLECTION_NAME,
+    collection_name=collection_name_for(
+        COLLECTION_NAME,
+        EMBED_PROVIDER,
+        EMBED_MODEL,
+    ),
+    embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
 )
 
-embedder = Embedder(
+embedder = build_embedder(
+    provider=EMBED_PROVIDER,
     model=EMBED_MODEL,
-    host=OLLAMA_HOST,
 )
 
 vector_search = VectorSearch(
@@ -69,8 +75,10 @@ retriever = Retriever(
 )
 
 generator = Generator(
-    model=CHAT_MODEL,
-    host=OLLAMA_HOST,
+    client=build_chat_client(
+        provider=LLM_PROVIDER,
+        model=CHAT_MODEL,
+    ),
 )
 
 pipeline = Pipeline(

@@ -1,16 +1,41 @@
-OLLAMA_HOST = "http://ollama:11434"
-RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-EMBED_MODEL = "nomic-embed-text"
-CHAT_MODEL = "llama3"
+import os
 
-CHROMA_PATH = "./data/chroma"
-COLLECTION_NAME = "documents"
 
-FINAL_TOP_K = 3
-RETRIEVAL_TOP_K = max(FINAL_TOP_K * 4, 10)
+def _env_int(name: str, default: int) -> int:
+    value = os.getenv(name)
+    return int(value) if value else default
 
-MAX_CHUNK_SIZE = 1000
 
-MIN_CHUNK_SIZE = 300
+def _env_float(name: str, default: float) -> float:
+    value = os.getenv(name)
+    return float(value) if value else default
 
-SIMILARITY_THRESHOLD = 0.88
+
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
+EMBED_PROVIDER = os.getenv("EMBED_PROVIDER", "ollama")
+
+_DEFAULT_CHAT_MODELS = {"ollama": "llama3", "openai": "gpt-6-luna"}
+_DEFAULT_EMBED_MODELS = {"ollama": "nomic-embed-text", "openai": "text-embedding-3-small"}
+
+CHAT_MODEL = os.getenv("CHAT_MODEL") or _DEFAULT_CHAT_MODELS.get(LLM_PROVIDER, "")
+EMBED_MODEL = os.getenv("EMBED_MODEL") or _DEFAULT_EMBED_MODELS.get(EMBED_PROVIDER, "")
+
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL") or None
+OPENAI_REASONING_EFFORT = os.getenv("OPENAI_REASONING_EFFORT", "low") or None
+
+RERANK_MODEL = os.getenv("RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
+
+CHROMA_PATH = os.getenv("CHROMA_PATH", "./data/chroma")
+COLLECTION_NAME = os.getenv("COLLECTION_NAME", "documents")
+
+FINAL_TOP_K = _env_int("FINAL_TOP_K", 3)
+RETRIEVAL_TOP_K = _env_int("RETRIEVAL_TOP_K", max(FINAL_TOP_K * 4, 10))
+
+MAX_CHUNK_SIZE = _env_int("MAX_CHUNK_SIZE", 1000)
+
+MIN_CHUNK_SIZE = _env_int("MIN_CHUNK_SIZE", 300)
+
+SIMILARITY_THRESHOLD = _env_float("SIMILARITY_THRESHOLD", 0.88)

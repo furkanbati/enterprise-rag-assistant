@@ -1,12 +1,15 @@
 
 from dataclasses import asdict
 
+import pytest
+
 from models import ChunkMetadata
-from vector_store import VectorStore
+from vector_store import VectorStore, collection_name_for
 
 
 class FakeCollection:
-    def __init__(self):
+    def __init__(self, metadata=None):
+        self.metadata = metadata
         self.added = None
         self.query_result = {
             "documents": [["Python machine learning"]],
@@ -49,8 +52,13 @@ class FakeClient:
         self.collection = collection
         self.path = None
 
-    def get_or_create_collection(self, name):
+    def get_or_create_collection(self, name, metadata=None):
         self.collection_name = name
+
+        # Like Chroma: metadata is only set when the collection is created.
+        if self.collection.metadata is None:
+            self.collection.metadata = metadata
+
         return self.collection
 
 
@@ -64,10 +72,10 @@ def make_metadata() -> ChunkMetadata:
     )
 
 
-def make_store(monkeypatch):
+def make_store(monkeypatch, embedding_model=None, stored_metadata=None):
     import vector_store
 
-    collection = FakeCollection()
+    collection = FakeCollection(metadata=stored_metadata)
     client = FakeClient(collection)
 
     def fake_persistent_client(path):
@@ -80,7 +88,11 @@ def make_store(monkeypatch):
         fake_persistent_client,
     )
 
-    store = VectorStore(path="./test-data", collection_name="test-documents")
+    store = VectorStore(
+        path="./test-data",
+        collection_name="test-documents",
+        embedding_model=embedding_model,
+    )
     return store, collection, client
 
 
@@ -141,3 +153,50 @@ def test_get_all_chunks_handles_empty_results(monkeypatch):
 
     assert documents == []
     assert metadatas == []
+
+
+def test_collection_name_includes_provider_and_model():
+    assert (
+        collection_name_for("documents", "ollama", "nomic-embed-text")
+        == "documents__ollama__nomic-embed-text"
+    )
+
+
+def test_collection_name_replaces_characters_chroma_rejects():
+    assert (
+        collection_name_for("documents", "ollama", "nomic-embed-text:latest")
+        == "documents__ollama__nomic-embed-text-latest"
+    )
+
+
+def test_new_collection_records_embedding_model(monkeypatch):
+    _, collection, _ = make_store(
+        monkeypatch,
+        embedding_model="openai/text-embedding-3-small",
+    )
+
+    assert collection.metadata == {
+        "embedding_model": "openai/text-embedding-3-small"
+    }
+
+
+def test_existing_collection_with_same_model_opens(monkeypatch):
+    store, collection, _ = make_store(
+        monkeypatch,
+        embedding_model="ollama/nomic-embed-text",
+        stored_metadata={"embedding_model": "ollama/nomic-embed-text"},
+    )
+
+    assert store.collection is collection
+
+
+def test_existing_collection_with_other_model_is_rejected(monkeypatch):
+    with pytest.raises(
+        ValueError,
+        match="holds embeddings from 'ollama/nomic-embed-text'",
+    ):
+        make_store(
+            monkeypatch,
+            embedding_model="openai/text-embedding-3-small",
+            stored_metadata={"embedding_model": "ollama/nomic-embed-text"},
+        )

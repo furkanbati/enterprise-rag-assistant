@@ -17,12 +17,12 @@ from config import (
     CHROMA_PATH,
     COLLECTION_NAME,
     EMBED_MODEL,
+    EMBED_PROVIDER,
     FINAL_TOP_K,
-    OLLAMA_HOST,
+    LLM_PROVIDER,
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
 )
-from embedder import Embedder
 from evaluation.dataset import load_dataset
 from evaluation.evaluator import Evaluator
 from evaluation.report import write_reports
@@ -33,11 +33,12 @@ from evaluation.strategies import (
     VectorOnlyStrategy,
 )
 from generator import Generator
+from providers.factory import build_chat_client, build_embedder
 from retrieval.fusion import ReciprocalRankFusion
 from retrieval.keyword_search import KeywordSearch
 from retrieval.reranker import CrossEncoderReranker
 from retrieval.vector_search import VectorSearch
-from vector_store import VectorStore
+from vector_store import VectorStore, collection_name_for
 
 DEFAULT_DATASET = Path(__file__).parent / "datasets" / "nist_ai_rmf.jsonl"
 DEFAULT_OUTPUT = Path(__file__).parent / "results"
@@ -79,7 +80,12 @@ def main() -> None:
 
     vector_store = VectorStore(
         path=CHROMA_PATH,
-        collection_name=COLLECTION_NAME,
+        collection_name=collection_name_for(
+            COLLECTION_NAME,
+            EMBED_PROVIDER,
+            EMBED_MODEL,
+        ),
+        embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
     )
 
     if vector_store.collection.count() == 0:
@@ -88,7 +94,7 @@ def main() -> None:
             "through POST /upload before running the evaluation."
         )
 
-    embedder = Embedder(model=EMBED_MODEL, host=OLLAMA_HOST)
+    embedder = build_embedder(provider=EMBED_PROVIDER, model=EMBED_MODEL)
     vector_search = VectorSearch(vector_store)
     keyword_search = KeywordSearch(vector_store)
     keyword_search.rebuild()
@@ -117,7 +123,9 @@ def main() -> None:
         strategies=strategies,
         ks=args.ks,
         generator=(
-            Generator(model=CHAT_MODEL, host=OLLAMA_HOST)
+            Generator(
+                client=build_chat_client(provider=LLM_PROVIDER, model=CHAT_MODEL)
+            )
             if args.generate
             else None
         ),
@@ -130,9 +138,11 @@ def main() -> None:
     metadata = {
         "Date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "Dataset": args.dataset.name,
-        "Embedding model": EMBED_MODEL,
+        "Embedding model": f"{EMBED_PROVIDER}/{EMBED_MODEL}",
         "Reranker": args.rerank_model,
-        "Chat model": CHAT_MODEL if args.generate else "not evaluated",
+        "Chat model": (
+            f"{LLM_PROVIDER}/{CHAT_MODEL}" if args.generate else "not evaluated"
+        ),
         "Candidates per retriever": RETRIEVAL_TOP_K,
     }
 

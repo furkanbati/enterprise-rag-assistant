@@ -12,6 +12,10 @@ class FakeChatClient:
         self.calls.append({"system": system, "user": user})
         return self.reply
 
+    def stream(self, system, user):
+        self.calls.append({"system": system, "user": user})
+        yield from self.reply.split(" ")
+
 
 def make_chunk(document):
     return RetrievedChunk(
@@ -73,3 +77,15 @@ def test_build_prompt_handles_empty_chunks():
     assert "Context:\n\n" in prompt
     assert "Unknown question" in prompt
     assert prompt.endswith("Answer:")
+
+
+def test_stream_uses_the_same_prompt_as_generate():
+    client = FakeChatClient(reply="Python is great")
+    generator = Generator(client=client)
+    chunks = [make_chunk("Python is a programming language.")]
+
+    generator.generate(question="What is Python?", chunks=chunks)
+    pieces = list(generator.stream(question="What is Python?", chunks=chunks))
+
+    assert pieces == ["Python", "is", "great"]
+    assert client.calls[0] == client.calls[1]

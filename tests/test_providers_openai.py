@@ -112,3 +112,27 @@ def test_embedder_handles_empty_batch():
 
     assert embedder.embed_batch([]) == []
     client.embeddings.create.assert_not_called()
+
+
+def stream_chunk(content=None, has_choice=True):
+    choices = [SimpleNamespace(delta=SimpleNamespace(content=content))] if has_choice else []
+    return SimpleNamespace(choices=choices)
+
+
+def test_chat_client_streams_deltas_and_skips_empty_chunks():
+    client = Mock()
+    client.chat.completions.create.return_value = iter([
+        stream_chunk("GOVERN "),
+        stream_chunk(None),
+        stream_chunk("is cross-cutting."),
+        stream_chunk(has_choice=False),
+    ])
+    chat = OpenAIChatClient(client=client, model="gpt-test", reasoning_effort="low")
+
+    pieces = list(chat.stream(system="System prompt.", user="Question?"))
+
+    assert pieces == ["GOVERN ", "is cross-cutting."]
+    call = client.chat.completions.create.call_args.kwargs
+    assert call["stream"] is True
+    assert call["reasoning_effort"] == "low"
+    assert call["model"] == "gpt-test"

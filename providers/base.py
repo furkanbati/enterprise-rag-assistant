@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from typing import Protocol
 
 
@@ -13,3 +14,7 @@ class ChatClient(Protocol):
     """Sends a system and a user message to a chat model and returns the reply."""
 
     def complete(self, system: str, user: str) -> str: ...
+
+    def stream(self, system: str, user: str) -> Iterator[str]:
+        """Yield the reply in pieces as the model generates it."""
+        ...

@@ -202,3 +202,16 @@ def test_existing_collection_with_other_model_is_rejected(monkeypatch):
             embedding_model="openai/text-embedding-3-small",
             stored_metadata={"embedding_model": "ollama/nomic-embed-text"},
         )
+
+
+def test_list_sources_counts_chunks_per_document(monkeypatch):
+    store, collection, _ = make_store(monkeypatch)
+    collection.get_result = {
+        "metadatas": [
+            {"source": "a.pdf"},
+            {"source": "b.pdf"},
+            {"source": "a.pdf"},
+        ],
+    }
+
+    assert store.list_sources() == {"a.pdf": 2, "b.pdf": 1}

@@ -63,3 +63,19 @@ def test_embedder_embeds_batch(monkeypatch):
 
     assert embedder.embed_batch(["a", "b"]) == [[0.1], [0.2]]
     client.embed.assert_called_once_with(model="embed-model", input=["a", "b"])
+
+
+def test_chat_client_streams_message_parts(monkeypatch):
+    client = Mock()
+    client.chat.return_value = iter([
+        SimpleNamespace(message=SimpleNamespace(content="Python ")),
+        SimpleNamespace(message=SimpleNamespace(content="")),
+        SimpleNamespace(message=SimpleNamespace(content="is a language.")),
+    ])
+    patch_client(monkeypatch, client)
+
+    chat = OllamaChatClient(model="test-model")
+
+    assert list(chat.stream(system="S.", user="Q?")) == ["Python ", "is a language."]
+    assert client.chat.call_args.kwargs["stream"] is True
+    assert client.chat.call_args.kwargs["messages"][1] == {"role": "user", "content": "Q?"}

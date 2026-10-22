@@ -1,10 +1,13 @@
+import logging
+from collections.abc import Iterator
+
+from generator import Generator
+from models import PipelineResult, RetrievedChunk
 from providers.base import Embedder
 from retrieval.retriever import Retriever
-from generator import Generator
-from models import PipelineResult
-import logging
 
 logger = logging.getLogger(__name__)
+
 
 class Pipeline:
     """Coordinates the RAG workflow from query embedding to answer generation."""
@@ -21,12 +24,7 @@ class Pipeline:
     def run(self, question: str) -> PipelineResult:
         logger.info("Processing question through RAG pipeline")
 
-        query_embedding = self.embedder.embed(question)
-
-        retrieved_chunks = self.retriever.search(
-            query = question,
-            embedding=query_embedding
-        )
+        retrieved_chunks = self.retrieve(question)
 
         answer = self.generator.generate(
             question=question,
@@ -36,4 +34,24 @@ class Pipeline:
         return PipelineResult(
             answer=answer,
             chunks=retrieved_chunks,
+        )
+
+    def retrieve(self, question: str) -> list[RetrievedChunk]:
+        query_embedding = self.embedder.embed(question)
+
+        return self.retriever.search(
+            query=question,
+            embedding=query_embedding,
+        )
+
+    def stream(
+        self,
+        question: str,
+        chunks: list[RetrievedChunk],
+    ) -> Iterator[str]:
+        """Yield the answer to a question from already retrieved chunks."""
+
+        return self.generator.stream(
+            question=question,
+            chunks=chunks,
         )

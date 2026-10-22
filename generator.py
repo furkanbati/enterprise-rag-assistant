@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Iterator
 
 from models import RetrievedChunk
 from providers.base import ChatClient
@@ -37,6 +38,23 @@ Be concise and accurate.
         )
 
         return self.client.complete(
+            system=self.SYSTEM_PROMPT,
+            user=prompt,
+        )
+
+    def stream(
+        self,
+        question: str,
+        chunks: list[RetrievedChunk],
+    ) -> Iterator[str]:
+        """Yield the answer in pieces as the model generates it."""
+
+        prompt = self._build_prompt(
+            question=question,
+            chunks=chunks,
+        )
+
+        return self.client.stream(
             system=self.SYSTEM_PROMPT,
             user=prompt,
         )

@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Iterator
 
 from openai import OpenAI
 
@@ -60,14 +61,25 @@ class OpenAIChatClient:
         self.reasoning_effort = reasoning_effort
 
     def complete(self, system: str, user: str) -> str:
-        options = {}
-
-        if self.reasoning_effort:
-            options["reasoning_effort"] = self.reasoning_effort
-
         response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
+            **self._request(system, user),
+        )
+
+        return response.choices[0].message.content or ""
+
+    def stream(self, system: str, user: str) -> Iterator[str]:
+        for chunk in self.client.chat.completions.create(
+            **self._request(system, user),
+            stream=True,
+        ):
+            # Some chunks, such as a final usage chunk, carry no choices.
+            if chunk.choices and chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content
+
+    def _request(self, system: str, user: str) -> dict:
+        request = {
+            "model": self.model,
+            "messages": [
                 {
                     "role": "system",
                     "content": system,
@@ -77,7 +89,9 @@ class OpenAIChatClient:
                     "content": user,
                 },
             ],
-            **options,
-        )
+        }
 
-        return response.choices[0].message.content or ""
+        if self.reasoning_effort:
+            request["reasoning_effort"] = self.reasoning_effort
+
+        return request

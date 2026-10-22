@@ -64,3 +64,30 @@ def test_pipeline_generates_answer_when_no_chunks_are_found():
         question="Unknown question",
         chunks=[],
     )
+
+
+def test_pipeline_retrieves_and_streams_separately():
+    embedder = Mock()
+    embedder.embed.return_value = [0.1]
+
+    chunk = Mock()
+    retriever = Mock()
+    retriever.search.return_value = [chunk]
+
+    generator = Mock()
+    generator.stream.return_value = iter(["An", "swer"])
+
+    pipeline = Pipeline(
+        embedder=embedder,
+        retriever=retriever,
+        generator=generator,
+    )
+
+    chunks = pipeline.retrieve("Q?")
+    pieces = list(pipeline.stream("Q?", chunks))
+
+    assert chunks == [chunk]
+    assert pieces == ["An", "swer"]
+    retriever.search.assert_called_once_with(query="Q?", embedding=[0.1])
+    generator.stream.assert_called_once_with(question="Q?", chunks=[chunk])
+    generator.generate.assert_not_called()

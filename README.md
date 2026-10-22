@@ -17,7 +17,8 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 - Reciprocal Rank Fusion (RRF) for combining retrieval results
 - Cross-encoder reranking
 - Source-aware answers with page metadata and preview snippets
-- FastAPI REST endpoints and interactive Swagger documentation
+- FastAPI REST endpoints, including a streaming chat endpoint, and interactive Swagger documentation
+- Streamlit chat interface with streamed answers, source previews and timings
 - Docker Compose-based application setup
 - Built-in evaluation harness comparing retrieval strategies and scoring generated answers
 
@@ -104,6 +105,7 @@ The highest-ranked chunks are passed to the chat model through Ollama. The API r
 |---|---|
 | Python | Application logic |
 | FastAPI | REST API |
+| Streamlit | Web chat interface |
 | Docling | PDF parsing |
 | Ollama | Local model inference and embeddings |
 | Llama 3 | Answer generation |
@@ -144,13 +146,15 @@ docker compose exec ollama ollama pull llama3
 
 The cross-encoder model is configured as `cross-encoder/ms-marco-MiniLM-L-6-v2` and is loaded when reranking is first needed. Its initial use may require downloading the model.
 
-### 4. Open the API documentation
+### 4. Open the web interface
 
-Once the API is running, open:
+Once the services are running, open:
 
-**http://localhost:8000/docs**
+**http://localhost:8501**
 
-Use Swagger UI to upload a PDF and submit questions.
+Upload a PDF from the sidebar, then ask questions in the chat. The sources appear as soon as retrieval is done, the answer streams in token by token, and each answer lists its sources and the retrieval and generation times.
+
+The interactive API documentation is available at **http://localhost:8000/docs**. Both services are published on `localhost` only, so they are not reachable from other devices on the network.
 
 ## API Usage
 
@@ -162,9 +166,7 @@ Endpoint:
 POST /upload
 ```
 
-The endpoint accepts a PDF file, processes its content, generates embeddings, and indexes its chunks in ChromaDB.
-
-Use the interactive API documentation at `/docs` to upload a document.
+The endpoint accepts a PDF file, processes its content, generates embeddings, and indexes its chunks in ChromaDB. Other file types are rejected with status 400. The upload is written to a temporary directory and removed once it is indexed.
 
 ### Ask a question
 
@@ -201,6 +203,47 @@ Example response shape:
 ```
 
 The response above illustrates the API response format. Actual answers, source ordering, and preview text depend on the uploaded documents and retrieval results.
+
+### Stream an answer
+
+Endpoint:
+
+```http
+POST /chat/stream
+Content-Type: application/json
+```
+
+The request is the same as for `POST /chat`. The response is newline-delimited JSON (`application/x-ndjson`), one event per line:
+
+```text
+{"type": "sources", "sources": [{"source": "nist.ai.100-1.pdf", "page": 6, ...}]}
+{"type": "token", "text": "The four core"}
+{"type": "token", "text": " functions are"}
+...
+{"type": "done", "retrieval_ms": 612, "generation_ms": 6909}
+```
+
+The sources are sent as soon as retrieval is done, before the model starts writing. If anything fails, the stream ends with `{"type": "error", "detail": "..."}` instead of `done`.
+
+### Inspect the configuration
+
+```http
+GET /info
+```
+
+Returns the active models, the chunking configuration and the indexed documents:
+
+```json
+{
+  "chat_model": "ollama/llama3",
+  "embedding_model": "ollama/nomic-embed-text",
+  "chunking": "sentence",
+  "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+  "documents": [
+    {"source": "nist.ai.100-1.pdf", "chunks": 221}
+  ]
+}
+```
 
 ## Configuration
 
@@ -324,7 +367,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 108 tests passed.
+**Verified locally:** 124 tests passed.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 
@@ -336,12 +379,16 @@ enterprise-rag-assistant/
 ├── chunking.py
 ├── config.py
 ├── document_parser.py
-├── embedder.py
 ├── generator.py
 ├── ingestion.py
 ├── models.py
 ├── pipeline.py
 ├── vector_store.py
+├── providers/
+│   ├── base.py
+│   ├── factory.py
+│   ├── ollama.py
+│   └── openai.py
 ├── retrieval/
 │   ├── vector_search.py
 │   ├── keyword_search.py
@@ -350,20 +397,29 @@ enterprise-rag-assistant/
 │   └── retriever.py
 ├── evaluation/
 │   ├── datasets/
-│   │   └── nist_ai_rmf.jsonl
+│   │   ├── README.md
+│   │   ├── nist_ai_rmf.jsonl
+│   │   └── chunking_benchmark.jsonl
 │   ├── results/
+│   │   └── chunking_benchmark/
 │   ├── dataset.py
 │   ├── metrics.py
 │   ├── strategies.py
 │   ├── evaluator.py
 │   ├── report.py
 │   └── __main__.py
+├── ui/
+│   ├── app.py
+│   └── client.py
 ├── tests/
 ├── Dockerfile
 ├── Dockerfile.test
+├── Dockerfile.ui
 ├── docker-compose.yml
+├── .env.example
 ├── requirements.txt
 ├── requirements-dev.txt
+├── requirements-ui.txt
 └── README.md
 ```
 
@@ -384,15 +440,14 @@ enterprise-rag-assistant/
 The current implementation focuses on PDF-based question answering. It does not currently provide:
 
 - User authentication or authorization
-- A dedicated web frontend
-- Persistent conversation history
+- Persistent conversation history: the web interface keeps the chat on screen only, and each question is answered on its own
 - Production-scale deployment guarantees
 
 Answers depend on document quality, retrieval relevance, and model behavior. Source metadata helps inspect the retrieved material but does not guarantee that every generated claim is correct.
 
 ## Future Directions
 
-Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring, streaming responses, authentication, additional document formats, and monitoring.
+Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring, authentication, additional document formats, and monitoring.
 
 For chunking, the measurements point to three next steps: using the semantic chunker only for documents without headings, splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk), and prefixing chunks with document context so that similar frameworks such as the AI RMF and CSF are told apart more reliably.
 

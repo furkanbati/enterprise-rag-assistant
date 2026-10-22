@@ -15,6 +15,7 @@ from pathlib import Path
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,
+    CHUNKING_STRATEGY,
     COLLECTION_NAME,
     EMBED_MODEL,
     EMBED_PROVIDER,
@@ -22,7 +23,11 @@ from config import (
     LLM_PROVIDER,
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
+    SEMANTIC_PERCENTILE,
+    SEMANTIC_WINDOW,
 )
+from chunking import chunking_id
+from evaluation import metrics
 from evaluation.dataset import load_dataset
 from evaluation.evaluator import Evaluator
 from evaluation.report import write_reports
@@ -78,19 +83,22 @@ def main() -> None:
 
     samples = load_dataset(args.dataset)
 
+    chunking = chunking_id(CHUNKING_STRATEGY, SEMANTIC_PERCENTILE, SEMANTIC_WINDOW)
+
     vector_store = VectorStore(
         path=CHROMA_PATH,
         collection_name=collection_name_for(
             COLLECTION_NAME,
             EMBED_PROVIDER,
             EMBED_MODEL,
+            chunking,
         ),
         embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
     )
 
     if vector_store.collection.count() == 0:
         raise SystemExit(
-            "The vector store is empty. Upload the evaluation document "
+            "The vector store is empty. Upload the documents of the dataset "
             "through POST /upload before running the evaluation."
         )
 
@@ -135,10 +143,21 @@ def main() -> None:
 
     report = evaluator.evaluate(samples)
 
+    documents, _ = vector_store.get_all_chunks()
+    report.missing_evidence = metrics.missing_evidence(samples, documents)
+
+    if report.missing_evidence:
+        logging.getLogger("evaluation").warning(
+            "%d evidence sentences were not found in the index; "
+            "see the Missing Evidence section of the report.",
+            len(report.missing_evidence),
+        )
+
     metadata = {
         "Date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "Dataset": args.dataset.name,
         "Embedding model": f"{EMBED_PROVIDER}/{EMBED_MODEL}",
+        "Chunking": chunking,
         "Reranker": args.rerank_model,
         "Chat model": (
             f"{LLM_PROVIDER}/{CHAT_MODEL}" if args.generate else "not evaluated"

@@ -16,11 +16,14 @@ logger = logging.getLogger(__name__)
 class RetrievalResult:
     sample_id: str
     strategy: str
+    source: str | None
     retrieved_pages: list[int]
     hit: dict[int, float]
     recall: dict[int, float]
     precision: dict[int, float]
     reciprocal_rank: float
+    evidence_recall: dict[int, float | None]
+    context_chars: dict[int, int]
     latency_ms: float
 
 
@@ -42,6 +45,8 @@ class StrategySummary:
     recall: dict[int, float]
     precision: dict[int, float]
     mrr: float
+    evidence_recall: dict[int, float | None]
+    mean_context_chars: dict[int, float]
     mean_latency_ms: float
 
 
@@ -66,6 +71,7 @@ class EvaluationReport:
     retrieval_results: list[RetrievalResult]
     generation: GenerationSummary | None = None
     answer_results: list[AnswerResult] = field(default_factory=list)
+    missing_evidence: list[tuple[str, str]] = field(default_factory=list)
 
 
 class Evaluator:
@@ -174,6 +180,7 @@ class Evaluator:
         return RetrievalResult(
             sample_id=sample.id,
             strategy=strategy,
+            source=sample.source,
             retrieved_pages=[chunk.metadata.page for chunk in chunks],
             hit={
                 k: metrics.hit_at_k(chunks, sample, k)
@@ -191,6 +198,14 @@ class Evaluator:
                 chunks[:max(self.ks)],
                 sample,
             ),
+            evidence_recall={
+                k: metrics.evidence_recall_at_k(chunks, sample, k)
+                for k in self.ks
+            },
+            context_chars={
+                k: metrics.context_chars_at_k(chunks, k)
+                for k in self.ks
+            },
             latency_ms=latency_ms,
         )
 
@@ -246,6 +261,16 @@ class Evaluator:
                 for k in self.ks
             },
             mrr=_mean(result.reciprocal_rank for result in strategy_results),
+            evidence_recall={
+                k: _mean_or_none(
+                    result.evidence_recall[k] for result in strategy_results
+                )
+                for k in self.ks
+            },
+            mean_context_chars={
+                k: _mean(result.context_chars[k] for result in strategy_results)
+                for k in self.ks
+            },
             mean_latency_ms=_mean(
                 result.latency_ms for result in strategy_results
             ),
@@ -290,3 +315,11 @@ def _mean(values) -> float:
     values = [float(value) for value in values]
 
     return mean(values) if values else 0.0
+
+
+def _mean_or_none(values) -> float | None:
+    """Mean of the values that are not None, or None if there are none."""
+
+    values = [float(value) for value in values if value is not None]
+
+    return mean(values) if values else None

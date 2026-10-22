@@ -155,17 +155,19 @@ def test_get_all_chunks_handles_empty_results(monkeypatch):
     assert metadatas == []
 
 
-def test_collection_name_includes_provider_and_model():
+def test_collection_name_includes_provider_model_and_chunking():
     assert (
-        collection_name_for("documents", "ollama", "nomic-embed-text")
-        == "documents__ollama__nomic-embed-text"
+        collection_name_for("documents", "ollama", "nomic-embed-text", "sentence")
+        == "documents__ollama__nomic-embed-text__sentence"
     )
 
 
 def test_collection_name_replaces_characters_chroma_rejects():
     assert (
-        collection_name_for("documents", "ollama", "nomic-embed-text:latest")
-        == "documents__ollama__nomic-embed-text-latest"
+        collection_name_for(
+            "documents", "ollama", "nomic-embed-text:latest", "sentence"
+        )
+        == "documents__ollama__nomic-embed-text-latest__sentence"
     )
 
 

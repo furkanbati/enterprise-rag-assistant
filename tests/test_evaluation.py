@@ -85,6 +85,31 @@ def test_bundled_dataset_is_valid():
     assert any(not sample.answerable for sample in samples)
 
 
+def test_load_dataset_reads_evidence(tmp_path):
+    path = tmp_path / "dataset.jsonl"
+    path.write_text(
+        json.dumps({
+            "id": "q1",
+            "question": "A?",
+            "relevant_pages": [1],
+            "evidence": ["Python is a language."],
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    assert load_dataset(path)[0].evidence == ["Python is a language."]
+
+
+def test_chunking_benchmark_dataset_is_valid():
+    samples = load_dataset("evaluation/datasets/chunking_benchmark.jsonl")
+    answerable = [sample for sample in samples if sample.answerable]
+
+    assert len({sample.id for sample in samples}) == len(samples)
+    assert len({sample.source for sample in answerable}) == 3
+    assert all(sample.source and sample.evidence for sample in answerable)
+    assert any(not sample.answerable for sample in samples)
+
+
 # ----------------------------
 # Metrics
 # ----------------------------
@@ -116,6 +141,52 @@ def test_relevance_respects_source_when_specified():
 
     assert not metrics.is_relevant(make_chunk(2), sample)
     assert metrics.is_relevant(make_chunk(2, source="other.pdf"), sample)
+
+
+def test_evidence_recall_counts_sentences_found_in_top_k():
+    sample = make_sample(
+        evidence=["Python is a language.", "It was created by Guido."],
+    )
+    chunks = [
+        make_chunk(1, document="Intro. PYTHON is a\nlanguage."),
+        make_chunk(2, document="It was created by Guido. More text."),
+    ]
+
+    assert metrics.evidence_recall_at_k(chunks, sample, 1) == 0.5
+    assert metrics.evidence_recall_at_k(chunks, sample, 2) == 1.0
+    assert metrics.evidence_recall_at_k([], sample, 2) == 0.0
+
+
+def test_evidence_recall_ignores_chunks_from_other_sources():
+    sample = make_sample(source="guide.pdf", evidence=["Python is a language."])
+    chunks = [make_chunk(1, source="other.pdf", document="Python is a language.")]
+
+    assert metrics.evidence_recall_at_k(chunks, sample, 1) == 0.0
+
+
+def test_evidence_recall_is_none_without_evidence():
+    assert metrics.evidence_recall_at_k([make_chunk(1)], make_sample(), 1) is None
+
+
+def test_context_chars_sums_top_k_chunks():
+    chunks = [make_chunk(1, document="abc"), make_chunk(2, document="defgh")]
+
+    assert metrics.context_chars_at_k(chunks, 1) == 3
+    assert metrics.context_chars_at_k(chunks, 5) == 8
+
+
+def test_missing_evidence_lists_sentences_not_in_index():
+    samples = [
+        make_sample(evidence=["Python is a language.", "Not indexed."]),
+        make_sample(id="q2"),
+    ]
+
+    missing = metrics.missing_evidence(
+        samples,
+        ["Heading\n\nPython is a  language. More."],
+    )
+
+    assert missing == [("q1", "Not indexed.")]
 
 
 def test_keyword_recall_is_case_and_hyphen_insensitive():
@@ -317,3 +388,58 @@ def test_reports_are_written_as_json_and_markdown(tmp_path):
     assert "| `good` | 1.000 | 1.000 | 0.500 | 1.000 | 1.000 |" in markdown
     assert "## Answer Generation" in markdown
     assert "> Python is a programming language." in markdown
+
+
+def make_evidence_evaluator():
+    embedder = Mock()
+    embedder.embed.return_value = [0.1, 0.2]
+
+    strategy = Mock()
+    strategy.retrieve.return_value = [
+        make_chunk(2, document="Python is a language."),
+        make_chunk(4, document="Unrelated text."),
+    ]
+
+    return Evaluator(
+        embedder=embedder,
+        strategies={"good": strategy},
+        ks=[1, 2],
+    )
+
+
+def test_evaluator_averages_evidence_over_labelled_samples_only():
+    report = make_evidence_evaluator().evaluate([
+        make_sample(source="guide.pdf", evidence=["Python is a language."]),
+        make_sample(id="q2", source="guide.pdf"),
+    ])
+
+    summary = report.strategies[0]
+    assert summary.evidence_recall == {1: 1.0, 2: 1.0}
+    assert summary.mean_context_chars == {1: 21.0, 2: 36.0}
+
+    results = {result.sample_id: result for result in report.retrieval_results}
+    assert results["q2"].evidence_recall == {1: None, 2: None}
+    assert results["q1"].source == "guide.pdf"
+
+
+def test_report_has_no_evidence_sections_without_evidence_labels():
+    evaluator, _, _ = make_evaluator()
+    report = evaluator.evaluate([make_sample()])
+
+    assert "Evidence" not in render_markdown(report, {})
+
+
+def test_report_shows_evidence_by_source_and_missing_evidence():
+    report = make_evidence_evaluator().evaluate([
+        make_sample(source="guide.pdf", evidence=["Python is a language."]),
+    ])
+    report.missing_evidence = [("q9", "Not\nindexed.")]
+
+    markdown = render_markdown(report, {})
+
+    assert "## Evidence Coverage" in markdown
+    assert "| `good` | 1.000 | 1.000 | 21 | 36 |" in markdown
+    assert "### Evidence@2 by Source" in markdown
+    assert "| Strategy | guide.pdf |" in markdown
+    assert "## Missing Evidence" in markdown
+    assert "- `q9`: Not indexed." in markdown

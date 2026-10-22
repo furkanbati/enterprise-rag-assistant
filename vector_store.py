@@ -10,11 +10,21 @@ from models import ChunkMetadata, RetrievedChunk
 logger = logging.getLogger(__name__)
 
 
-def collection_name_for(base: str, provider: str, model: str) -> str:
-    """Name a collection after its embedding model, so vectors from
-    different models never end up in the same collection."""
+def collection_name_for(
+    base: str,
+    provider: str,
+    model: str,
+    chunking: str,
+) -> str:
+    """Name a collection after its embedding model and chunking strategy,
+    so chunks from different models or strategies never end up in the same
+    collection."""
 
-    suffix = re.sub(r"[^a-zA-Z0-9._-]+", "-", f"{provider}__{model}")
+    suffix = re.sub(
+        r"[^a-zA-Z0-9._-]+",
+        "-",
+        f"{provider}__{model}__{chunking}",
+    )
 
     return f"{base}__{suffix.strip('-.')}"
 

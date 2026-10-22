@@ -9,7 +9,7 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 ## Key Features
 
 - PDF ingestion and structured document parsing with Docling
-- Heading-aware semantic chunking
+- Heading-aware, sentence-aligned chunking, with an optional semantic chunker evaluated against it
 - Metadata extraction for document source, page, heading, and chunk
 - Batch embedding generation with Ollama
 - Persistent vector storage with ChromaDB
@@ -32,7 +32,7 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
                     Docling Parser
                           |
                           v
-              Heading-aware Semantic Chunking
+        Heading-aware, Sentence-aligned Chunking
                           |
                           v
                  Metadata Extraction
@@ -78,7 +78,7 @@ Query Embedding           |
 
 ### 1. Document ingestion
 
-A PDF is submitted through the API. Docling parses the document, and the chunking component creates heading-aware semantic chunks. Each chunk retains metadata such as its source document, page, heading, and chunk identifier.
+A PDF is submitted through the API. Docling parses the document into sections, and the chunking component packs the whole sentences of each section into chunks of roughly 300 to 1000 characters, prefixed with the section heading. Each chunk retains metadata such as its source document, page, heading, and chunk identifier. See [Chunking](#chunking) for the semantic alternative and how the two compare.
 
 ### 2. Embedding and storage
 
@@ -213,12 +213,14 @@ Application settings are centralized in `config.py`.
 | `EMBED_MODEL` | Embedding model |
 | `RERANK_MODEL` | Cross-encoder reranking model |
 | `CHROMA_PATH` | Persistent vector database path |
-| `COLLECTION_NAME` | ChromaDB collection name |
+| `COLLECTION_NAME` | Base name of the ChromaDB collection; the embedding model and chunking configuration are appended, so each combination has its own collection |
 | `RETRIEVAL_TOP_K` | Number of candidates retrieved |
 | `FINAL_TOP_K` | Number of chunks retained after reranking |
-| `MAX_CHUNK_SIZE` | Maximum chunk size |
-| `MIN_CHUNK_SIZE` | Minimum chunk size |
-| `SIMILARITY_THRESHOLD` | Chunking similarity threshold |
+| `CHUNKING_STRATEGY` | `sentence` (default) or `semantic` |
+| `MAX_CHUNK_SIZE` | Maximum chunk size in characters, unless a single sentence is longer |
+| `MIN_CHUNK_SIZE` | Minimum chunk size in characters |
+| `SEMANTIC_PERCENTILE` | Semantic chunking: split at boundaries above this percentile of embedding distances in the document |
+| `SEMANTIC_WINDOW` | Semantic chunking: sentences on each side embedded with each sentence |
 
 The default configuration uses the Ollama service provided by Docker Compose.
 
@@ -227,6 +229,8 @@ The default configuration uses the Ollama service provided by Docker Compose.
 The `evaluation/` package measures retrieval and answer quality against a labelled question set, so changes to chunking, retrieval, or prompts can be compared with numbers instead of impressions.
 
 The bundled dataset, [`evaluation/datasets/nist_ai_rmf.jsonl`](evaluation/datasets/nist_ai_rmf.jsonl), contains 22 questions about the NIST AI RMF 1.0 document: 20 answerable questions labelled with their relevant pages and expected answer keywords, and 2 questions the document cannot answer.
+
+A second dataset, [`chunking_benchmark.jsonl`](evaluation/datasets/chunking_benchmark.jsonl), adds the NIST CSF 2.0 and an FOMC press conference transcript and labels each answer with evidence sentences, so chunking changes can be measured. See the [dataset README](evaluation/datasets/README.md) and [Chunking](#chunking).
 
 The harness runs each question through four retrieval strategies, built from the same components the API uses:
 
@@ -242,6 +246,7 @@ The harness runs each question through four retrieval strategies, built from the
 - **Hit@k:** whether any of the top-k chunks comes from a relevant page
 - **Recall@k:** share of the relevant pages covered by the top-k chunks
 - **MRR:** mean reciprocal rank of the first relevant chunk
+- **Evidence@k:** share of the labelled evidence sentences found in the top-k chunks (chunking benchmark only); reported with the characters the top-k chunks send to the model
 - **Keyword recall:** share of expected keywords present in the generated answer (a lexical proxy, not a judge of correctness)
 - **Answer rate / abstention rate:** whether the model answers answerable questions and declines unanswerable ones
 
@@ -293,6 +298,22 @@ The first evaluation run exposed one consistent miss: for `q11` ("Which AI RMF f
 | + BM25 tokenizer | 0.825 | 0.900 | 0.950 | ~2.0 s |
 | + MiniLM reranker | 0.825 | 0.900 | **1.000** | **~0.7 s** |
 
+## Chunking
+
+The original chunker started a new chunk when the cosine similarity between consecutive sentences fell below 0.88. Measuring it on the NIST AI RMF showed that 97% of sentence boundaries were below that threshold, so chunks were in fact cut at the first sentence boundary after 300 characters. The project now offers two explicit strategies:
+
+- **`sentence`** (default): packs the whole sentences of each section into chunks of roughly 300 to 1000 characters.
+- **`semantic`**: embeds each sentence with its neighbours and splits where the distance between consecutive windows is above a percentile of all distances in the document, so the threshold adapts to the document and the embedding model. Short segments are merged and long ones are split into balanced parts.
+
+Both were measured on the chunking benchmark with the full retrieval pipeline. Because larger chunks raise recall simply by sending more text, the comparison holds the context size fixed:
+
+| Evidence found within | 1200 chars | 2000 chars | 3000 chars |
+|---|---|---|---|
+| `sentence` | **0.854** | **0.896** | **0.921** |
+| `semantic` (90th percentile) | 0.781 | 0.854 | 0.900 |
+
+Sentence-aligned chunks retrieve more evidence at every budget. In documents with clear headings, Docling's sections already follow topic boundaries; semantic splitting mostly makes chunks larger, and their embeddings less specific. Only in the FOMC transcript, which has no headings, is the semantic chunker slightly ahead, on 14 questions. `sentence` therefore stays the default. See the [full comparison](evaluation/results/chunking_benchmark/comparison.md) for all variants, results by document, and limitations.
+
 ## Running the Tests
 
 The project includes automated tests for the API, document parsing, chunking, ingestion, retrieval, generation, vector storage, and the evaluation harness.
@@ -303,7 +324,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 60 tests passed.
+**Verified locally:** 108 tests passed.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 
@@ -372,6 +393,8 @@ Answers depend on document quality, retrieval relevance, and model behavior. Sou
 ## Future Directions
 
 Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring, streaming responses, authentication, additional document formats, and monitoring.
+
+For chunking, the measurements point to three next steps: using the semantic chunker only for documents without headings, splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk), and prefixing chunks with document context so that similar frameworks such as the AI RMF and CSF are told apart more reliably.
 
 ## License
 

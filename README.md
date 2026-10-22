@@ -6,6 +6,8 @@ The application ingests PDF documents, retrieves relevant passages using hybrid 
 
 It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, from document ingestion to grounded question answering.
 
+![The web interface answering a question about the NIST Cybersecurity Framework, with the three source passages it used](docs/ui.png)
+
 ## Key Features
 
 - PDF ingestion and structured document parsing with Docling
@@ -454,6 +456,8 @@ enterprise-rag-assistant/
 ├── ui/
 │   ├── app.py
 │   └── client.py
+├── docs/
+│   └── ui.png
 ├── tests/
 ├── Dockerfile
 ├── Dockerfile.test

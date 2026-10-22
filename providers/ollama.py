@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Iterator
 
 from ollama import Client
 
@@ -48,16 +49,29 @@ class OllamaChatClient:
     def complete(self, system: str, user: str) -> str:
         response = self.client.chat(
             model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": system,
-                },
-                {
-                    "role": "user",
-                    "content": user,
-                },
-            ],
+            messages=_messages(system, user),
         )
 
         return response.message.content
+
+    def stream(self, system: str, user: str) -> Iterator[str]:
+        for part in self.client.chat(
+            model=self.model,
+            messages=_messages(system, user),
+            stream=True,
+        ):
+            if part.message.content:
+                yield part.message.content
+
+
+def _messages(system: str, user: str) -> list[dict[str, str]]:
+    return [
+        {
+            "role": "system",
+            "content": system,
+        },
+        {
+            "role": "user",
+            "content": user,
+        },
+    ]

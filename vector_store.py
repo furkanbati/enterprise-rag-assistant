@@ -1,5 +1,6 @@
 import logging
 import re
+from collections import Counter
 from dataclasses import asdict
 from uuid import uuid4
 
@@ -120,6 +121,18 @@ class VectorStore:
                 distances,
             )
         ]
+
+    def list_sources(self) -> dict[str, int]:
+        """Indexed documents and their number of chunks."""
+
+        result = self.collection.get(include=["metadatas"])
+
+        return dict(
+            Counter(
+                metadata["source"]
+                for metadata in result["metadatas"] or []
+            )
+        )
 
     def get_all_chunks(self) -> tuple[list[str], list[ChunkMetadata]]:
         result = self.collection.get(include=["documents", "metadatas"])

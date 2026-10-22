@@ -5,7 +5,7 @@ services:
     container_name: rag-api
 
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
 
     env_file:
       - path: .env
@@ -46,6 +46,27 @@ services:
 
     depends_on:
       - ollama
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+
+    container_name: rag-ui
+
+    ports:
+      - "127.0.0.1:8501:8501"
+
+    environment:
+      API_URL: http://api:8000
+
+    volumes:
+      - ./ui:/app/ui
+
+    depends_on:
+      - api
+
+    restart: unless-stopped
 
   ollama:
     image: ollama/ollama

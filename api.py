@@ -1,6 +1,12 @@
+import json
 import logging
+import tempfile
+import time
+from collections.abc import Iterator
+from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from models import ChatResponse, SourceResponse
 from retrieval.reranker import CrossEncoderReranker
@@ -107,32 +113,62 @@ ingestion = Ingestion(
 )
 
 
+@app.get("/info")
+def info() -> dict:
+    """Active models, chunking configuration and indexed documents."""
+
+    return {
+        "chat_model": f"{LLM_PROVIDER}/{CHAT_MODEL}",
+        "embedding_model": f"{EMBED_PROVIDER}/{EMBED_MODEL}",
+        "chunking": chunking_id(
+            CHUNKING_STRATEGY,
+            SEMANTIC_PERCENTILE,
+            SEMANTIC_WINDOW,
+        ),
+        "reranker": RERANK_MODEL,
+        "documents": [
+            {"source": source, "chunks": chunks}
+            for source, chunks in sorted(vector_store.list_sources().items())
+        ],
+    }
+
+
 @app.post("/upload")
-async def upload(file: UploadFile = File(...)) -> dict[str, str]:
-    file_path = file.filename
+def upload(file: UploadFile = File(...)) -> dict[str, str]:
+    # Keep only the name, so a crafted file name cannot write elsewhere.
+    filename = Path(file.filename or "").name
 
-    logger.info("Uploading document: %s", file.filename)
-
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
-    try:
-        ingestion.ingest(file_path)
-    except Exception as e:
-        logger.exception("Failed to index document: %s", file.filename)
+    if not filename.lower().endswith(".pdf"):
         raise HTTPException(
-            status_code=500,
-            detail=f"Failed to index document: {e}",
+            status_code=400,
+            detail="Only PDF files can be uploaded.",
         )
 
-    logger.info("Document indexed successfully: %s", file.filename)
+    logger.info("Uploading document: %s", filename)
+
+    # The file is only needed while it is indexed; the chunks keep its name.
+    with tempfile.TemporaryDirectory() as directory:
+        file_path = Path(directory) / filename
+        file_path.write_bytes(file.file.read())
+
+        try:
+            ingestion.ingest(str(file_path))
+        except Exception as e:
+            logger.exception("Failed to index document: %s", filename)
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to index document: {e}",
+            )
+
+    logger.info("Document indexed successfully: %s", filename)
 
     return {
         "message": "Document indexed successfully."
     }
 
+
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest) -> ChatResponse:
+def chat(request: ChatRequest) -> ChatResponse:
     """
     Generate an answer for the given question using the RAG pipeline.
     """
@@ -142,25 +178,73 @@ async def chat(request: ChatRequest) -> ChatResponse:
 
         return ChatResponse(
             answer=result.answer,
-            sources=[
-                SourceResponse(
-                    source=chunk.metadata.source,
-                    page=chunk.metadata.page,
-                    chunk=chunk.metadata.chunk,
-                    heading=chunk.metadata.heading,
-                    preview=(
-                        chunk.document.removeprefix(
-                            f"{chunk.metadata.heading}\n\n"
-                        )[:200]
-                        if chunk.metadata.heading
-                        else chunk.document[:200]
-                    ),
-                )
-                for chunk in result.chunks
-            ],
+            sources=[_source_response(chunk) for chunk in result.chunks],
         )
 
     except Exception as e:
         logger.exception("Failed to generate response")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.post("/chat/stream")
+def chat_stream(request: ChatRequest) -> StreamingResponse:
+    """
+    Stream the answer as newline-delimited JSON events: the sources once
+    retrieval is done, then the answer tokens, then a final "done" event
+    with timings, or an "error" event if anything fails.
+    """
+
+    return StreamingResponse(
+        _stream_events(request.question),
+        media_type="application/x-ndjson",
+    )
+
+
+def _stream_events(question: str) -> Iterator[str]:
+    try:
+        started = time.perf_counter()
+        chunks = pipeline.retrieve(question)
+        retrieval_ms = (time.perf_counter() - started) * 1000
+
+        yield _event({
+            "type": "sources",
+            "sources": [
+                _source_response(chunk).model_dump()
+                for chunk in chunks
+            ],
+        })
+
+        started = time.perf_counter()
+
+        for text in pipeline.stream(question, chunks):
+            yield _event({"type": "token", "text": text})
+
+        yield _event({
+            "type": "done",
+            "retrieval_ms": round(retrieval_ms),
+            "generation_ms": round((time.perf_counter() - started) * 1000),
+        })
+
+    except Exception as e:
+        logger.exception("Failed to stream response")
+        yield _event({"type": "error", "detail": str(e)})
+
+
+def _event(data: dict) -> str:
+    return json.dumps(data, ensure_ascii=False) + "\n"
+
+
+def _source_response(chunk) -> SourceResponse:
+    return SourceResponse(
+        source=chunk.metadata.source,
+        page=chunk.metadata.page,
+        chunk=chunk.metadata.chunk,
+        heading=chunk.metadata.heading,
+        preview=(
+            chunk.document.removeprefix(
+                f"{chunk.metadata.heading}\n\n"
+            )[:200]
+            if chunk.metadata.heading
+            else chunk.document[:200]
+        ),
+    )

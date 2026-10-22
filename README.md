@@ -298,11 +298,11 @@ Measured on 2026-10-22 on the NIST AI RMF question set (20 answerable, 2 unanswe
 | Answer rate / abstention rate | 1.000 / 1.000 | 1.000 / 1.000 |
 | Keyword recall | 0.950 | 0.875 |
 | Mean generation time | 12.4 s (CPU) | **1.3 s** |
-| Cost per question | none | ~$0.0003 (estimate) |
+| Cost per question | none | < $0.0002 (6,241 chat tokens for 22 questions) |
 
 - With the reranker, both setups retrieve the same passages, so the embedding model can be chosen for cost, speed or privacy. On its own, `nomic-embed-text` ranked slightly better here; the chunking benchmark shows the same pattern (Evidence@3 0.789 vs 0.741 for vector search, 0.878 for both after reranking).
 - The lower keyword recall of the cloud setup comes from paraphrasing, not from wrong answers. Llama 3 tends to quote the document ("probability", "in a safe manner"), while GPT-6 Luna rewords it ("likelihood", "safely"). Reading the six answers that scored differently shows all of them correct. Keyword recall cannot compare models with different writing styles, which is why LLM-as-judge scoring is listed under Future Directions.
-- The cost is an estimate from token counts; GPT-6 Luna is a reasoning model and its reasoning tokens are billed as output.
+- The cost comes from the OpenAI usage page: 6,241 chat tokens for the 22 questions, reasoning tokens included, which stays under $0.0002 per question even if every token is billed at the output rate.
 
 Reports: [local](evaluation/results/providers/ollama/report.md), [cloud](evaluation/results/providers/openai/report.md), [chunking benchmark with OpenAI embeddings](evaluation/results/chunking_benchmark/openai-embeddings/report.md). To reproduce, pass the providers to the evaluation:
 

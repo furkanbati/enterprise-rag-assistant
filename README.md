@@ -12,6 +12,7 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 - Heading-aware, sentence-aligned chunking, with an optional semantic chunker evaluated against it
 - Metadata extraction for document source, page, heading, and chunk
 - Batch embedding generation with Ollama
+- Local (Ollama) or cloud (OpenAI) models, selected per role with environment variables
 - Persistent vector storage with ChromaDB
 - Hybrid retrieval using vector search and BM25
 - Reciprocal Rank Fusion (RRF) for combining retrieval results
@@ -69,7 +70,7 @@ Query Embedding           |
        Context and Prompt Construction
                |
                v
-        Ollama Chat Model
+  Chat Model (Ollama or OpenAI)
                |
                v
      Answer + Source Metadata
@@ -83,7 +84,7 @@ A PDF is submitted through the API. Docling parses the document into sections, a
 
 ### 2. Embedding and storage
 
-Ollama generates embeddings for the chunks. ChromaDB stores the document content, embeddings, and associated metadata for later retrieval.
+The configured embedding provider (Ollama by default, or OpenAI) generates embeddings for the chunks. ChromaDB stores the document content, embeddings, and associated metadata for later retrieval.
 
 ### 3. Hybrid retrieval
 
@@ -97,7 +98,7 @@ When a user submits a question:
 
 ### 4. Answer generation
 
-The highest-ranked chunks are passed to the chat model through Ollama. The API returns the generated answer along with source metadata and text previews to help users inspect the retrieved context.
+The highest-ranked chunks are passed to the configured chat model (Ollama by default, or OpenAI). The API returns the generated answer along with source metadata and text previews to help users inspect the retrieved context.
 
 ## Technology Stack
 
@@ -108,6 +109,7 @@ The highest-ranked chunks are passed to the chat model through Ollama. The API r
 | Streamlit | Web chat interface |
 | Docling | PDF parsing |
 | Ollama | Local model inference and embeddings |
+| OpenAI API | Optional cloud chat and embedding models |
 | Llama 3 | Answer generation |
 | nomic-embed-text | Text embeddings |
 | ChromaDB | Persistent vector storage |
@@ -247,13 +249,18 @@ Returns the active models, the chunking configuration and the indexed documents:
 
 ## Configuration
 
-Application settings are centralized in `config.py`.
+Settings live in `config.py` and can be overridden with environment variables or a `.env` file (see [`.env.example`](.env.example)).
 
 | Setting | Purpose |
 |---|---|
+| `LLM_PROVIDER` | `ollama` (default) or `openai` |
+| `EMBED_PROVIDER` | `ollama` (default) or `openai` |
+| `CHAT_MODEL` | Answer-generation model; defaults to `llama3` for Ollama and `gpt-6-luna` for OpenAI |
+| `EMBED_MODEL` | Embedding model; defaults to `nomic-embed-text` for Ollama and `text-embedding-3-small` for OpenAI |
 | `OLLAMA_HOST` | Ollama service URL |
-| `CHAT_MODEL` | Answer-generation model |
-| `EMBED_MODEL` | Embedding model |
+| `OPENAI_API_KEY` | Required when a provider is `openai` |
+| `OPENAI_BASE_URL` | Optional: any OpenAI-compatible API |
+| `OPENAI_REASONING_EFFORT` | Reasoning effort for OpenAI reasoning models (default `low`; empty to omit) |
 | `RERANK_MODEL` | Cross-encoder reranking model |
 | `CHROMA_PATH` | Persistent vector database path |
 | `COLLECTION_NAME` | Base name of the ChromaDB collection; the embedding model and chunking configuration are appended, so each combination has its own collection |
@@ -266,6 +273,42 @@ Application settings are centralized in `config.py`.
 | `SEMANTIC_WINDOW` | Semantic chunking: sentences on each side embedded with each sentence |
 
 The default configuration uses the Ollama service provided by Docker Compose.
+
+## Model Providers
+
+The chat model and the embedding model are chosen independently. To answer with OpenAI, add the key and the providers to `.env` and restart the API:
+
+```dotenv
+OPENAI_API_KEY=sk-...
+LLM_PROVIDER=openai
+EMBED_PROVIDER=openai
+```
+
+Switching the chat provider takes effect immediately. Each embedding model has its own collection, so after switching the embedding provider the documents have to be uploaded again. A missing key or an unknown provider stops the API at startup with a clear message.
+
+### Local vs cloud
+
+Measured on 2026-10-22 on the NIST AI RMF question set (20 answerable, 2 unanswerable), with the AI RMF, CSF 2.0 and FOMC transcript indexed, sentence chunking and the same cross-encoder reranker.
+
+| | Local (Ollama) | Cloud (OpenAI) |
+|---|---|---|
+| Models | `llama3` + `nomic-embed-text` | `gpt-6-luna` + `text-embedding-3-small` |
+| MRR, vector search only | 0.950 | 0.892 |
+| MRR, full pipeline | **1.000** | **1.000** |
+| Answer rate / abstention rate | 1.000 / 1.000 | 1.000 / 1.000 |
+| Keyword recall | 0.950 | 0.875 |
+| Mean generation time | 12.4 s (CPU) | **1.3 s** |
+| Cost per question | none | ~$0.0003 (estimate) |
+
+- With the reranker, both setups retrieve the same passages, so the embedding model can be chosen for cost, speed or privacy. On its own, `nomic-embed-text` ranked slightly better here; the chunking benchmark shows the same pattern (Evidence@3 0.789 vs 0.741 for vector search, 0.878 for both after reranking).
+- The lower keyword recall of the cloud setup comes from paraphrasing, not from wrong answers. Llama 3 tends to quote the document ("probability", "in a safe manner"), while GPT-6 Luna rewords it ("likelihood", "safely"). Reading the six answers that scored differently shows all of them correct. Keyword recall cannot compare models with different writing styles, which is why LLM-as-judge scoring is listed under Future Directions.
+- The cost is an estimate from token counts; GPT-6 Luna is a reasoning model and its reasoning tokens are billed as output.
+
+Reports: [local](evaluation/results/providers/ollama/report.md), [cloud](evaluation/results/providers/openai/report.md), [chunking benchmark with OpenAI embeddings](evaluation/results/chunking_benchmark/openai-embeddings/report.md). To reproduce, pass the providers to the evaluation:
+
+```bash
+docker compose exec -e LLM_PROVIDER=openai -e EMBED_PROVIDER=openai api python -m evaluation --generate --output evaluation/results/providers/openai
+```
 
 ## Evaluation
 
@@ -431,7 +474,7 @@ enterprise-rag-assistant/
 
 **Source metadata:** Keeping page and heading information with each chunk allows the API to return inspectable source details.
 
-**Local inference:** Ollama provides the chat and embedding models, avoiding a dependency on a hosted model API for inference.
+**Local or cloud inference:** Ollama keeps documents on the machine; OpenAI answers about ten times faster. Both use the same retrieval pipeline, so the choice is a configuration change.
 
 **Containerized setup:** Docker Compose provides a repeatable way to run the API and Ollama services.
 
@@ -447,7 +490,7 @@ Answers depend on document quality, retrieval relevance, and model behavior. Sou
 
 ## Future Directions
 
-Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring, authentication, additional document formats, and monitoring.
+Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring to compare models with different writing styles, authentication, additional document formats, and monitoring.
 
 For chunking, the measurements point to three next steps: using the semantic chunker only for documents without headings, splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk), and prefixing chunks with document context so that similar frameworks such as the AI RMF and CSF are told apart more reliably.
 

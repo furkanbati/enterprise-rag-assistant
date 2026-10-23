@@ -1,5 +1,7 @@
 # Enterprise RAG Assistant
 
+[![CI](https://github.com/furkanbati/enterprise-rag-assistant/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/furkanbati/enterprise-rag-assistant/actions/workflows/ci.yml)
+
 A document question-answering system built with **Python, FastAPI, ChromaDB, Ollama, and Docker**.
 
 The application ingests PDF documents, retrieves relevant passages using hybrid search, reranks the results, and generates answers with source metadata and text previews.
@@ -402,6 +404,8 @@ Both were measured on the chunking benchmark with the full retrieval pipeline. B
 
 Sentence-aligned chunks retrieve more evidence at every budget. In documents with clear headings, Docling's sections already follow topic boundaries; semantic splitting mostly makes chunks larger, and their embeddings less specific. Only in the FOMC transcript, which has no headings, is the semantic chunker slightly ahead, on 14 questions. `sentence` therefore stays the default. See the [full comparison](evaluation/results/chunking_benchmark/comparison.md) for all variants, results by document, and limitations.
 
+On all 48 answerable questions of the three-document benchmark, the full pipeline with the default settings reaches MRR 0.970 and Evidence@3 0.878 ([report](evaluation/results/chunking_benchmark/report.md)).
+
 ## Running the Tests
 
 The project includes automated tests for the API, document parsing, chunking, ingestion, retrieval, generation, vector storage, and the evaluation harness.
@@ -412,7 +416,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 124 tests passed.
+**Verified locally:** 124 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 
@@ -459,6 +463,9 @@ enterprise-rag-assistant/
 ├── docs/
 │   └── ui.png
 ├── tests/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── Dockerfile
 ├── Dockerfile.test
 ├── Dockerfile.ui

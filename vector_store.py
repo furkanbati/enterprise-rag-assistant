@@ -122,6 +122,18 @@ class VectorStore:
             )
         ]
 
+    def delete_source(self, source: str) -> int:
+        """Delete every chunk of a document and return how many were deleted."""
+
+        result = self.collection.get(where={"source": source}, include=[])
+        ids = result["ids"]
+
+        if ids:
+            logger.info("Deleting %d chunks of %s", len(ids), source)
+            self.collection.delete(ids=ids)
+
+        return len(ids)
+
     def list_sources(self) -> dict[str, int]:
         """Indexed documents and their number of chunks."""
 

@@ -91,16 +91,31 @@ def test_error_response_carries_the_api_detail(monkeypatch):
         list(ApiClient("http://api:8000").stream_answer("Q?"))
 
 
-def test_upload_returns_the_api_message(monkeypatch):
+def test_upload_returns_the_ingestion_result(monkeypatch):
+    body = {
+        "message": "Document indexed successfully.",
+        "source": "guide.docx",
+        "chunks": 4,
+        "replaced": True,
+    }
+    calls = fake_request(monkeypatch, FakeResponse(body=body))
+
+    result = ApiClient("http://api:8000").upload("guide.docx", b"DOCX")
+
+    assert result == body
+    assert calls[0][2]["files"]["file"] == ("guide.docx", b"DOCX")
+
+
+def test_delete_document_quotes_the_file_name(monkeypatch):
     calls = fake_request(
         monkeypatch,
-        FakeResponse(body={"message": "Document indexed successfully."}),
+        FakeResponse(body={"source": "My Policy.pdf", "deleted_chunks": 3}),
     )
 
-    message = ApiClient("http://api:8000").upload("guide.pdf", b"PDF")
+    result = ApiClient("http://api:8000").delete_document("My Policy.pdf")
 
-    assert message == "Document indexed successfully."
-    assert calls[0][2]["files"]["file"] == ("guide.pdf", b"PDF", "application/pdf")
+    assert result["deleted_chunks"] == 3
+    assert calls[0][:2] == ("delete", "http://api:8000/documents/My%20Policy.pdf")
 
 
 def test_rejected_upload_raises_with_the_reason(monkeypatch):

@@ -215,3 +215,22 @@ def test_list_sources_counts_chunks_per_document(monkeypatch):
     }
 
     assert store.list_sources() == {"a.pdf": 2, "b.pdf": 1}
+
+
+def test_delete_source_removes_only_that_documents_chunks(monkeypatch):
+    store, collection, _ = make_store(monkeypatch)
+    collection.get_result = {"ids": ["a1", "a2"]}
+    deleted_ids = []
+    collection.delete = lambda ids: deleted_ids.extend(ids)
+
+    assert store.delete_source("a.pdf") == 2
+    assert collection.get_kwargs == {"where": {"source": "a.pdf"}, "include": []}
+    assert deleted_ids == ["a1", "a2"]
+
+
+def test_delete_source_of_unknown_document_deletes_nothing(monkeypatch):
+    store, collection, _ = make_store(monkeypatch)
+    collection.get_result = {"ids": []}
+    collection.delete = lambda ids: pytest.fail("delete should not be called")
+
+    assert store.delete_source("missing.pdf") == 0

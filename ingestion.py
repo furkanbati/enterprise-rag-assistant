@@ -3,6 +3,7 @@ from pathlib import Path
 
 from chunking import Chunker
 from document_parser import DocumentParser
+from models import IngestionResult
 from providers.base import Embedder
 from vector_store import VectorStore
 from retrieval.keyword_search import KeywordSearch
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class Ingestion:
-    """Processes PDF documents and stores their embeddings in the vector database."""
+    """Processes documents and stores their embeddings in the vector database."""
 
     def __init__(
         self,
@@ -25,17 +26,33 @@ class Ingestion:
         self.keyword_search = keyword_search
         self.document_parser = DocumentParser()
 
-    def ingest(self, pdf_path: str) -> None:
-        sections = self.document_parser.parse(pdf_path)
+    def ingest(self, path: str) -> IngestionResult:
+        """Index a document, replacing an earlier version with the same name.
+
+        The new version is parsed, chunked and embedded before the old one is
+        deleted, so a document that fails to process leaves the indexed
+        version untouched.
+        """
+
+        source = Path(path).name
+        sections = self.document_parser.parse(path)
 
         documents, metadatas = self.chunker.chunk(
             sections=sections,
-            source=Path(pdf_path).name,
+            source=source,
         )
+
+        if not documents:
+            raise ValueError(
+                f"No text could be extracted from {source}. "
+                "Scanned documents need OCR, which is not enabled."
+            )
 
         logger.info("Extracted %d document chunks", len(documents))
 
         embeddings = self.embedder.embed_batch(documents)
+
+        replaced = self.vector_store.delete_source(source) > 0
 
         self.vector_store.add(
             documents=documents,
@@ -44,3 +61,9 @@ class Ingestion:
         )
         self.keyword_search.rebuild()
         logger.info("Stored %d document chunks", len(documents))
+
+        return IngestionResult(
+            source=source,
+            chunks=len(documents),
+            replaced=replaced,
+        )

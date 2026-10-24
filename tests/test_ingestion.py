@@ -1,6 +1,8 @@
 
 from pathlib import Path
 
+import pytest
+
 import ingestion as ingestion_module
 from ingestion import Ingestion
 from models import ChunkMetadata, Section
@@ -51,10 +53,19 @@ class FakeEmbedder:
 
 
 class FakeVectorStore:
-    def __init__(self):
+    def __init__(self, existing_chunks=0):
         self.added = None
+        self.existing_chunks = existing_chunks
+        self.deleted_sources = []
+        self.events = []
+
+    def delete_source(self, source):
+        self.events.append("delete")
+        self.deleted_sources.append(source)
+        return self.existing_chunks
 
     def add(self, documents, embeddings, metadatas):
+        self.events.append("add")
         self.added = (documents, embeddings, metadatas)
 
 
@@ -122,7 +133,43 @@ def test_ingest_parses_embeds_stores_and_rebuilds_index(monkeypatch):
     assert keyword_search.rebuild_called
 
 
-def test_ingest_handles_empty_chunk_results(monkeypatch):
+def test_ingest_reports_a_new_document(monkeypatch):
+    service, _, _, vector_store, _ = make_ingestion(monkeypatch, FakeChunker())
+
+    result = service.ingest("/tmp/guide.pdf")
+
+    assert result.source == "guide.pdf"
+    assert result.chunks == 1
+    assert result.replaced is False
+    assert vector_store.deleted_sources == ["guide.pdf"]
+
+
+def test_ingest_replaces_an_earlier_version_after_embedding(monkeypatch):
+    service, _, _, vector_store, _ = make_ingestion(monkeypatch, FakeChunker())
+    vector_store.existing_chunks = 7
+
+    result = service.ingest("/tmp/guide.pdf")
+
+    assert result.replaced is True
+    # The old chunks are removed only once the new ones are ready to add.
+    assert vector_store.events == ["delete", "add"]
+
+
+def test_failed_embedding_keeps_the_indexed_version(monkeypatch):
+    service, _, embedder, vector_store, _ = make_ingestion(monkeypatch, FakeChunker())
+
+    def failing_embed(documents):
+        raise RuntimeError("Embedding service unavailable")
+
+    embedder.embed_batch = failing_embed
+
+    with pytest.raises(RuntimeError):
+        service.ingest("/tmp/guide.pdf")
+
+    assert vector_store.events == []
+
+
+def test_document_without_text_is_rejected_and_nothing_changes(monkeypatch):
     class EmptyChunker:
         def chunk(self, sections, source):
             return [], []
@@ -135,9 +182,9 @@ def test_ingest_handles_empty_chunk_results(monkeypatch):
         keyword_search,
     ) = make_ingestion(monkeypatch, EmptyChunker())
 
-    service.ingest("/tmp/empty.pdf")
+    with pytest.raises(ValueError, match="No text could be extracted from scan.pdf"):
+        service.ingest("/tmp/scan.pdf")
 
-    assert embedder.documents == []
-    assert vector_store.added == ([], [], [])
-    assert keyword_search.rebuild_called
- 
+    assert embedder.documents is None
+    assert vector_store.events == []
+    assert not keyword_search.rebuild_called

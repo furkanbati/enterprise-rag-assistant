@@ -2,6 +2,7 @@
 
 import json
 from collections.abc import Iterable, Iterator
+from urllib.parse import quote
 
 import requests
 
@@ -27,15 +28,27 @@ class ApiClient:
 
         return response.json()
 
-    def upload(self, filename: str, content: bytes) -> str:
+    def upload(self, filename: str, content: bytes) -> dict:
+        """Index a document; returns its name, chunk count and whether an
+        earlier version was replaced."""
+
         response = self._request(
             "post",
             "/upload",
-            files={"file": (filename, content, "application/pdf")},
+            files={"file": (filename, content)},
             timeout=(CONNECT_TIMEOUT_SECONDS, ANSWER_TIMEOUT_SECONDS),
         )
 
-        return response.json()["message"]
+        return response.json()
+
+    def delete_document(self, source: str) -> dict:
+        response = self._request(
+            "delete",
+            f"/documents/{quote(source, safe='')}",
+            timeout=CONNECT_TIMEOUT_SECONDS,
+        )
+
+        return response.json()
 
     def stream_answer(self, question: str) -> Iterator[dict]:
         """Yield the events of POST /chat/stream as they arrive."""

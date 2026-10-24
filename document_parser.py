@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from docling_core.types.doc import DocItemLabel
 from docling.document_converter import (
     DocumentConverter,
@@ -6,6 +8,9 @@ from docling.document_converter import (
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from models import Section
+
+# Docling parses everything except plain text, which is read directly.
+SUPPORTED_EXTENSIONS = (".pdf", ".docx", ".html", ".htm", ".md", ".txt")
 
 
 class DocumentParser:
@@ -21,6 +26,12 @@ class DocumentParser:
         options.do_code_enrichment = False
         
         self.converter = DocumentConverter(
+            allowed_formats=[
+                InputFormat.PDF,
+                InputFormat.DOCX,
+                InputFormat.HTML,
+                InputFormat.MD,
+            ],
             format_options={
                 InputFormat.PDF: PdfFormatOption(
                     pipeline_options=options,
@@ -28,10 +39,17 @@ class DocumentParser:
             }
         )
     
-    def parse(self, pdf_path: str) -> list[Section]:
-        """Parse a PDF into document sections."""
+    def parse(self, path: str) -> list[Section]:
+        """Parse a document into sections.
 
-        result = self.converter.convert(pdf_path)
+        Formats without pages (DOCX, HTML, Markdown, text) put every section
+        on page 1.
+        """
+
+        if Path(path).suffix.lower() == ".txt":
+            return self._parse_text(path)
+
+        result = self.converter.convert(path)
         document = result.document
 
         sections: list[Section] = []
@@ -45,7 +63,8 @@ class DocumentParser:
 
             match item.label:
 
-                case DocItemLabel.SECTION_HEADER:
+                # DOCX, HTML and Markdown mark the document heading as a title.
+                case DocItemLabel.TITLE | DocItemLabel.SECTION_HEADER:
                     self._flush_section(
                         sections,
                         current_heading,
@@ -55,11 +74,12 @@ class DocumentParser:
                     )
 
                     current_heading = item.text.strip()
-                    current_level = getattr(item, "level", 1)
+                    current_level = getattr(item, "level", None) or 1
                     current_page = self._get_page(item)
                     current_text = []
 
-                case DocItemLabel.TEXT:
+                # DOCX paragraphs are labelled as paragraphs, not text.
+                case DocItemLabel.TEXT | DocItemLabel.PARAGRAPH:
                     current_text.append(item.text)
 
                 case DocItemLabel.LIST_ITEM:
@@ -74,6 +94,15 @@ class DocumentParser:
         )
 
         return sections
+
+    @staticmethod
+    def _parse_text(path: str) -> list[Section]:
+        text = Path(path).read_text(encoding="utf-8", errors="replace").strip()
+
+        if not text:
+            return []
+
+        return [Section(heading="", level=1, page=1, text=text)]
 
     @staticmethod
     def _flush_section(

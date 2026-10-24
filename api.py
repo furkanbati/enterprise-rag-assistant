@@ -30,6 +30,7 @@ from config import (
 from retrieval.vector_search import VectorSearch
 from retrieval.keyword_search import KeywordSearch
 from generator import Generator
+from document_parser import SUPPORTED_EXTENSIONS
 from ingestion import Ingestion
 from pipeline import Pipeline
 from providers.factory import build_chat_client, build_embedder
@@ -126,22 +127,47 @@ def info() -> dict:
             SEMANTIC_WINDOW,
         ),
         "reranker": RERANK_MODEL,
-        "documents": [
-            {"source": source, "chunks": chunks}
-            for source, chunks in sorted(vector_store.list_sources().items())
-        ],
+        "documents": _documents(),
     }
 
 
+@app.get("/documents")
+def documents() -> list[dict]:
+    """Indexed documents and their number of chunks."""
+
+    return _documents()
+
+
+@app.delete("/documents/{source}")
+def delete_document(source: str) -> dict:
+    """Remove a document and all of its chunks from the index."""
+
+    deleted = vector_store.delete_source(source)
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Document not found: {source}",
+        )
+
+    keyword_search.rebuild()
+    logger.info("Deleted document: %s (%d chunks)", source, deleted)
+
+    return {"source": source, "deleted_chunks": deleted}
+
+
 @app.post("/upload")
-def upload(file: UploadFile = File(...)) -> dict[str, str]:
+def upload(file: UploadFile = File(...)) -> dict:
     # Keep only the name, so a crafted file name cannot write elsewhere.
     filename = Path(file.filename or "").name
 
-    if not filename.lower().endswith(".pdf"):
+    if Path(filename).suffix.lower() not in SUPPORTED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
-            detail="Only PDF files can be uploaded.",
+            detail=(
+                "Unsupported file type. Supported types: "
+                + ", ".join(SUPPORTED_EXTENSIONS)
+            ),
         )
 
     logger.info("Uploading document: %s", filename)
@@ -152,7 +178,10 @@ def upload(file: UploadFile = File(...)) -> dict[str, str]:
         file_path.write_bytes(file.file.read())
 
         try:
-            ingestion.ingest(str(file_path))
+            result = ingestion.ingest(str(file_path))
+        except ValueError as e:
+            # The document was read but contains no usable text.
+            raise HTTPException(status_code=422, detail=str(e))
         except Exception as e:
             logger.exception("Failed to index document: %s", filename)
             raise HTTPException(
@@ -163,7 +192,10 @@ def upload(file: UploadFile = File(...)) -> dict[str, str]:
     logger.info("Document indexed successfully: %s", filename)
 
     return {
-        "message": "Document indexed successfully."
+        "message": "Document indexed successfully.",
+        "source": result.source,
+        "chunks": result.chunks,
+        "replaced": result.replaced,
     }
 
 
@@ -228,6 +260,13 @@ def _stream_events(question: str) -> Iterator[str]:
     except Exception as e:
         logger.exception("Failed to stream response")
         yield _event({"type": "error", "detail": str(e)})
+
+
+def _documents() -> list[dict]:
+    return [
+        {"source": source, "chunks": chunks}
+        for source, chunks in sorted(vector_store.list_sources().items())
+    ]
 
 
 def _event(data: dict) -> str:

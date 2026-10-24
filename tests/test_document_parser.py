@@ -1,6 +1,8 @@
 
 from types import SimpleNamespace
 
+import docx
+import pytest
 from docling_core.types.doc import DocItemLabel
 
 from document_parser import DocumentParser
@@ -155,3 +157,69 @@ def test_parse_returns_empty_list_when_document_has_no_text():
     sections = parser.parse("empty.pdf")
 
     assert sections == []
+
+
+def test_parse_treats_titles_as_headings_and_paragraphs_as_text():
+    parser = make_parser(
+        [
+            make_item(DocItemLabel.TITLE, "Handbook", level=None, with_provenance=False),
+            make_item(DocItemLabel.PARAGRAPH, "Intro paragraph.", with_provenance=False),
+        ]
+    )
+
+    sections = parser.parse("handbook.docx")
+
+    assert [(s.heading, s.level, s.page, s.text) for s in sections] == [
+        ("Handbook", 1, 1, "Intro paragraph."),
+    ]
+
+
+def test_parse_reads_plain_text_without_docling(tmp_path):
+    parser = make_parser([])
+    path = tmp_path / "notes.txt"
+    path.write_text("First line.\nSecond line.\n", encoding="utf-8")
+
+    sections = parser.parse(str(path))
+
+    assert [(s.heading, s.page, s.text) for s in sections] == [
+        ("", 1, "First line.\nSecond line."),
+    ]
+    assert parser.converter.received_path is None
+
+
+def test_parse_returns_nothing_for_an_empty_text_file(tmp_path):
+    path = tmp_path / "empty.txt"
+    path.write_text("  \n", encoding="utf-8")
+
+    assert make_parser([]).parse(str(path)) == []
+
+
+@pytest.mark.parametrize("name", ["policy.md", "policy.html", "policy.docx"])
+def test_parse_real_documents_in_each_supported_format(tmp_path, name):
+    path = tmp_path / name
+
+    if name.endswith(".md"):
+        path.write_text(
+            "# Handbook\n\nIntro paragraph.\n\n## Leave policy\n\nEmployees get 20 days.\n",
+            encoding="utf-8",
+        )
+    elif name.endswith(".html"):
+        path.write_text(
+            "<html><body><h1>Handbook</h1><p>Intro paragraph.</p>"
+            "<h2>Leave policy</h2><p>Employees get 20 days.</p></body></html>",
+            encoding="utf-8",
+        )
+    else:
+        document = docx.Document()
+        document.add_heading("Handbook", 0)
+        document.add_paragraph("Intro paragraph.")
+        document.add_heading("Leave policy", 1)
+        document.add_paragraph("Employees get 20 days.")
+        document.save(path)
+
+    sections = DocumentParser().parse(str(path))
+
+    assert [(s.heading, s.text) for s in sections] == [
+        ("Handbook", "Intro paragraph."),
+        ("Leave policy", "Employees get 20 days."),
+    ]

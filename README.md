@@ -4,7 +4,7 @@
 
 A document question-answering system built with **Python, FastAPI, ChromaDB, Ollama, and Docker**.
 
-The application ingests PDF documents, retrieves relevant passages using hybrid search, reranks the results, and generates answers with source metadata and text previews.
+The application ingests PDF, Word, HTML, Markdown and text documents, retrieves relevant passages using hybrid search, reranks the results, and generates answers with source metadata and text previews.
 
 It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, from document ingestion to grounded question answering.
 
@@ -12,7 +12,8 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 
 ## Key Features
 
-- PDF ingestion and structured document parsing with Docling
+- Ingestion of PDF, DOCX, HTML, Markdown and plain-text files, with structured parsing by Docling
+- Document management: re-uploading a file replaces its earlier version, and documents can be listed and removed
 - Heading-aware, sentence-aligned chunking, with an optional semantic chunker evaluated against it
 - Metadata extraction for document source, page, heading, and chunk
 - Batch embedding generation with Ollama
@@ -158,13 +159,13 @@ Once the services are running, open:
 
 **http://localhost:8501**
 
-Upload a PDF from the sidebar, then ask questions in the chat. The sources appear as soon as retrieval is done, the answer streams in token by token, and each answer lists its sources and the retrieval and generation times.
+Upload a document from the sidebar, then ask questions in the chat. The sources appear as soon as retrieval is done, the answer streams in token by token, and each answer lists its sources and the retrieval and generation times.
 
 The interactive API documentation is available at **http://localhost:8000/docs**. Both services are published on `localhost` only, so they are not reachable from other devices on the network.
 
 ## API Usage
 
-### Upload a PDF
+### Upload a document
 
 Endpoint:
 
@@ -172,7 +173,29 @@ Endpoint:
 POST /upload
 ```
 
-The endpoint accepts a PDF file, processes its content, generates embeddings, and indexes its chunks in ChromaDB. Other file types are rejected with status 400. The upload is written to a temporary directory and removed once it is indexed.
+The endpoint accepts `.pdf`, `.docx`, `.html`, `.htm`, `.md` and `.txt` files, processes their content, generates embeddings, and indexes the chunks in ChromaDB. Other file types are rejected with status 400, and a file with no extractable text (for example a scanned PDF, since OCR is not enabled) with status 422. The upload is written to a temporary directory and removed once it is indexed.
+
+Uploading a file with the same name as an indexed document replaces it. The new version is parsed and embedded first, and the old chunks are removed only then, so a file that fails to process leaves the indexed version untouched. The response reports the result:
+
+```json
+{
+  "message": "Document indexed successfully.",
+  "source": "NIST.CSWP.29.pdf",
+  "chunks": 124,
+  "replaced": true
+}
+```
+
+Formats without pages (DOCX, HTML, Markdown, text) report every source on page 1.
+
+### Manage documents
+
+```http
+GET /documents
+DELETE /documents/{source}
+```
+
+`GET /documents` lists the indexed documents with their number of chunks. `DELETE /documents/{source}` removes a document and all of its chunks, and returns 404 for an unknown name. The web interface offers the same actions in its sidebar.
 
 ### Ask a question
 
@@ -416,7 +439,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 124 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
+**Verified locally:** 147 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 
@@ -491,7 +514,7 @@ enterprise-rag-assistant/
 
 ## Scope and Limitations
 
-The current implementation focuses on PDF-based question answering. It does not currently provide:
+The current implementation focuses on question answering over text documents. It does not currently provide:
 
 - User authentication or authorization
 - Persistent conversation history: the web interface keeps the chat on screen only, and each question is answered on its own
@@ -501,7 +524,7 @@ Answers depend on document quality, retrieval relevance, and model behavior. Sou
 
 ## Future Directions
 
-Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring to compare models with different writing styles, authentication, additional document formats, and monitoring.
+Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring to compare models with different writing styles, authentication, OCR for scanned documents, and monitoring.
 
 For chunking, the measurements point to three next steps: using the semantic chunker only for documents without headings, splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk), and prefixing chunks with document context so that similar frameworks such as the AI RMF and CSF are told apart more reliably.
 

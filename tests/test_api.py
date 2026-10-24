@@ -3,10 +3,11 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 from fastapi.testclient import TestClient
 
 import api
-from models import ChunkMetadata, RetrievedChunk
+from models import ChunkMetadata, IngestionResult, RetrievedChunk
 
 
 client = TestClient(api.app)
@@ -38,6 +39,7 @@ def test_upload_indexes_document_from_a_temporary_file(tmp_path, monkeypatch):
 
     def fake_ingest(file_path):
         ingested.append((Path(file_path), Path(file_path).read_bytes()))
+        return IngestionResult(source="guide.pdf", chunks=4, replaced=False)
 
     monkeypatch.setattr(api.ingestion, "ingest", fake_ingest)
 
@@ -54,7 +56,10 @@ def test_upload_indexes_document_from_a_temporary_file(tmp_path, monkeypatch):
 
     assert response.status_code == 200
     assert response.json() == {
-        "message": "Document indexed successfully."
+        "message": "Document indexed successfully.",
+        "source": "guide.pdf",
+        "chunks": 4,
+        "replaced": False,
     }
 
     [(path, content)] = ingested
@@ -65,9 +70,17 @@ def test_upload_indexes_document_from_a_temporary_file(tmp_path, monkeypatch):
     assert not path.exists()
 
 
+def fake_ingest_recording(ingested):
+    def ingest(file_path):
+        ingested.append(file_path)
+        return IngestionResult(source=Path(file_path).name, chunks=1, replaced=False)
+
+    return ingest
+
+
 def test_upload_keeps_only_the_file_name(monkeypatch):
     ingested = []
-    monkeypatch.setattr(api.ingestion, "ingest", ingested.append)
+    monkeypatch.setattr(api.ingestion, "ingest", fake_ingest_recording(ingested))
 
     response = client.post(
         "/upload",
@@ -79,17 +92,99 @@ def test_upload_keeps_only_the_file_name(monkeypatch):
     assert ".." not in Path(ingested[0]).parts
 
 
-def test_upload_rejects_files_that_are_not_pdfs(monkeypatch):
+def test_upload_rejects_unsupported_file_types(monkeypatch):
     ingested = []
-    monkeypatch.setattr(api.ingestion, "ingest", ingested.append)
+    monkeypatch.setattr(api.ingestion, "ingest", fake_ingest_recording(ingested))
 
     response = client.post(
         "/upload",
-        files={"file": ("notes.txt", b"text", "text/plain")},
+        files={"file": ("setup.exe", b"binary", "application/octet-stream")},
     )
 
     assert response.status_code == 400
+    assert ".docx" in response.json()["detail"]
     assert ingested == []
+
+
+@pytest.mark.parametrize(
+    "name",
+    ["guide.PDF", "policy.docx", "page.html", "page.htm", "notes.md", "notes.txt"],
+)
+def test_upload_accepts_every_supported_format(monkeypatch, name):
+    ingested = []
+    monkeypatch.setattr(api.ingestion, "ingest", fake_ingest_recording(ingested))
+
+    response = client.post("/upload", files={"file": (name, b"content")})
+
+    assert response.status_code == 200
+    assert Path(ingested[0]).name == name
+
+
+def test_upload_reports_a_replaced_document(monkeypatch):
+    monkeypatch.setattr(
+        api.ingestion,
+        "ingest",
+        lambda file_path: IngestionResult(source="guide.pdf", chunks=9, replaced=True),
+    )
+
+    response = client.post("/upload", files={"file": ("guide.pdf", b"PDF")})
+
+    assert response.json()["replaced"] is True
+    assert response.json()["chunks"] == 9
+
+
+def test_upload_returns_422_for_a_document_without_text(monkeypatch):
+    def no_text(file_path):
+        raise ValueError("No text could be extracted from scan.pdf.")
+
+    monkeypatch.setattr(api.ingestion, "ingest", no_text)
+
+    response = client.post("/upload", files={"file": ("scan.pdf", b"PDF")})
+
+    assert response.status_code == 422
+    assert response.json()["detail"] == "No text could be extracted from scan.pdf."
+
+
+def test_documents_lists_indexed_documents(monkeypatch):
+    monkeypatch.setattr(api.vector_store, "list_sources", lambda: {"b.md": 2, "a.pdf": 5})
+
+    response = client.get("/documents")
+
+    assert response.json() == [
+        {"source": "a.pdf", "chunks": 5},
+        {"source": "b.md", "chunks": 2},
+    ]
+
+
+def test_delete_document_removes_chunks_and_rebuilds_keyword_index(monkeypatch):
+    deleted = []
+    rebuilt = []
+    monkeypatch.setattr(
+        api.vector_store,
+        "delete_source",
+        lambda source: deleted.append(source) or 3,
+    )
+    monkeypatch.setattr(api.keyword_search, "rebuild", lambda: rebuilt.append(True))
+
+    response = client.delete("/documents/My%20Policy.pdf")
+
+    assert response.status_code == 200
+    assert response.json() == {"source": "My Policy.pdf", "deleted_chunks": 3}
+    assert deleted == ["My Policy.pdf"]
+    assert rebuilt == [True]
+
+
+def test_delete_unknown_document_returns_404(monkeypatch):
+    monkeypatch.setattr(api.vector_store, "delete_source", lambda source: 0)
+    monkeypatch.setattr(
+        api.keyword_search,
+        "rebuild",
+        lambda: pytest.fail("rebuild should not be called"),
+    )
+
+    response = client.delete("/documents/missing.pdf")
+
+    assert response.status_code == 404
 
 
 def test_upload_returns_500_when_ingestion_fails(tmp_path, monkeypatch):

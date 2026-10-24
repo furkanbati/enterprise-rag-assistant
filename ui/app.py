@@ -11,6 +11,8 @@ from client import ApiClient, ApiError
 
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 
+UPLOAD_TYPES = ["pdf", "docx", "html", "htm", "md", "txt"]
+
 api = ApiClient(API_URL)
 
 st.set_page_config(
@@ -43,6 +45,27 @@ def render_timing(timing: dict | None) -> None:
         )
 
 
+def render_document(document: dict) -> None:
+    """One row of the document list, with a confirmed remove action."""
+
+    name_column, remove_column = st.columns([3, 1], vertical_alignment="center")
+    name_column.markdown(
+        f"{document['source']}  \n:gray[{document['chunks']} chunks]"
+    )
+
+    with remove_column.popover(":material/delete:", help="Remove document"):
+        st.write(f"Remove **{document['source']}** from the index?")
+
+        if st.button("Remove", key=f"remove-{document['source']}", type="primary"):
+            try:
+                api.delete_document(document["source"])
+            except ApiError as e:
+                st.error(str(e))
+            else:
+                st.session_state["notice"] = f"Removed {document['source']}."
+                st.rerun()
+
+
 def render_sidebar() -> None:
     st.header("Enterprise RAG Assistant")
 
@@ -63,29 +86,32 @@ def render_sidebar() -> None:
     st.subheader("Documents")
 
     if info["documents"]:
-        st.markdown(
-            "\n".join(
-                f"- {document['source']} ({document['chunks']} chunks)"
-                for document in info["documents"]
-            )
-        )
+        for document in info["documents"]:
+            render_document(document)
     else:
-        st.info("No documents indexed yet. Upload a PDF to start.")
+        st.info("No documents indexed yet. Upload a document to start.")
 
     # Shown once after the rerun that refreshes the document list.
     if notice := st.session_state.pop("notice", None):
         st.success(notice)
 
-    uploaded = st.file_uploader("Add a PDF", type=["pdf"])
+    uploaded = st.file_uploader(
+        "Add a document",
+        type=UPLOAD_TYPES,
+        help="Uploading a file with the name of an indexed document replaces it.",
+    )
 
     if uploaded and st.button("Index document", use_container_width=True):
         with st.spinner(f"Indexing {uploaded.name}..."):
             try:
-                api.upload(uploaded.name, uploaded.getvalue())
+                result = api.upload(uploaded.name, uploaded.getvalue())
             except ApiError as e:
                 st.error(str(e))
             else:
-                st.session_state["notice"] = f"Indexed {uploaded.name}."
+                verb = "Replaced" if result["replaced"] else "Indexed"
+                st.session_state["notice"] = (
+                    f"{verb} {result['source']} ({result['chunks']} chunks)."
+                )
                 st.rerun()
 
     st.divider()

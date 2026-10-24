@@ -33,6 +33,12 @@ class PipelineResult:
     chunks: list[RetrievedChunk]
 
 @dataclass
+class IngestionResult:
+    source: str
+    chunks: int
+    replaced: bool
+
+@dataclass
 class Section:
     heading: str
     level: int

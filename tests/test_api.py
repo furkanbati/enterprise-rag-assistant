@@ -240,6 +240,7 @@ def test_chat_returns_answer_and_source_metadata(monkeypatch):
         "sources": [
             {
                 "source": "guide.pdf",
+                "title": "",
                 "page": 2,
                 "chunk": 3,
                 "heading": "Introduction",
@@ -247,6 +248,30 @@ def test_chat_returns_answer_and_source_metadata(monkeypatch):
             }
         ],
     }
+
+
+def test_source_preview_skips_the_title_and_heading_lines(monkeypatch):
+    chunk = RetrievedChunk(
+        document="Python Guide\nIntroduction\n\nPython is a programming language.",
+        metadata=ChunkMetadata(
+            source="guide.pdf",
+            page=2,
+            chunk=3,
+            heading="Introduction",
+            level=1,
+            title="Python Guide",
+        ),
+    )
+    monkeypatch.setattr(
+        api.pipeline,
+        "run",
+        lambda question: SimpleNamespace(answer="A language.", chunks=[chunk]),
+    )
+
+    source = client.post("/chat", json={"question": "Q?"}).json()["sources"][0]
+
+    assert source["title"] == "Python Guide"
+    assert source["preview"] == "Python is a programming language."
 
 
 def test_chat_truncates_source_preview_to_200_characters(monkeypatch):
@@ -381,7 +406,12 @@ def test_info_reports_models_and_indexed_documents(monkeypatch):
     data = response.json()
     assert data["chat_model"] == f"{api.LLM_PROVIDER}/{api.CHAT_MODEL}"
     assert data["embedding_model"] == f"{api.EMBED_PROVIDER}/{api.EMBED_MODEL}"
-    assert data["chunking"] == api.CHUNKING_STRATEGY
+    assert data["chunking"] == api.chunking_id(
+        api.CHUNKING_STRATEGY,
+        api.SEMANTIC_PERCENTILE,
+        api.SEMANTIC_WINDOW,
+        api.CHUNK_CONTEXT,
+    )
     assert data["documents"] == [
         {"source": "a.pdf", "chunks": 5},
         {"source": "b.pdf", "chunks": 3},

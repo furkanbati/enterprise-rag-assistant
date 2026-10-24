@@ -14,7 +14,7 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 
 - Ingestion of PDF, DOCX, HTML, Markdown and plain-text files, with structured parsing by Docling
 - Document management: re-uploading a file replaces its earlier version, and documents can be listed and removed
-- Heading-aware, sentence-aligned chunking, with an optional semantic chunker evaluated against it
+- Heading-aware, sentence-aligned chunking that keeps each chunk's document title, with an optional semantic chunker evaluated against it
 - Metadata extraction for document source, page, heading, and chunk
 - Batch embedding generation with Ollama
 - Local (Ollama) or cloud (OpenAI) models, selected per role with environment variables
@@ -85,7 +85,7 @@ Query Embedding           |
 
 ### 1. Document ingestion
 
-A PDF is submitted through the API. Docling parses the document into sections, and the chunking component packs the whole sentences of each section into chunks of roughly 300 to 1000 characters, prefixed with the section heading. Each chunk retains metadata such as its source document, page, heading, and chunk identifier. See [Chunking](#chunking) for the semantic alternative and how the two compare.
+A PDF is submitted through the API. Docling parses the document into sections, and the chunking component packs the whole sentences of each section into chunks of roughly 300 to 1000 characters, prefixed with the document title and the section heading. Each chunk retains metadata such as its source document, page, heading, and chunk identifier. See [Chunking](#chunking) for the semantic alternative and how the two compare.
 
 ### 2. Embedding and storage
 
@@ -294,6 +294,7 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `RETRIEVAL_TOP_K` | Number of candidates retrieved |
 | `FINAL_TOP_K` | Number of chunks retained after reranking |
 | `CHUNKING_STRATEGY` | `sentence` (default) or `semantic` |
+| `CHUNK_CONTEXT` | Prefix every chunk with its document title (default `true`); see [Chunking](#chunking) |
 | `MAX_CHUNK_SIZE` | Maximum chunk size in characters, unless a single sentence is longer |
 | `MIN_CHUNK_SIZE` | Minimum chunk size in characters |
 | `SEMANTIC_PERCENTILE` | Semantic chunking: split at boundaries above this percentile of embedding distances in the document |
@@ -427,7 +428,25 @@ Both were measured on the chunking benchmark with the full retrieval pipeline. B
 
 Sentence-aligned chunks retrieve more evidence at every budget. In documents with clear headings, Docling's sections already follow topic boundaries; semantic splitting mostly makes chunks larger, and their embeddings less specific. Only in the FOMC transcript, which has no headings, is the semantic chunker slightly ahead, on 14 questions. `sentence` therefore stays the default. See the [full comparison](evaluation/results/chunking_benchmark/comparison.md) for all variants, results by document, and limitations.
 
-On all 48 answerable questions of the three-document benchmark, the full pipeline with the default settings reaches MRR 0.970 and Evidence@3 0.878 ([report](evaluation/results/chunking_benchmark/report.md)).
+### Document titles in chunks
+
+Retrieval only sees a chunk's text. A chunk from the NIST CSF 2.0 starts with a section heading such as "3.1. CSF Profiles" but never says which framework it belongs to, so questions about the "Cybersecurity Framework" could not match it, and the AI RMF's similar "Target Profile" passage competed with it. With `CHUNK_CONTEXT=true` (the default), every chunk starts with its document title, taken from the document's first heading:
+
+```text
+The NIST Cybersecurity Framework (CSF) 2.0
+3.1. CSF Profiles
+
+A Target Profile specifies the desired outcomes...
+```
+
+Measured on the chunking benchmark with the full pipeline:
+
+| | MRR | Hit@1 | Evidence@3 | Evidence at 1,600 chars | CSF Evidence@3 |
+|---|---|---|---|---|---|
+| Section heading only | 0.970 | 0.958 | 0.878 | 0.878 | 0.743 |
+| Document title + section heading | **1.000** | **1.000** | **0.909** | **0.930** | **0.850** |
+
+All gains come from the CSF, the document that shares vocabulary with the AI RMF; no question got worse. The AI RMF stays at 1.000 and the FOMC transcript is unchanged, since its only heading already is its title. The titles make chunks about 8% longer, and below about 1,000 characters of context they cost a little evidence; vector search alone also loses slightly on the AI RMF, which the reranker recovers. Upload documents again after upgrading: each chunking configuration has its own collection ([report](evaluation/results/chunking_benchmark/sentence-ctx/report.md)).
 
 ## Running the Tests
 
@@ -439,7 +458,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 147 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
+**Verified locally:** 159 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 

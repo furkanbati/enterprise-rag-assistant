@@ -1,5 +1,6 @@
 import math
 import re
+from pathlib import Path
 from typing import Protocol
 
 from providers.base import Embedder
@@ -23,16 +24,19 @@ class SentenceChunker:
     min_chunk_size to max_chunk_size characters.
 
     Chunks never cross a section boundary, and each chunk is prefixed with
-    its section heading.
+    its section heading. With include_title, the document title is prefixed
+    as well, so that search can tell apart documents with similar content.
     """
 
     def __init__(
         self,
         max_chunk_size: int,
         min_chunk_size: int,
+        include_title: bool = False,
     ) -> None:
         self.max_chunk_size = max_chunk_size
         self.min_chunk_size = min_chunk_size
+        self.include_title = include_title
 
     def chunk(
         self,
@@ -55,6 +59,8 @@ class SentenceChunker:
             [sentences for _, sentences in prepared]
         )
 
+        title = document_title(sections, source)
+
         documents: list[str] = []
         metadatas: list[ChunkMetadata] = []
 
@@ -62,10 +68,9 @@ class SentenceChunker:
 
         for (section, _), chunks in zip(prepared, section_chunks):
             for chunk in chunks:
-                document = chunk
-                if section.heading:
-                    document = f"{section.heading}\n\n{chunk}"
-                documents.append(document)
+                documents.append(
+                    self._with_context(chunk, title, section.heading)
+                )
 
                 metadatas.append(
                     ChunkMetadata(
@@ -74,12 +79,27 @@ class SentenceChunker:
                         chunk=chunk_id,
                         heading=section.heading,
                         level=section.level,
+                        title=title,
                     )
                 )
 
                 chunk_id += 1
 
         return documents, metadatas
+
+    def _with_context(self, chunk: str, title: str, heading: str) -> str:
+        """Prefix a chunk with the title (if enabled) and section heading."""
+
+        lines = [title] if self.include_title else []
+
+        # A section named like the document would only repeat the title.
+        if heading and heading not in lines:
+            lines.append(heading)
+
+        if not lines:
+            return chunk
+
+        return "\n".join(lines) + "\n\n" + chunk
 
     def _split_document(
         self,
@@ -176,10 +196,12 @@ class SemanticChunker(SentenceChunker):
         min_chunk_size: int,
         breakpoint_percentile: int,
         window: int,
+        include_title: bool = False,
     ) -> None:
         super().__init__(
             max_chunk_size=max_chunk_size,
             min_chunk_size=min_chunk_size,
+            include_title=include_title,
         )
 
         if not 0 < breakpoint_percentile < 100:
@@ -309,13 +331,45 @@ class SemanticChunker(SentenceChunker):
         return chunks
 
 
-def chunking_id(strategy: str, breakpoint_percentile: int, window: int) -> str:
+def document_title(sections: list[Section], source: str) -> str:
+    """The first heading of a document, or its file name without extension.
+
+    Docling returns the document title as the first heading for PDFs, and as
+    a title item (read as a heading) for DOCX, HTML and Markdown.
+    """
+
+    for section in sections:
+        if section.heading.strip():
+            return section.heading.strip()
+
+    return Path(source).stem
+
+
+def strip_context(document: str, title: str, heading: str) -> str:
+    """The chunk text without the title and heading lines added by the
+    chunker, for showing a passage to the user."""
+
+    for prefix in (f"{title}\n{heading}\n\n", f"{title}\n\n", f"{heading}\n\n"):
+        if prefix.strip() and document.startswith(prefix):
+            return document[len(prefix):]
+
+    return document
+
+
+def chunking_id(
+    strategy: str,
+    breakpoint_percentile: int,
+    window: int,
+    include_title: bool = False,
+) -> str:
     """Name a chunking configuration, for example in collection names."""
 
-    if strategy == "semantic":
-        return f"semantic-p{breakpoint_percentile}-w{window}"
+    name = strategy
 
-    return strategy
+    if strategy == "semantic":
+        name = f"semantic-p{breakpoint_percentile}-w{window}"
+
+    return f"{name}-ctx" if include_title else name
 
 
 def build_chunker(
@@ -325,11 +379,13 @@ def build_chunker(
     min_chunk_size: int,
     breakpoint_percentile: int = 90,
     window: int = 1,
+    include_title: bool = False,
 ) -> Chunker:
     if strategy == "sentence":
         return SentenceChunker(
             max_chunk_size=max_chunk_size,
             min_chunk_size=min_chunk_size,
+            include_title=include_title,
         )
 
     if strategy == "semantic":
@@ -339,6 +395,7 @@ def build_chunker(
             min_chunk_size=min_chunk_size,
             breakpoint_percentile=breakpoint_percentile,
             window=window,
+            include_title=include_title,
         )
 
     choices = " or ".join(f"'{name}'" for name in CHUNKING_STRATEGIES)

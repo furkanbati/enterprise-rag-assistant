@@ -6,6 +6,11 @@ def _env_int(name: str, default: int) -> int:
     return int(value) if value else default
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    return value.strip().lower() in ("1", "true", "yes", "on") if value else default
+
+
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
 EMBED_PROVIDER = os.getenv("EMBED_PROVIDER", "ollama")
 
@@ -30,6 +35,10 @@ FINAL_TOP_K = _env_int("FINAL_TOP_K", 3)
 RETRIEVAL_TOP_K = _env_int("RETRIEVAL_TOP_K", max(FINAL_TOP_K * 4, 10))
 
 CHUNKING_STRATEGY = os.getenv("CHUNKING_STRATEGY", "sentence")
+
+# Prefix every chunk with the document title, so that search can tell apart
+# documents with similar content.
+CHUNK_CONTEXT = _env_bool("CHUNK_CONTEXT", True)
 
 # Used by the semantic strategy only.
 SEMANTIC_PERCENTILE = _env_int("SEMANTIC_PERCENTILE", 90)

@@ -3,7 +3,14 @@ from unittest.mock import Mock
 
 import pytest
 
-from chunking import SemanticChunker, SentenceChunker, build_chunker, chunking_id
+from chunking import (
+    SemanticChunker,
+    SentenceChunker,
+    build_chunker,
+    chunking_id,
+    document_title,
+    strip_context,
+)
 from models import Section
 
 
@@ -288,3 +295,84 @@ def test_build_chunker_returns_semantic_chunker():
 def test_chunking_id_includes_semantic_parameters():
     assert chunking_id("sentence", 90, 1) == "sentence"
     assert chunking_id("semantic", 90, 1) == "semantic-p90-w1"
+
+
+def test_document_title_is_the_first_heading():
+    sections = [
+        make_section("Intro.", heading="", page=1),
+        make_section("Body.", heading="Guide to Python", page=2),
+        make_section("More.", heading="Setup", page=3),
+    ]
+
+    assert document_title(sections, "guide.pdf") == "Guide to Python"
+
+
+def test_document_title_falls_back_to_the_file_name():
+    assert document_title([make_section("Text.", heading="")], "notes.txt") == "notes"
+
+
+def test_chunks_record_the_document_title_in_metadata():
+    chunker = make_chunker()
+
+    documents, metadatas = chunker.chunk(
+        [make_section("Python is popular.", heading="Python Guide")],
+        source="guide.pdf",
+    )
+
+    assert metadatas[0].title == "Python Guide"
+    # Without include_title the chunk text is unchanged.
+    assert documents == ["Python Guide\n\nPython is popular."]
+
+
+def test_include_title_prefixes_chunks_with_the_document_title():
+    chunker = make_chunker()
+    chunker.include_title = True
+
+    documents, _ = chunker.chunk(
+        [
+            make_section("Overview text.", heading="Python Guide"),
+            make_section("Install it.", heading="Setup"),
+        ],
+        source="guide.pdf",
+    )
+
+    assert documents == [
+        # The first section is named like the document, so it is not repeated.
+        "Python Guide\n\nOverview text.",
+        "Python Guide\nSetup\n\nInstall it.",
+    ]
+
+
+def test_include_title_without_headings_uses_the_file_name():
+    chunker = make_chunker()
+    chunker.include_title = True
+
+    documents, _ = chunker.chunk([make_section("Plain text.", heading="")], source="notes.txt")
+
+    assert documents == ["notes\n\nPlain text."]
+
+
+@pytest.mark.parametrize(
+    "document, expected",
+    [
+        ("Guide\nSetup\n\nInstall it.", "Install it."),
+        ("Guide\n\nInstall it.", "Install it."),
+        ("Setup\n\nInstall it.", "Install it."),
+        ("Install it.\n\nThen run it.", "Install it.\n\nThen run it."),
+    ],
+)
+def test_strip_context_removes_only_the_added_lines(document, expected):
+    assert strip_context(document, "Guide", "Setup") == expected
+
+
+def test_chunking_id_marks_title_context():
+    assert chunking_id("sentence", 90, 1, include_title=True) == "sentence-ctx"
+    assert chunking_id("semantic", 90, 1, include_title=True) == "semantic-p90-w1-ctx"
+
+
+def test_build_chunker_passes_include_title():
+    sentence = build_chunker("sentence", None, 1000, 300, include_title=True)
+    semantic = build_chunker("semantic", TopicEmbedder(), 1000, 300, include_title=True)
+
+    assert sentence.include_title is True
+    assert semantic.include_title is True

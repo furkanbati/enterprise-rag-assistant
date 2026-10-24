@@ -15,6 +15,7 @@ from pathlib import Path
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,
+    CHUNK_CONTEXT,
     CHUNKING_STRATEGY,
     COLLECTION_NAME,
     EMBED_MODEL,
@@ -83,7 +84,12 @@ def main() -> None:
 
     samples = load_dataset(args.dataset)
 
-    chunking = chunking_id(CHUNKING_STRATEGY, SEMANTIC_PERCENTILE, SEMANTIC_WINDOW)
+    chunking = chunking_id(
+        CHUNKING_STRATEGY,
+        SEMANTIC_PERCENTILE,
+        SEMANTIC_WINDOW,
+        CHUNK_CONTEXT,
+    )
 
     vector_store = VectorStore(
         path=CHROMA_PATH,

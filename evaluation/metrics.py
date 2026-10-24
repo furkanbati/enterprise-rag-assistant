@@ -10,8 +10,8 @@ ABSTENTION_PATTERNS = [
     r"\bcannot (?:be found|find|answer|determine)\b",
     r"\bcan'?t (?:find|answer|determine)\b",
     r"\bno (?:information|mention)\b",
-    r"\bdoes not (?:mention|specify|provide|contain|say)\b",
-    r"\bdoesn'?t (?:mention|specify|provide|contain|say)\b",
+    r"\bdoes not (?:mention|specify|provide|contain|say|state)\b",
+    r"\bdoesn'?t (?:mention|specify|provide|contain|say|state)\b",
 ]
 
 
@@ -139,6 +139,19 @@ def missing_evidence(
         for sample in samples
         for sentence in sample.evidence
         if not any(_normalize(sentence) in text for text in texts)
+    ]
+
+
+CITATION_PATTERN = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
+
+
+def cited_sources(answer: str) -> list[int]:
+    """Source numbers cited in an answer, written as [1], [1][3] or [1, 3]."""
+
+    return [
+        int(number)
+        for match in CITATION_PATTERN.finditer(answer)
+        for number in match.group(1).split(",")
     ]
 
 

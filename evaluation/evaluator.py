@@ -36,6 +36,9 @@ class AnswerResult:
     keyword_recall: float | None
     abstained: bool
     latency_ms: float
+    citations: list[int]
+    # Cited numbers that match none of the chunks given to the model.
+    invalid_citations: list[int]
 
 
 @dataclass
@@ -60,6 +63,9 @@ class GenerationSummary:
     answer_rate: float | None
     abstention_rate: float | None
     mean_latency_ms: float
+    # Share of answered, answerable questions with at least one valid citation.
+    citation_rate: float | None
+    invalid_citation_answers: int
 
 
 @dataclass
@@ -220,6 +226,7 @@ class Evaluator:
             chunks=chunks,
         )
         latency_ms = (time.perf_counter() - started) * 1000
+        citations = metrics.cited_sources(answer)
 
         return AnswerResult(
             sample_id=sample.id,
@@ -233,6 +240,12 @@ class Evaluator:
             ),
             abstained=metrics.is_abstention(answer),
             latency_ms=latency_ms,
+            citations=citations,
+            invalid_citations=[
+                number
+                for number in citations
+                if not 1 <= number <= len(chunks)
+            ],
         )
 
     def _summarize_strategy(
@@ -289,6 +302,9 @@ class Evaluator:
             if result.keyword_recall is not None
         ]
 
+        # Abstentions have nothing to cite, so they do not count against it.
+        answered = [result for result in answerable if not result.abstained]
+
         return GenerationSummary(
             strategy=self.generation_strategy,
             top_k=self.generation_top_k,
@@ -308,6 +324,17 @@ class Evaluator:
                 else None
             ),
             mean_latency_ms=_mean(result.latency_ms for result in results),
+            citation_rate=(
+                _mean(
+                    len(result.citations) > len(result.invalid_citations)
+                    for result in answered
+                )
+                if answered
+                else None
+            ),
+            invalid_citation_answers=sum(
+                bool(result.invalid_citations) for result in results
+            ),
         )
 
 

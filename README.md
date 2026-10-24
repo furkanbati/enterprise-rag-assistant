@@ -103,7 +103,7 @@ When a user submits a question:
 
 ### 4. Answer generation
 
-The highest-ranked chunks are passed to the configured chat model (Ollama by default, or OpenAI). The API returns the generated answer along with source metadata and text previews to help users inspect the retrieved context.
+The highest-ranked chunks are passed to the configured chat model (Ollama by default, or OpenAI). The API returns the generated answer along with source metadata and text previews to help users inspect the retrieved context. The passages are numbered in the prompt, and the model cites them after each statement as [1], [2] and so on; [n] refers to the n-th entry of the returned sources.
 
 ## Technology Stack
 
@@ -218,7 +218,7 @@ Example response shape:
 
 ```json
 {
-  "answer": "The four core functions are GOVERN, MAP, MEASURE, and MANAGE.",
+  "answer": "The four core functions are GOVERN, MAP, MEASURE, and MANAGE. [1]",
   "sources": [
     {
       "source": "nist.ai.100-1.pdf",
@@ -231,7 +231,7 @@ Example response shape:
 }
 ```
 
-The response above illustrates the API response format. Actual answers, source ordering, and preview text depend on the uploaded documents and retrieval results.
+The response above illustrates the API response format. Actual answers, source ordering, and preview text depend on the uploaded documents and retrieval results. Citations such as [1] in the answer refer to the entries of `sources` in order, starting at 1.
 
 ### Stream an answer
 
@@ -362,6 +362,7 @@ The harness runs each question through four retrieval strategies, built from the
 - **MRR:** mean reciprocal rank of the first relevant chunk
 - **Evidence@k:** share of the labelled evidence sentences found in the top-k chunks (chunking benchmark only); reported with the characters the top-k chunks send to the model
 - **Keyword recall:** share of expected keywords present in the generated answer (a lexical proxy, not a judge of correctness)
+- **Citation rate / invalid citations:** share of answered questions whose answer cites at least one of the provided passages, and the number of answers citing a passage number that was not provided
 - **Answer rate / abstention rate:** whether the model answers answerable questions and declines unanswerable ones
 
 ### Running the evaluation
@@ -412,6 +413,19 @@ The first evaluation run exposed one consistent miss: for `q11` ("Which AI RMF f
 | + BM25 tokenizer | 0.825 | 0.900 | 0.950 | ~2.0 s |
 | + MiniLM reranker | 0.825 | 0.900 | **1.000** | **~0.7 s** |
 
+### Citations
+
+Answers cite the passages they rely on. Measured on the NIST AI RMF question set with the default settings, before and after adding citations to the prompt ([reports](evaluation/results/citations)):
+
+| | Local (`llama3`) before → after | Cloud (`gpt-6-luna`) before → after |
+|---|---|---|
+| Citation rate | 0.00 → **1.00** | 0.00 → **1.00** |
+| Answers with invalid citations | 0 → 0 | 0 → 0 |
+| Keyword recall | 0.975 → 0.975 | 0.883 → 0.917 |
+| Mean generation time | 19.7 s → 27.3 s | 1.7 s → 1.6 s |
+
+Both models cite a provided passage in every answer and never cite one that does not exist, and answer quality is unchanged. Llama 3 writes about 45% longer answers when citing, which makes it slower, and sometimes adds stray citation markers or cites passages when it declines to answer. The citation rate only checks that a cited passage exists, not that it supports the statement; that needs an LLM judge, listed under Future Directions.
+
 ## Chunking
 
 The original chunker started a new chunk when the cosine similarity between consecutive sentences fell below 0.88. Measuring it on the NIST AI RMF showed that 97% of sentence boundaries were below that threshold, so chunks were in fact cut at the first sentence boundary after 300 characters. The project now offers two explicit strategies:
@@ -458,7 +472,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 159 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
+**Verified locally:** 169 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 

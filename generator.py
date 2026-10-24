@@ -17,6 +17,10 @@ Answer the user's question using ONLY the provided context.
 
 If the answer cannot be found in the context, say that you don't know.
 
+After each statement, cite the passages that support it with their numbers in
+square brackets, for example [1] or [1][3]. Only cite numbers that appear in
+the context.
+
 Be concise and accurate.
 """
 
@@ -64,9 +68,12 @@ Be concise and accurate.
         question: str,
         chunks: list[RetrievedChunk],
     ) -> str:
+        # Passages are numbered in the order of the returned sources, so
+        # citation [n] refers to the n-th source.
         context = "\n\n".join(
-            chunk.document
-            for chunk in chunks
+            f"[{number}] {chunk.metadata.source}, page {chunk.metadata.page}\n"
+            f"{chunk.document}"
+            for number, chunk in enumerate(chunks, start=1)
         )
 
         return (

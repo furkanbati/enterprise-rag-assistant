@@ -89,6 +89,10 @@ def render_markdown(report: EvaluationReport, metadata: dict) -> str:
             f"| Answer rate (answerable) | {_fmt(generation.answer_rate)} |",
             f"| Abstention rate (unanswerable) | "
             f"{_fmt(generation.abstention_rate)} |",
+            f"| Citation rate (answered questions) | "
+            f"{_fmt(generation.citation_rate)} |",
+            f"| Answers with invalid citations | "
+            f"{generation.invalid_citation_answers} |",
             f"| Mean generation latency (ms) | "
             f"{generation.mean_latency_ms:.0f} |",
         ]

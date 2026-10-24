@@ -89,3 +89,20 @@ def test_stream_uses_the_same_prompt_as_generate():
 
     assert pieces == ["Python", "is", "great"]
     assert client.calls[0] == client.calls[1]
+
+
+def test_build_prompt_numbers_passages_with_their_source():
+    generator = Generator(client=FakeChatClient())
+
+    prompt = generator._build_prompt(
+        question="What are the features?",
+        chunks=[make_chunk("Feature one."), make_chunk("Feature two.")],
+    )
+
+    assert "[1] guide.pdf, page 1\nFeature one." in prompt
+    assert "[2] guide.pdf, page 1\nFeature two." in prompt
+
+
+def test_system_prompt_asks_for_numbered_citations():
+    assert "square brackets" in Generator.SYSTEM_PROMPT
+    assert "Only cite numbers that appear in" in Generator.SYSTEM_PROMPT

@@ -1,0 +1,3519 @@
+{
+  "metadata": {
+    "Date": "2026-10-24 14:55 UTC",
+    "Dataset": "nist_ai_rmf.jsonl",
+    "Embedding model": "openai/text-embedding-3-small",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Chat model": "openai/gpt-6-luna",
+    "Candidates per retriever": 12
+  },
+  "ks": [
+    1,
+    3,
+    5
+  ],
+  "num_samples": 22,
+  "num_answerable": 20,
+  "strategies": [
+    {
+      "strategy": "vector",
+      "hit": {
+        "1": 0.9,
+        "3": 0.95,
+        "5": 0.95
+      },
+      "recall": {
+        "1": 0.825,
+        "3": 0.875,
+        "5": 0.925
+      },
+      "precision": {
+        "1": 0.9,
+        "3": 0.75,
+        "5": 0.73
+      },
+      "mrr": 0.925,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 443.45,
+        "3": 1378.65,
+        "5": 2285.65
+      },
+      "mean_latency_ms": 13.416237399906095
+    },
+    {
+      "strategy": "bm25",
+      "hit": {
+        "1": 0.8,
+        "3": 0.9,
+        "5": 0.9
+      },
+      "recall": {
+        "1": 0.7,
+        "3": 0.85,
+        "5": 0.9
+      },
+      "precision": {
+        "1": 0.8,
+        "3": 0.65,
+        "5": 0.53
+      },
+      "mrr": 0.85,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 448.45,
+        "3": 1348.0,
+        "5": 2252.9
+      },
+      "mean_latency_ms": 0.6618507497478276
+    },
+    {
+      "strategy": "hybrid_rrf",
+      "hit": {
+        "1": 0.95,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.85,
+        "3": 0.95,
+        "5": 0.975
+      },
+      "precision": {
+        "1": 0.95,
+        "3": 0.75,
+        "5": 0.7
+      },
+      "mrr": 0.975,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 418.5,
+        "3": 1342.3,
+        "5": 2272.1
+      },
+      "mean_latency_ms": 12.831111349714774
+    },
+    {
+      "strategy": "hybrid_rrf_rerank",
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.9,
+        "3": 0.975,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.8,
+        "5": 0.7
+      },
+      "mrr": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 448.75,
+        "3": 1399.05,
+        "5": 2359.15
+      },
+      "mean_latency_ms": 1039.1488535998178
+    }
+  ],
+  "retrieval_results": [
+    {
+      "sample_id": "q01",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        16,
+        1,
+        25,
+        25
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 527,
+        "3": 833,
+        "5": 1803
+      },
+      "latency_ms": 7.9919399995560525
+    },
+    {
+      "sample_id": "q01",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        25,
+        6,
+        8,
+        20,
+        16
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 431,
+        "3": 1458,
+        "5": 2205
+      },
+      "latency_ms": 0.7974170002853498
+    },
+    {
+      "sample_id": "q01",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        25,
+        16,
+        25,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 527,
+        "3": 1187,
+        "5": 1803
+      },
+      "latency_ms": 11.276937999355141
+    },
+    {
+      "sample_id": "q01",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        25,
+        6,
+        8,
+        16,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 431,
+        "3": 1360,
+        "5": 2012
+      },
+      "latency_ms": 4311.414519999744
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        9,
+        47,
+        10,
+        12,
+        9
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 458,
+        "3": 1465,
+        "5": 2276
+      },
+      "latency_ms": 9.989824999138364
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        45,
+        12,
+        45,
+        22,
+        45
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 504,
+        "3": 1386,
+        "5": 2424
+      },
+      "latency_ms": 0.6428309989132686
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        9,
+        45,
+        47,
+        12
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1370,
+        "5": 2190
+      },
+      "latency_ms": 8.651420999740367
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        9,
+        12,
+        9,
+        6,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 458,
+        "3": 1366,
+        "5": 2216
+      },
+      "latency_ms": 886.1121909994836
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        17,
+        17,
+        17,
+        20
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1559,
+        "5": 2644
+      },
+      "latency_ms": 29.021598000326776
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        17,
+        5,
+        6,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1334,
+        "5": 2316
+      },
+      "latency_ms": 0.7863020000513643
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        17,
+        17,
+        5,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1559,
+        "5": 2514
+      },
+      "latency_ms": 9.07959899996058
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        6,
+        5,
+        17,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1328,
+        "5": 2508
+      },
+      "latency_ms": 656.0652050011413
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        18,
+        18,
+        18,
+        18
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 468,
+        "3": 1537,
+        "5": 2469
+      },
+      "latency_ms": 10.187895999479224
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        14,
+        40,
+        12,
+        40,
+        40
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 477,
+        "3": 1364,
+        "5": 2313
+      },
+      "latency_ms": 0.6363639986375347
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        40,
+        40,
+        18,
+        18
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 468,
+        "3": 1409,
+        "5": 2444
+      },
+      "latency_ms": 11.906284000360756
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        14,
+        40,
+        18,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 468,
+        "3": 1419,
+        "5": 2508
+      },
+      "latency_ms": 889.3392909994873
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        18,
+        18,
+        18,
+        18
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1500,
+        "5": 2423
+      },
+      "latency_ms": 9.36715500029095
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        42,
+        18,
+        18,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1306,
+        "5": 2178
+      },
+      "latency_ms": 0.6572090005647624
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        18,
+        18,
+        18,
+        42
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1387,
+        "5": 2194
+      },
+      "latency_ms": 8.984333000626066
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        18,
+        18,
+        18,
+        18
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1341,
+        "5": 2276
+      },
+      "latency_ms": 776.9143200002873
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        20,
+        43,
+        13,
+        43
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 584,
+        "3": 1533,
+        "5": 2506
+      },
+      "latency_ms": 15.039923000585986
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        20,
+        13,
+        43,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 440,
+        "3": 1919,
+        "5": 3188
+      },
+      "latency_ms": 0.9063460001925705
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        20,
+        43,
+        13,
+        22,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 440,
+        "3": 1553,
+        "5": 2599
+      },
+      "latency_ms": 15.092178999111638
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        20,
+        13,
+        43,
+        43,
+        22
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 440,
+        "3": 1919,
+        "5": 3040
+      },
+      "latency_ms": 1271.7579269992711
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        21,
+        21
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 550,
+        "3": 1448,
+        "5": 2280
+      },
+      "latency_ms": 15.643237999029225
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        10,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 523,
+        "3": 1448,
+        "5": 2285
+      },
+      "latency_ms": 0.6252909988688771
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        21,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 550,
+        "3": 1448,
+        "5": 2270
+      },
+      "latency_ms": 11.290484999335604
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        21,
+        21
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 550,
+        "3": 1448,
+        "5": 2280
+      },
+      "latency_ms": 795.0875030001043
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        22,
+        22,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1272,
+        "5": 2215
+      },
+      "latency_ms": 8.98821400005545
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        3,
+        22,
+        31
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1207,
+        "5": 1902
+      },
+      "latency_ms": 0.8482670000375947
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        22,
+        22,
+        22
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1213,
+        "5": 2127
+      },
+      "latency_ms": 10.329273000024841
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        22,
+        22,
+        22
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1238,
+        "5": 2161
+      },
+      "latency_ms": 1486.6760679997242
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1281,
+        "5": 2093
+      },
+      "latency_ms": 18.795242000123835
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1233,
+        "5": 2249
+      },
+      "latency_ms": 0.44039199929102324
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1281,
+        "5": 2093
+      },
+      "latency_ms": 7.9314829999930225
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1281,
+        "5": 2093
+      },
+      "latency_ms": 1228.552980999666
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        19,
+        45,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1216,
+        "5": 1915
+      },
+      "latency_ms": 13.377347000641748
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        29,
+        12,
+        6,
+        21
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1198,
+        "5": 2039
+      },
+      "latency_ms": 0.8240520000981633
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        9,
+        19,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1203,
+        "5": 2280
+      },
+      "latency_ms": 11.150838001412922
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        21,
+        20,
+        43,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1212,
+        "5": 2123
+      },
+      "latency_ms": 724.4880100006412
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        25,
+        25,
+        25,
+        6,
+        25
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 515,
+        "3": 1590,
+        "5": 2463
+      },
+      "latency_ms": 11.201605000678683
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        5,
+        26,
+        26,
+        36,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 210,
+        "3": 1087,
+        "5": 1717
+      },
+      "latency_ms": 0.6339049996313406
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        5,
+        14,
+        25,
+        25,
+        26
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 210,
+        "3": 1194,
+        "5": 2226
+      },
+      "latency_ms": 8.346110998900258
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        5,
+        26,
+        38,
+        25,
+        14
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 210,
+        "3": 1123,
+        "5": 2107
+      },
+      "latency_ms": 729.066967000108
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        29,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 393,
+        "3": 1315,
+        "5": 2197
+      },
+      "latency_ms": 9.244634000424412
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        29,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 393,
+        "3": 1285,
+        "5": 2227
+      },
+      "latency_ms": 0.49235799997404683
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        29,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 393,
+        "3": 1285,
+        "5": 2197
+      },
+      "latency_ms": 9.37087199963571
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        45,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 507,
+        "3": 1315,
+        "5": 2204
+      },
+      "latency_ms": 483.71540200059826
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 188,
+        "3": 1079,
+        "5": 2068
+      },
+      "latency_ms": 19.020472000192967
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 445,
+        "3": 1057,
+        "5": 1896
+      },
+      "latency_ms": 0.42124900028284173
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 188,
+        "3": 1079,
+        "5": 2068
+      },
+      "latency_ms": 18.192764999184874
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 445,
+        "3": 1434,
+        "5": 2068
+      },
+      "latency_ms": 578.3624999985477
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        36,
+        36,
+        25,
+        36
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 554,
+        "3": 1268,
+        "5": 2223
+      },
+      "latency_ms": 8.662836999064893
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        36,
+        33,
+        36,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 554,
+        "3": 1244,
+        "5": 2184
+      },
+      "latency_ms": 0.4699459987023147
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        36,
+        33,
+        36,
+        36
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 554,
+        "3": 1244,
+        "5": 2153
+      },
+      "latency_ms": 8.616695999080548
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        36,
+        36,
+        33,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 554,
+        "3": 1463,
+        "5": 2414
+      },
+      "latency_ms": 746.7277139985526
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        38,
+        38,
+        38,
+        38,
+        38
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1485,
+        "5": 2084
+      },
+      "latency_ms": 12.869414000306278
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        11,
+        38,
+        11,
+        31,
+        31
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 415,
+        "3": 1234,
+        "5": 1884
+      },
+      "latency_ms": 0.5230329988989979
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        38,
+        11,
+        38,
+        38,
+        11
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1382,
+        "5": 2296
+      },
+      "latency_ms": 39.561025998409605
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        38,
+        38,
+        38,
+        38,
+        11
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1485,
+        "5": 2301
+      },
+      "latency_ms": 1235.843049000323
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        40,
+        40,
+        14,
+        14
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 467,
+        "3": 1376,
+        "5": 2349
+      },
+      "latency_ms": 14.2105070008256
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        40,
+        40,
+        14,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 474,
+        "3": 1496,
+        "5": 2514
+      },
+      "latency_ms": 0.6116160002420656
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        40,
+        14,
+        40,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 467,
+        "3": 1484,
+        "5": 2474
+      },
+      "latency_ms": 15.04683799976192
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        40,
+        40,
+        14,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 474,
+        "3": 1416,
+        "5": 2394
+      },
+      "latency_ms": 775.355285999467
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        3,
+        3,
+        47,
+        47
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1276,
+        "5": 2251
+      },
+      "latency_ms": 15.674657999625197
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        33,
+        20,
+        43,
+        13
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1373,
+        "5": 2439
+      },
+      "latency_ms": 0.7994480001798365
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        3,
+        33,
+        3,
+        20
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1350,
+        "5": 2225
+      },
+      "latency_ms": 13.64785599980678
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        3,
+        3,
+        20,
+        13
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1276,
+        "5": 2308
+      },
+      "latency_ms": 729.4752310008334
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        40,
+        42,
+        40,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1568,
+        "5": 2403
+      },
+      "latency_ms": 19.12236499993014
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        14,
+        6,
+        5,
+        45,
+        6
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 470,
+        "3": 1302,
+        "5": 2248
+      },
+      "latency_ms": 0.596084999415325
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        40,
+        14,
+        40,
+        42
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1216,
+        "5": 2402
+      },
+      "latency_ms": 16.34646299862652
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        14,
+        42,
+        40,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1238,
+        "5": 2549
+      },
+      "latency_ms": 1082.0533819987759
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        43,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 455,
+        "3": 1627,
+        "5": 2720
+      },
+      "latency_ms": 12.148553998486022
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        10,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 728,
+        "3": 1589,
+        "5": 2432
+      },
+      "latency_ms": 0.8271660008176696
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        43,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 455,
+        "3": 1627,
+        "5": 2669
+      },
+      "latency_ms": 11.705335000442574
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        43,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 728,
+        "3": 1767,
+        "5": 3226
+      },
+      "latency_ms": 654.6995460012113
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        21,
+        21,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1345,
+        "5": 2331
+      },
+      "latency_ms": 7.767323999360087
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1440,
+        "5": 2418
+      },
+      "latency_ms": 0.697737999871606
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1375,
+        "5": 2218
+      },
+      "latency_ms": 10.095432000525761
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1552,
+        "5": 2395
+      },
+      "latency_ms": 741.269978998389
+    }
+  ],
+  "generation": {
+    "strategy": "hybrid_rrf_rerank",
+    "top_k": 3,
+    "answerable_questions": 20,
+    "unanswerable_questions": 2,
+    "mean_keyword_recall": 0.8833333333333333,
+    "answer_rate": 1.0,
+    "abstention_rate": 0.5,
+    "mean_latency_ms": 1672.7513040000717,
+    "citation_rate": 0.0,
+    "invalid_citation_answers": 0
+  },
+  "answer_results": [
+    {
+      "sample_id": "q01",
+      "question": "What are the four core functions of the NIST AI Risk Management Framework?",
+      "answer": "The four core functions are **GOVERN, MAP, MEASURE, and MANAGE**.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 2068.678711000757,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q02",
+      "question": "How does the AI RMF define risk?",
+      "answer": "The AI RMF defines risk as the combined measure of the probability that an event will occur and the magnitude or degree of its consequences.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1657.5567760010017,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q03",
+      "question": "What are the characteristics of trustworthy AI systems?",
+      "answer": "Trustworthy AI systems are **valid and reliable; safe; secure and resilient; accountable and transparent; explainable and interpretable; privacy-enhanced; and fair, with harmful bias managed.** These characteristics should be balanced according to the system’s context of use.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 2222.7152079994994,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q04",
+      "question": "How is validation defined in the context of AI systems?",
+      "answer": "Validation is the confirmation, through objective evidence, that the requirements for a specific intended use or application have been fulfilled.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1595.5378400012705,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q05",
+      "question": "What is the definition of reliability used by the framework?",
+      "answer": "Reliability is the ability of an item to perform as required, without failure, for a given time interval and under given conditions.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1845.5904299989925,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q06",
+      "question": "What are common security concerns for AI systems?",
+      "answer": "Common security concerns include adversarial examples, data poisoning, and exfiltration of models, training data, or other intellectual property through AI system endpoints. Other concerns include evasion, model extraction, membership inference, availability, and attacks on the system’s confidentiality, integrity, or availability.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1288.9927030009858,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q07",
+      "question": "What is the difference between explainability and interpretability?",
+      "answer": "Explainability describes how an AI system works and how it made a decision. Interpretability describes why that decision was made and what the output means in the context of the system’s purpose.",
+      "answerable": true,
+      "keyword_recall": 0.0,
+      "abstained": false,
+      "latency_ms": 2196.773649999159,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q08",
+      "question": "What are the three major categories of AI bias identified by NIST?",
+      "answer": "Systemic bias, computational and statistical bias, and human-cognitive bias.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 2044.7411009990901,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q09",
+      "question": "What does risk tolerance refer to?",
+      "answer": "Risk tolerance refers to an organization’s or AI actor’s readiness to bear risk in order to achieve its objectives.",
+      "answerable": true,
+      "keyword_recall": 0.6666666666666666,
+      "abstained": false,
+      "latency_ms": 1494.8272290002933,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q10",
+      "question": "What should happen when an AI system presents unacceptable negative risk levels?",
+      "answer": "Development and deployment should cease in a safe manner until the risks can be sufficiently managed.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1890.0240509992727,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q11",
+      "question": "Which AI RMF function is described as cross-cutting?",
+      "answer": "GOVERN.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1035.421876998953,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q12",
+      "question": "What is the purpose of the MAP function?",
+      "answer": "The MAP function establishes the context for identifying risks related to an AI system and broader contributing factors. Its outcomes help prevent negative risks, inform decisions about whether an AI solution is appropriate, and provide a basis for the MEASURE and MANAGE functions.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1978.0469859997538,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q13",
+      "question": "What does the MEASURE function do?",
+      "answer": "The MEASURE function uses quantitative, qualitative, or mixed-method approaches to assess, benchmark, and monitor AI risks and impacts. It documents system functionality and trustworthiness, tracks relevant metrics, and uses rigorous testing, performance assessment, uncertainty measures, benchmarks, and reporting to inform risk monitoring and response in the MANAGE function.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1566.1094170009164,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q14",
+      "question": "What does the MANAGE function entail?",
+      "answer": "The MANAGE function entails regularly allocating resources to mapped and measured risks, as defined by GOVERN, and planning how to respond to, recover from, and communicate about incidents or events. It also includes prioritizing risks, ongoing monitoring, and continual improvement as systems and circumstances evolve.",
+      "answerable": true,
+      "keyword_recall": 0.6666666666666666,
+      "abstained": false,
+      "latency_ms": 1583.749377001368,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q15",
+      "question": "What is a Target Profile in the AI RMF?",
+      "answer": "A Target Profile describes the outcomes needed to achieve an organization’s desired AI risk management goals. It represents the desired target state of specific AI risk management activities.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1616.9822310002928,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q16",
+      "question": "What does TEVV stand for and when are TEVV tasks performed?",
+      "answer": "TEVV stands for Test, Evaluation, Verification, and Validation. These tasks are performed throughout the AI lifecycle, including during design and planning, development, and deployment.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1462.631495000096,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q17",
+      "question": "What versioning system will the AI RMF use to track changes?",
+      "answer": "The AI RMF will use a two-number versioning system: the first number tracks major revisions, and a “.n” after it tracks minor revisions (for example, 1.0 and 1.1).",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1266.6389730002265,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q18",
+      "question": "How does the OECD define AI actors?",
+      "answer": "The OECD defines AI actors as those who play an active role in the AI system lifecycle, including organizations and individuals that deploy or operate AI.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1672.2333679990697,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q19",
+      "question": "How can pre-trained models increase AI-specific risks compared to traditional software?",
+      "answer": "Pre-trained models can increase statistical uncertainty and create challenges with bias management, scientific validity, and reproducibility. Their emergent properties can also make failure modes harder to predict.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 1468.4297500007233,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q20",
+      "question": "What causes inscrutability in AI systems and why does it matter for risk measurement?",
+      "answer": "Inscrutability can result from AI systems’ opacity (limited explainability or interpretability), inadequate transparency or documentation during development or deployment, or inherent uncertainty. It makes risk harder to measure because the system’s risks or failures may not be well-defined or understood. Difficulty measuring a risk does not, by itself, mean the system is either high- or low-risk.",
+      "answerable": true,
+      "keyword_recall": 0.3333333333333333,
+      "abstained": false,
+      "latency_ms": 1553.506111000388,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q21",
+      "question": "How much funding did NIST allocate to develop the AI RMF?",
+      "answer": "The provided context does not state how much funding NIST allocated to develop the AI RMF.",
+      "answerable": false,
+      "keyword_recall": null,
+      "abstained": false,
+      "latency_ms": 1594.2316299988306,
+      "citations": [],
+      "invalid_citations": []
+    },
+    {
+      "sample_id": "q22",
+      "question": "Which programming language does NIST recommend for building machine learning models?",
+      "answer": "The provided context does not specify a programming language recommended by NIST for building machine learning models.",
+      "answerable": false,
+      "keyword_recall": null,
+      "abstained": true,
+      "latency_ms": 1697.1097740006371,
+      "citations": [],
+      "invalid_citations": []
+    }
+  ],
+  "missing_evidence": []
+}

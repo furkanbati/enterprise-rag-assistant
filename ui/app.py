@@ -28,12 +28,18 @@ def render_sources(sources: list[dict]) -> None:
 
     with st.expander(f"Sources ({len(sources)})"):
         for source in sources:
-            title = f"**{source['source']}** · page {source['page']}"
+            # Older indexes have no document titles; fall back to the file name.
+            name = source.get("title") or source["source"]
+            title = f"**{name}** · page {source['page']}"
 
-            if source["heading"]:
+            if source["heading"] and source["heading"] != name:
                 title += f" · {source['heading']}"
 
             st.markdown(title)
+
+            if source.get("title"):
+                st.caption(source["source"])
+
             st.caption(source["preview"])
 
 

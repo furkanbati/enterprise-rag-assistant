@@ -16,6 +16,8 @@ class ChunkMetadata:
     chunk: int
     heading: str
     level: int
+    # Document title; empty for chunks indexed before titles were stored.
+    title: str = ""
 
 
 @dataclass
@@ -51,6 +53,7 @@ class Section:
 
 class SourceResponse(BaseModel):
     source: str
+    title: str = ""
     page: int
     chunk: int
     heading: str

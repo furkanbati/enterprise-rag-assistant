@@ -14,6 +14,7 @@ from retrieval.reranker import CrossEncoderReranker
 from config import (
     CHAT_MODEL,
     CHROMA_PATH,
+    CHUNK_CONTEXT,
     CHUNKING_STRATEGY,
     MAX_CHUNK_SIZE,
     COLLECTION_NAME,
@@ -36,7 +37,7 @@ from pipeline import Pipeline
 from providers.factory import build_chat_client, build_embedder
 from retrieval.retriever import Retriever
 from vector_store import VectorStore, collection_name_for
-from chunking import build_chunker, chunking_id
+from chunking import build_chunker, chunking_id, strip_context
 from retrieval.fusion import ReciprocalRankFusion
 
 logger = logging.getLogger(__name__)
@@ -54,7 +55,12 @@ vector_store = VectorStore(
         COLLECTION_NAME,
         EMBED_PROVIDER,
         EMBED_MODEL,
-        chunking_id(CHUNKING_STRATEGY, SEMANTIC_PERCENTILE, SEMANTIC_WINDOW),
+        chunking_id(
+            CHUNKING_STRATEGY,
+            SEMANTIC_PERCENTILE,
+            SEMANTIC_WINDOW,
+            CHUNK_CONTEXT,
+        ),
     ),
     embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
 )
@@ -104,6 +110,7 @@ chunker = build_chunker(
     min_chunk_size=MIN_CHUNK_SIZE,
     breakpoint_percentile=SEMANTIC_PERCENTILE,
     window=SEMANTIC_WINDOW,
+    include_title=CHUNK_CONTEXT,
 )
 
 ingestion = Ingestion(
@@ -125,6 +132,7 @@ def info() -> dict:
             CHUNKING_STRATEGY,
             SEMANTIC_PERCENTILE,
             SEMANTIC_WINDOW,
+            CHUNK_CONTEXT,
         ),
         "reranker": RERANK_MODEL,
         "documents": _documents(),
@@ -276,14 +284,13 @@ def _event(data: dict) -> str:
 def _source_response(chunk) -> SourceResponse:
     return SourceResponse(
         source=chunk.metadata.source,
+        title=chunk.metadata.title,
         page=chunk.metadata.page,
         chunk=chunk.metadata.chunk,
         heading=chunk.metadata.heading,
-        preview=(
-            chunk.document.removeprefix(
-                f"{chunk.metadata.heading}\n\n"
-            )[:200]
-            if chunk.metadata.heading
-            else chunk.document[:200]
-        ),
+        preview=strip_context(
+            chunk.document,
+            chunk.metadata.title,
+            chunk.metadata.heading,
+        )[:200],
     )

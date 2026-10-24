@@ -27,10 +27,12 @@ def render_sources(sources: list[dict]) -> None:
         return
 
     with st.expander(f"Sources ({len(sources)})"):
-        for source in sources:
+        # Numbered like the passages in the prompt, so [n] in the answer is
+        # the n-th source.
+        for number, source in enumerate(sources, start=1):
             # Older indexes have no document titles; fall back to the file name.
             name = source.get("title") or source["source"]
-            title = f"**{name}** · page {source['page']}"
+            title = f"[{number}] **{name}** · page {source['page']}"
 
             if source["heading"] and source["heading"] != name:
                 title += f" · {source['heading']}"

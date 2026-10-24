@@ -205,6 +205,7 @@ def test_keyword_recall_is_case_and_hyphen_insensitive():
         "I don't know.",
         "I don’t know based on the context.",
         "The context does not mention any funding amount.",
+        "The provided context does not state how much funding was allocated.",
         "This information is not provided in the context.",
     ],
 )
@@ -443,3 +444,54 @@ def test_report_shows_evidence_by_source_and_missing_evidence():
     assert "| Strategy | guide.pdf |" in markdown
     assert "## Missing Evidence" in markdown
     assert "- `q9`: Not indexed." in markdown
+
+
+@pytest.mark.parametrize(
+    "answer, expected",
+    [
+        ("GOVERN is cross-cutting [1].", [1]),
+        ("It informs the others [1][3].", [1, 3]),
+        ("Both apply [1, 2].", [1, 2]),
+        ("No citations here.", []),
+        ("A list [a] and a year [2024].", [2024]),
+    ],
+)
+def test_cited_sources_reads_bracketed_numbers(answer, expected):
+    assert metrics.cited_sources(answer) == expected
+
+
+def test_evaluator_counts_valid_and_invalid_citations():
+    generator = Mock()
+    generator.generate.side_effect = [
+        "Python is a programming language [1].",
+        "Python is a programming language [7].",
+        "I don't know.",
+    ]
+    evaluator, _, _ = make_evaluator(generator=generator)
+
+    report = evaluator.evaluate([
+        make_sample(),
+        make_sample(id="q2"),
+        make_sample(id="q3", relevant_pages=[], answerable=False),
+    ])
+
+    first, second, third = report.answer_results
+    assert first.citations == [1] and first.invalid_citations == []
+    # Only two chunks are given to the model, so [7] cannot be a source.
+    assert second.invalid_citations == [7]
+    assert third.citations == []
+
+    assert report.generation.citation_rate == 0.5
+    assert report.generation.invalid_citation_answers == 1
+
+
+def test_report_shows_citation_rows(tmp_path):
+    generator = Mock()
+    generator.generate.return_value = "Python is a programming language [1]."
+    evaluator, _, _ = make_evaluator(generator=generator)
+    report = evaluator.evaluate([make_sample()])
+
+    markdown = render_markdown(report, {})
+
+    assert "| Citation rate (answered questions) | 1.000 |" in markdown
+    assert "| Answers with invalid citations | 0 |" in markdown

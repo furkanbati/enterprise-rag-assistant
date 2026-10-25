@@ -329,7 +329,7 @@ Measured on 2026-10-22 on the NIST AI RMF question set (20 answerable, 2 unanswe
 | Cost per question | none | < $0.0002 (6,241 chat tokens for 22 questions) |
 
 - With the reranker, both setups retrieve the same passages, so the embedding model can be chosen for cost, speed or privacy. On its own, `nomic-embed-text` ranked slightly better here; the chunking benchmark shows the same pattern (Evidence@3 0.789 vs 0.741 for vector search, 0.878 for both after reranking).
-- The lower keyword recall of the cloud setup comes from paraphrasing, not from wrong answers. Llama 3 tends to quote the document ("probability", "in a safe manner"), while GPT-6 Luna rewords it ("likelihood", "safely"). Reading the six answers that scored differently shows all of them correct. Keyword recall cannot compare models with different writing styles, which is why LLM-as-judge scoring is listed under Future Directions.
+- The lower keyword recall of the cloud setup comes from paraphrasing, not from wrong answers. Llama 3 tends to quote the document ("probability", "in a safe manner"), while GPT-6 Luna rewords it ("likelihood", "safely"). Reading the six answers that scored differently shows all of them correct. Keyword recall cannot compare models with different writing styles; see [LLM judge](#llm-judge).
 - The cost comes from the OpenAI usage page: 6,241 chat tokens for the 22 questions, reasoning tokens included, which stays under $0.0002 per question even if every token is billed at the output rate.
 
 Reports: [local](evaluation/results/providers/ollama/report.md), [cloud](evaluation/results/providers/openai/report.md), [chunking benchmark with OpenAI embeddings](evaluation/results/chunking_benchmark/openai-embeddings/report.md). To reproduce, pass the providers to the evaluation:
@@ -363,6 +363,7 @@ The harness runs each question through four retrieval strategies, built from the
 - **Evidence@k:** share of the labelled evidence sentences found in the top-k chunks (chunking benchmark only); reported with the characters the top-k chunks send to the model
 - **Keyword recall:** share of expected keywords present in the generated answer (a lexical proxy, not a judge of correctness)
 - **Citation rate / invalid citations:** share of answered questions whose answer cites at least one of the provided passages, and the number of answers citing a passage number that was not provided
+- **LLM judge (optional):** a second model answers three YES/NO questions per answer: is it correct according to the labelled evidence, is every statement supported by the passages, and does every citation point to a passage that supports its statement. Rates are over the answered, answerable questions the judge decided on
 - **Answer rate / abstention rate:** whether the model answers answerable questions and declines unanswerable ones
 
 ### Running the evaluation
@@ -375,7 +376,15 @@ docker compose exec api python -m evaluation
 
 # Retrieval metrics and generated-answer scoring
 docker compose exec api python -m evaluation --generate
+
+# ...and LLM-judge scoring of the answers (needs OPENAI_API_KEY)
+docker compose exec api python -m evaluation --generate --judge
+
+# Check the judge against hand-labelled cases
+docker compose exec api python -m evaluation.judge_check
 ```
+
+The judge model is set with `JUDGE_PROVIDER` and `JUDGE_MODEL` (default `openai` / `gpt-6.1-sol`).
 
 Reports are written to `evaluation/results/report.md` and `evaluation/results/report.json`. Use `--dataset` to evaluate another labelled JSONL file and `--ks` to change the cut-offs.
 
@@ -424,7 +433,25 @@ Answers cite the passages they rely on. Measured on the NIST AI RMF question set
 | Keyword recall | 0.975 → 0.975 | 0.883 → 0.917 |
 | Mean generation time | 19.7 s → 27.3 s | 1.7 s → 1.6 s |
 
-Both models cite a provided passage in every answer and never cite one that does not exist, and answer quality is unchanged. Llama 3 writes about 45% longer answers when citing, which makes it slower, and sometimes adds stray citation markers or cites passages when it declines to answer. The citation rate only checks that a cited passage exists, not that it supports the statement; that needs an LLM judge, listed under Future Directions.
+Both models cite a provided passage in every answer and never cite one that does not exist, and answer quality is unchanged. Llama 3 writes about 45% longer answers when citing, which makes it slower, and sometimes adds stray citation markers or cites passages when it declines to answer. The citation rate only checks that a cited passage exists, not that it supports the statement; that is what the [LLM judge](#llm-judge) checks.
+
+### LLM judge
+
+Keyword recall rewards copying the document's wording, and the citation rate only checks that a cited passage exists. An LLM judge (`gpt-6.1-sol`) grades meaning instead. Before trusting it, it was checked against 13 hand-labelled cases ([`judge_cases.jsonl`](evaluation/datasets/judge_cases.jsonl)), including wrong numbers, incomplete answers, unsupported additions and mixed citations: it agreed on all 13 ([result](evaluation/results/judge/judge_check.md)).
+
+Measured on the chunking benchmark (52 questions, three documents) with the default settings ([reports](evaluation/results/judge)):
+
+| | Local (`llama3`) | Cloud (`gpt-6-luna`) |
+|---|---|---|
+| Judged correct | 0.80 | **0.94** |
+| Grounded in the passages | 0.84 | **1.00** |
+| Citations support their statements | 0.71 | **1.00** |
+| Keyword recall | **0.845** | 0.775 |
+| Mean generation time | 28.6 s | 1.7 s |
+
+The judge reverses the keyword ranking: Llama 3 quotes more of the document but is wrong more often, and it often places all citations at the end of the answer or cites passages that do not support the statement. GPT-6 Luna paraphrases, which costs it keywords, not correctness. The local run was split into two parts to fit in memory, so its rates combine both reports.
+
+Caveats: the judge is a model and can be wrong, 13 checked cases is a small sample, and the judge and the cloud generator come from the same provider, which may favour the cloud answers. Read the per-answer decisions in the reports rather than the rates alone.
 
 ## Chunking
 
@@ -472,7 +499,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 169 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
+**Verified locally:** 185 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 
@@ -557,7 +584,7 @@ Answers depend on document quality, retrieval relevance, and model behavior. Sou
 
 ## Future Directions
 
-Potential extensions include a larger multi-document evaluation set, LLM-as-judge answer scoring to compare models with different writing styles, authentication, OCR for scanned documents, and monitoring.
+Potential extensions include a larger multi-document evaluation set, authentication, OCR for scanned documents, and monitoring.
 
 For chunking, the measurements point to three next steps: using the semantic chunker only for documents without headings, splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk), and prefixing chunks with document context so that similar frameworks such as the AI RMF and CSF are told apart more reliably.
 

@@ -71,8 +71,7 @@ Be concise and accurate.
         # Passages are numbered in the order of the returned sources, so
         # citation [n] refers to the n-th source.
         context = "\n\n".join(
-            f"[{number}] {chunk.metadata.source}, page {chunk.metadata.page}\n"
-            f"{chunk.document}"
+            f"[{number}] {format_passage(chunk)}"
             for number, chunk in enumerate(chunks, start=1)
         )
 
@@ -81,3 +80,10 @@ Be concise and accurate.
             f"Question:\n{question}\n\n"
             "Answer:"
         )
+
+
+def format_passage(chunk: RetrievedChunk) -> str:
+    """A retrieved chunk as the model sees it: its source and page, then the
+    text. The evaluation judge sees passages in the same form."""
+
+    return f"{chunk.metadata.source}, page {chunk.metadata.page}\n{chunk.document}"

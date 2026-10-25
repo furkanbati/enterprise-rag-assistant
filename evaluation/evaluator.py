@@ -5,8 +5,9 @@ from statistics import mean
 
 from evaluation import metrics
 from evaluation.dataset import EvalSample
+from evaluation.judge import AnswerJudge, Judgement
 from evaluation.strategies import RetrievalStrategy
-from generator import Generator
+from generator import Generator, format_passage
 from providers.base import Embedder
 
 logger = logging.getLogger(__name__)
@@ -39,6 +40,8 @@ class AnswerResult:
     citations: list[int]
     # Cited numbers that match none of the chunks given to the model.
     invalid_citations: list[int]
+    # LLM judge decisions; None when not judged or not applicable.
+    judgement: Judgement | None = None
 
 
 @dataclass
@@ -66,6 +69,11 @@ class GenerationSummary:
     # Share of answered, answerable questions with at least one valid citation.
     citation_rate: float | None
     invalid_citation_answers: int
+    # LLM judge rates over the answers each criterion applied to.
+    judged_correct_rate: float | None = None
+    judged_grounded_rate: float | None = None
+    judged_citations_rate: float | None = None
+    judge_no_decision: int = 0
 
 
 @dataclass
@@ -92,6 +100,7 @@ class Evaluator:
         generator: Generator | None = None,
         generation_strategy: str | None = None,
         generation_top_k: int = 3,
+        judge: AnswerJudge | None = None,
     ) -> None:
         if not strategies:
             raise ValueError("At least one retrieval strategy is required.")
@@ -110,6 +119,7 @@ class Evaluator:
         self.generator = generator
         self.generation_strategy = generation_strategy
         self.generation_top_k = generation_top_k
+        self.judge = judge
 
     def evaluate(self, samples: list[EvalSample]) -> EvaluationReport:
         retrieval_results: list[RetrievalResult] = []
@@ -227,6 +237,20 @@ class Evaluator:
         )
         latency_ms = (time.perf_counter() - started) * 1000
         citations = metrics.cited_sources(answer)
+        abstained = metrics.is_abstention(answer)
+
+        # Only answers to answerable questions have something to grade;
+        # abstentions are scored by the abstention metrics instead.
+        judgement = (
+            self.judge.judge(
+                question=sample.question,
+                answer=answer,
+                passages=[format_passage(chunk) for chunk in chunks],
+                reference=sample.evidence,
+            )
+            if self.judge is not None and sample.answerable and not abstained
+            else None
+        )
 
         return AnswerResult(
             sample_id=sample.id,
@@ -238,7 +262,7 @@ class Evaluator:
                 if sample.answerable and sample.expected_keywords
                 else None
             ),
-            abstained=metrics.is_abstention(answer),
+            abstained=abstained,
             latency_ms=latency_ms,
             citations=citations,
             invalid_citations=[
@@ -246,6 +270,7 @@ class Evaluator:
                 for number in citations
                 if not 1 <= number <= len(chunks)
             ],
+            judgement=judgement,
         )
 
     def _summarize_strategy(
@@ -335,7 +360,25 @@ class Evaluator:
             invalid_citation_answers=sum(
                 bool(result.invalid_citations) for result in results
             ),
+            judged_correct_rate=_judged_rate(results, "correct"),
+            judged_grounded_rate=_judged_rate(results, "grounded"),
+            judged_citations_rate=_judged_rate(results, "citations_supported"),
+            judge_no_decision=sum(
+                result.judgement.no_decision
+                for result in results
+                if result.judgement is not None
+            ),
         )
+
+
+def _judged_rate(results: list[AnswerResult], criterion: str) -> float | None:
+    """Share of YES decisions among the answers the judge decided on."""
+
+    return _mean_or_none(
+        getattr(result.judgement, criterion)
+        for result in results
+        if result.judgement is not None
+    )
 
 
 def _mean(values) -> float:

@@ -26,6 +26,11 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL") or None
 OPENAI_REASONING_EFFORT = os.getenv("OPENAI_REASONING_EFFORT", "low") or None
 
+# Model that grades generated answers in the evaluation (python -m evaluation
+# --judge). A stronger model than the one answering avoids grading itself.
+JUDGE_PROVIDER = os.getenv("JUDGE_PROVIDER", "openai")
+JUDGE_MODEL = os.getenv("JUDGE_MODEL", "gpt-6.1-sol")
+
 RERANK_MODEL = os.getenv("RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
 
 CHROMA_PATH = os.getenv("CHROMA_PATH", "./data/chroma")

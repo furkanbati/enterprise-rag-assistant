@@ -21,6 +21,8 @@ from config import (
     EMBED_MODEL,
     EMBED_PROVIDER,
     FINAL_TOP_K,
+    JUDGE_MODEL,
+    JUDGE_PROVIDER,
     LLM_PROVIDER,
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
@@ -39,6 +41,7 @@ from evaluation.strategies import (
     VectorOnlyStrategy,
 )
 from generator import Generator
+from evaluation.judge import AnswerJudge
 from providers.factory import build_chat_client, build_embedder
 from retrieval.fusion import ReciprocalRankFusion
 from retrieval.keyword_search import KeywordSearch
@@ -64,6 +67,14 @@ def parse_args() -> argparse.Namespace:
         help="Also generate answers with the chat model and score them.",
     )
     parser.add_argument(
+        "--judge",
+        action="store_true",
+        help=(
+            "Also grade generated answers with the LLM judge "
+            "(JUDGE_PROVIDER / JUDGE_MODEL). Requires --generate."
+        ),
+    )
+    parser.add_argument(
         "--rerank-model",
         default=RERANK_MODEL,
         help="Cross-encoder used by the reranking strategy.",
@@ -75,6 +86,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+
+    if args.judge and not args.generate:
+        raise SystemExit("--judge grades generated answers; add --generate.")
 
     logging.basicConfig(
         level=logging.INFO if args.verbose else logging.WARNING,
@@ -145,6 +159,13 @@ def main() -> None:
         ),
         generation_strategy="hybrid_rrf_rerank",
         generation_top_k=FINAL_TOP_K,
+        judge=(
+            AnswerJudge(
+                client=build_chat_client(provider=JUDGE_PROVIDER, model=JUDGE_MODEL)
+            )
+            if args.judge
+            else None
+        ),
     )
 
     report = evaluator.evaluate(samples)
@@ -167,6 +188,9 @@ def main() -> None:
         "Reranker": args.rerank_model,
         "Chat model": (
             f"{LLM_PROVIDER}/{CHAT_MODEL}" if args.generate else "not evaluated"
+        ),
+        "Judge model": (
+            f"{JUDGE_PROVIDER}/{JUDGE_MODEL}" if args.judge else "not used"
         ),
         "Candidates per retriever": RETRIEVAL_TOP_K,
     }

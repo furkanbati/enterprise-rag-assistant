@@ -97,6 +97,16 @@ def render_markdown(report: EvaluationReport, metadata: dict) -> str:
             f"{generation.mean_latency_ms:.0f} |",
         ]
 
+        if any(result.judgement for result in report.answer_results):
+            lines += [
+                f"| LLM judge: correct | {_fmt(generation.judged_correct_rate)} |",
+                f"| LLM judge: grounded in the passages | "
+                f"{_fmt(generation.judged_grounded_rate)} |",
+                f"| LLM judge: citations support their statements | "
+                f"{_fmt(generation.judged_citations_rate)} |",
+                f"| LLM judge: no decision | {generation.judge_no_decision} |",
+            ]
+
     lines += [
         "",
         "## Per-question Reciprocal Rank",
@@ -139,10 +149,11 @@ def render_markdown(report: EvaluationReport, metadata: dict) -> str:
                 else "unanswerable"
             )
             abstained = "abstained" if result.abstained else "answered"
+            judged = _judgement_text(result.judgement)
 
             lines += [
                 f"**{result.sample_id}. {result.question}** "
-                f"_({score}, {abstained})_",
+                f"_({score}, {abstained}{judged})_",
                 "",
                 _blockquote(result.answer),
                 "",
@@ -231,6 +242,29 @@ def _render_evidence(report: EvaluationReport) -> list[str]:
         ]
 
     return lines
+
+
+def _judgement_text(judgement) -> str:
+    """Judge decisions for one answer, for example "; correct, not grounded"."""
+
+    if judgement is None:
+        return ""
+
+    labels = {
+        "correct": ("correct", "incorrect"),
+        "grounded": ("grounded", "not grounded"),
+        "citations_supported": ("citations supported", "citations not supported"),
+    }
+    parts = [
+        yes if decision else no
+        for name, (yes, no) in labels.items()
+        if (decision := getattr(judgement, name)) is not None
+    ]
+
+    if judgement.no_decision:
+        parts.append(f"{judgement.no_decision} without a decision")
+
+    return "; judge: " + ", ".join(parts) if parts else ""
 
 
 def _table_header(columns: list[str]) -> list[str]:

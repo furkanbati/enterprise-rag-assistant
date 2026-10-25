@@ -1,0 +1,4073 @@
+{
+  "metadata": {
+    "Date": "2026-10-25 09:11 UTC",
+    "Dataset": "benchmark_part2.jsonl",
+    "Embedding model": "ollama/nomic-embed-text",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Chat model": "ollama/llama3",
+    "Judge model": "openai/gpt-6.1-sol",
+    "Candidates per retriever": 12
+  },
+  "ks": [
+    1,
+    3,
+    5
+  ],
+  "num_samples": 26,
+  "num_answerable": 22,
+  "strategies": [
+    {
+      "strategy": "vector",
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.9090909090909091,
+        "3": 0.9772727272727273,
+        "5": 0.9772727272727273
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.8939393939393939,
+        "5": 0.8545454545454545
+      },
+      "mrr": 1.0,
+      "evidence_recall": {
+        "1": 0.4393939393939394,
+        "3": 0.8348484848484848,
+        "5": 0.8704545454545455
+      },
+      "mean_context_chars": {
+        "1": 393.90909090909093,
+        "3": 1336.2272727272727,
+        "5": 2180.7272727272725
+      },
+      "mean_latency_ms": 14.374830272675933
+    },
+    {
+      "strategy": "bm25",
+      "hit": {
+        "1": 0.9545454545454546,
+        "3": 0.9545454545454546,
+        "5": 0.9545454545454546
+      },
+      "recall": {
+        "1": 0.8636363636363636,
+        "3": 0.8636363636363636,
+        "5": 0.8636363636363636
+      },
+      "precision": {
+        "1": 0.9545454545454546,
+        "3": 0.8484848484848485,
+        "5": 0.7909090909090909
+      },
+      "mrr": 0.9545454545454546,
+      "evidence_recall": {
+        "1": 0.6833333333333333,
+        "3": 0.8340909090909091,
+        "5": 0.8340909090909091
+      },
+      "mean_context_chars": {
+        "1": 443.27272727272725,
+        "3": 1351.3636363636363,
+        "5": 2265.0
+      },
+      "mean_latency_ms": 0.9466569999858621
+    },
+    {
+      "strategy": "hybrid_rrf",
+      "hit": {
+        "1": 0.9545454545454546,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.8636363636363636,
+        "3": 0.9090909090909091,
+        "5": 0.9318181818181818
+      },
+      "precision": {
+        "1": 0.9545454545454546,
+        "3": 0.8939393939393939,
+        "5": 0.8454545454545455
+      },
+      "mrr": 0.9772727272727273,
+      "evidence_recall": {
+        "1": 0.5242424242424243,
+        "3": 0.8515151515151516,
+        "5": 0.9022727272727272
+      },
+      "mean_context_chars": {
+        "1": 431.40909090909093,
+        "3": 1341.7727272727273,
+        "5": 2156.909090909091
+      },
+      "mean_latency_ms": 12.753773409113736
+    },
+    {
+      "strategy": "hybrid_rrf_rerank",
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.9090909090909091,
+        "3": 0.9545454545454546,
+        "5": 0.9545454545454546
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.8787878787878788,
+        "5": 0.8545454545454546
+      },
+      "mrr": 1.0,
+      "evidence_recall": {
+        "1": 0.6568181818181819,
+        "3": 0.8704545454545455,
+        "5": 0.8704545454545455
+      },
+      "mean_context_chars": {
+        "1": 415.0,
+        "3": 1324.7727272727273,
+        "5": 2235.5454545454545
+      },
+      "mean_latency_ms": 707.5190371363698
+    }
+  ],
+  "retrieval_results": [
+    {
+      "sample_id": "c07",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        11,
+        11,
+        11,
+        11,
+        11
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.2,
+        "5": 0.4
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1320,
+        "5": 2327
+      },
+      "latency_ms": 9.909313000207476
+    },
+    {
+      "sample_id": "c07",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        11,
+        11,
+        11,
+        12,
+        31
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.2,
+        "3": 0.6,
+        "5": 0.6
+      },
+      "context_chars": {
+        "1": 451,
+        "3": 1256,
+        "5": 2004
+      },
+      "latency_ms": 1.1327829997753724
+    },
+    {
+      "sample_id": "c07",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        11,
+        11,
+        11,
+        11,
+        11
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.2,
+        "3": 0.4,
+        "5": 0.6
+      },
+      "context_chars": {
+        "1": 451,
+        "3": 1288,
+        "5": 2125
+      },
+      "latency_ms": 13.1918530000803
+    },
+    {
+      "sample_id": "c07",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        11,
+        11,
+        11,
+        11,
+        15
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.2,
+        "3": 0.4,
+        "5": 0.4
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1263,
+        "5": 2266
+      },
+      "latency_ms": 3580.019850000099
+    },
+    {
+      "sample_id": "c08",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        31,
+        14,
+        14,
+        14,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 203,
+        "3": 1188,
+        "5": 2094
+      },
+      "latency_ms": 17.55090899996503
+    },
+    {
+      "sample_id": "c08",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        14,
+        14,
+        14,
+        6,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 482,
+        "3": 1449,
+        "5": 2306
+      },
+      "latency_ms": 0.8753120000619674
+    },
+    {
+      "sample_id": "c08",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        14,
+        14,
+        14,
+        6,
+        31
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 482,
+        "3": 1449,
+        "5": 2094
+      },
+      "latency_ms": 11.968070999955671
+    },
+    {
+      "sample_id": "c08",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        14,
+        31,
+        14,
+        14,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 482,
+        "3": 1188,
+        "5": 2094
+      },
+      "latency_ms": 467.26702300020406
+    },
+    {
+      "sample_id": "c09",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        31,
+        14,
+        5,
+        14,
+        2
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 160,
+        "3": 1106,
+        "5": 1964
+      },
+      "latency_ms": 12.35864299997047
+    },
+    {
+      "sample_id": "c09",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        14,
+        6,
+        14,
+        6,
+        2
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 477,
+        "3": 1570,
+        "5": 2401
+      },
+      "latency_ms": 0.40500699969925336
+    },
+    {
+      "sample_id": "c09",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        14,
+        14,
+        5,
+        2,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 477,
+        "3": 1388,
+        "5": 2219
+      },
+      "latency_ms": 11.505657999805408
+    },
+    {
+      "sample_id": "c09",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        31,
+        14,
+        6,
+        14,
+        5
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 160,
+        "3": 1288,
+        "5": 2239
+      },
+      "latency_ms": 490.06026300003214
+    },
+    {
+      "sample_id": "c10",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        2,
+        6,
+        6,
+        6,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 360,
+        "3": 1290,
+        "5": 2423
+      },
+      "latency_ms": 21.998937999796908
+    },
+    {
+      "sample_id": "c10",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        2,
+        6,
+        6,
+        3,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 360,
+        "3": 1488,
+        "5": 2569
+      },
+      "latency_ms": 0.7415760001094895
+    },
+    {
+      "sample_id": "c10",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        2,
+        6,
+        6,
+        5,
+        2
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 360,
+        "3": 1488,
+        "5": 2293
+      },
+      "latency_ms": 13.606779999918217
+    },
+    {
+      "sample_id": "c10",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        2,
+        6,
+        5,
+        6,
+        2
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 360,
+        "3": 1213,
+        "5": 2293
+      },
+      "latency_ms": 281.4768059997732
+    },
+    {
+      "sample_id": "c11",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        15,
+        5,
+        16,
+        16,
+        15
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 523,
+        "3": 1503,
+        "5": 2381
+      },
+      "latency_ms": 9.041906000220479
+    },
+    {
+      "sample_id": "c11",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        15,
+        8,
+        6,
+        16,
+        14
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 523,
+        "3": 1631,
+        "5": 2629
+      },
+      "latency_ms": 0.6628920000366634
+    },
+    {
+      "sample_id": "c11",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        15,
+        15,
+        5,
+        8,
+        16
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 523,
+        "3": 1501,
+        "5": 2378
+      },
+      "latency_ms": 9.145789999820408
+    },
+    {
+      "sample_id": "c11",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        15,
+        8,
+        5,
+        16,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 523,
+        "3": 1540,
+        "5": 2336
+      },
+      "latency_ms": 293.10136899994177
+    },
+    {
+      "sample_id": "c12",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        16,
+        16,
+        6,
+        1,
+        24
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 229,
+        "3": 1344,
+        "5": 1709
+      },
+      "latency_ms": 10.406519999833108
+    },
+    {
+      "sample_id": "c12",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        8,
+        20,
+        22,
+        19,
+        17
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 564,
+        "3": 1493,
+        "5": 2756
+      },
+      "latency_ms": 0.6601360000786372
+    },
+    {
+      "sample_id": "c12",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        2,
+        16,
+        8,
+        16,
+        20
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 429,
+        "3": 1222,
+        "5": 2148
+      },
+      "latency_ms": 10.735476000263589
+    },
+    {
+      "sample_id": "c12",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        16,
+        16,
+        6,
+        43,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 229,
+        "3": 1188,
+        "5": 2330
+      },
+      "latency_ms": 1486.9633339999382
+    },
+    {
+      "sample_id": "c13",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        16,
+        16,
+        2,
+        31,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1182,
+        "5": 1793
+      },
+      "latency_ms": 11.683492999964074
+    },
+    {
+      "sample_id": "c13",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        16,
+        8,
+        16,
+        16,
+        15
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1441,
+        "5": 2507
+      },
+      "latency_ms": 0.7546269998783828
+    },
+    {
+      "sample_id": "c13",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        16,
+        16,
+        8,
+        31,
+        31
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1441,
+        "5": 1758
+      },
+      "latency_ms": 13.258130999929563
+    },
+    {
+      "sample_id": "c13",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        16,
+        16,
+        8,
+        16,
+        16
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1441,
+        "5": 2446
+      },
+      "latency_ms": 851.3665570003468
+    },
+    {
+      "sample_id": "c14",
+      "strategy": "vector",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        8,
+        8,
+        26,
+        8,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 438,
+        "3": 2497,
+        "5": 3449
+      },
+      "latency_ms": 13.509339000393084
+    },
+    {
+      "sample_id": "c14",
+      "strategy": "bm25",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        8,
+        31,
+        8,
+        8,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 438,
+        "3": 1142,
+        "5": 2123
+      },
+      "latency_ms": 0.4286329999558802
+    },
+    {
+      "sample_id": "c14",
+      "strategy": "hybrid_rrf",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        8,
+        8,
+        8,
+        31,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 438,
+        "3": 1502,
+        "5": 2158
+      },
+      "latency_ms": 11.670960000174091
+    },
+    {
+      "sample_id": "c14",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "NIST.CSWP.29.pdf",
+      "retrieved_pages": [
+        8,
+        8,
+        31,
+        8,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 438,
+        "3": 1206,
+        "5": 2138
+      },
+      "latency_ms": 490.8750230001715
+    },
+    {
+      "sample_id": "f01",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1356,
+        "5": 2191
+      },
+      "latency_ms": 12.992206999570044
+    },
+    {
+      "sample_id": "f01",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 435,
+        "3": 1345,
+        "5": 2211
+      },
+      "latency_ms": 1.0933620001196687
+    },
+    {
+      "sample_id": "f01",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1345,
+        "5": 2211
+      },
+      "latency_ms": 15.015585999663017
+    },
+    {
+      "sample_id": "f01",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 435,
+        "3": 1356,
+        "5": 2238
+      },
+      "latency_ms": 174.78536499993425
+    },
+    {
+      "sample_id": "f02",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1265,
+        "5": 2215
+      },
+      "latency_ms": 10.384803999841097
+    },
+    {
+      "sample_id": "f02",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 450,
+        "3": 1352,
+        "5": 2188
+      },
+      "latency_ms": 0.7044439998935559
+    },
+    {
+      "sample_id": "f02",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1259,
+        "5": 2215
+      },
+      "latency_ms": 10.531677000017226
+    },
+    {
+      "sample_id": "f02",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 450,
+        "3": 1344,
+        "5": 2387
+      },
+      "latency_ms": 208.62630200008425
+    },
+    {
+      "sample_id": "f03",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1296,
+        "5": 2093
+      },
+      "latency_ms": 15.257612999903358
+    },
+    {
+      "sample_id": "f03",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1281,
+        "5": 2155
+      },
+      "latency_ms": 1.6579739999542653
+    },
+    {
+      "sample_id": "f03",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1290,
+        "5": 2154
+      },
+      "latency_ms": 14.414898000268295
+    },
+    {
+      "sample_id": "f03",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1329,
+        "5": 2146
+      },
+      "latency_ms": 226.29393299985168
+    },
+    {
+      "sample_id": "f04",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 414,
+        "3": 1223,
+        "5": 2038
+      },
+      "latency_ms": 8.642227999644092
+    },
+    {
+      "sample_id": "f04",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 414,
+        "3": 1247,
+        "5": 2108
+      },
+      "latency_ms": 0.7497669998883794
+    },
+    {
+      "sample_id": "f04",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 414,
+        "3": 1247,
+        "5": 2005
+      },
+      "latency_ms": 9.006050000152754
+    },
+    {
+      "sample_id": "f04",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 414,
+        "3": 1247,
+        "5": 2005
+      },
+      "latency_ms": 246.45679200011728
+    },
+    {
+      "sample_id": "f05",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1386,
+        "5": 2178
+      },
+      "latency_ms": 10.947505999865825
+    },
+    {
+      "sample_id": "f05",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 486,
+        "3": 1370,
+        "5": 2326
+      },
+      "latency_ms": 0.987988999895606
+    },
+    {
+      "sample_id": "f05",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 471,
+        "3": 1448,
+        "5": 2290
+      },
+      "latency_ms": 13.428886999918177
+    },
+    {
+      "sample_id": "f05",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 486,
+        "3": 1448,
+        "5": 2238
+      },
+      "latency_ms": 256.6131769999629
+    },
+    {
+      "sample_id": "f06",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.6666666666666666,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 381,
+        "3": 1249,
+        "5": 2051
+      },
+      "latency_ms": 16.510216999904515
+    },
+    {
+      "sample_id": "f06",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 381,
+        "3": 1220,
+        "5": 1995
+      },
+      "latency_ms": 1.2862429998676816
+    },
+    {
+      "sample_id": "f06",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 381,
+        "3": 1220,
+        "5": 2051
+      },
+      "latency_ms": 18.684339000174077
+    },
+    {
+      "sample_id": "f06",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 381,
+        "3": 1220,
+        "5": 2263
+      },
+      "latency_ms": 252.02322200038907
+    },
+    {
+      "sample_id": "f07",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.25
+      },
+      "context_chars": {
+        "1": 414,
+        "3": 1253,
+        "5": 2186
+      },
+      "latency_ms": 23.49822199994378
+    },
+    {
+      "sample_id": "f07",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.25,
+        "5": 0.25
+      },
+      "context_chars": {
+        "1": 414,
+        "3": 1336,
+        "5": 2185
+      },
+      "latency_ms": 1.7375200000060431
+    },
+    {
+      "sample_id": "f07",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.25
+      },
+      "context_chars": {
+        "1": 414,
+        "3": 1253,
+        "5": 2251
+      },
+      "latency_ms": 23.934519000249566
+    },
+    {
+      "sample_id": "f07",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.25,
+        "3": 0.25,
+        "5": 0.25
+      },
+      "context_chars": {
+        "1": 520,
+        "3": 1336,
+        "5": 2185
+      },
+      "latency_ms": 221.15797900005418
+    },
+    {
+      "sample_id": "f08",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 411,
+        "3": 1324,
+        "5": 2083
+      },
+      "latency_ms": 15.213313999993261
+    },
+    {
+      "sample_id": "f08",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 457,
+        "3": 1365,
+        "5": 2284
+      },
+      "latency_ms": 1.1961090003751451
+    },
+    {
+      "sample_id": "f08",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 411,
+        "3": 1170,
+        "5": 2063
+      },
+      "latency_ms": 14.991929000188975
+    },
+    {
+      "sample_id": "f08",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 411,
+        "3": 1436,
+        "5": 2214
+      },
+      "latency_ms": 559.0787309997722
+    },
+    {
+      "sample_id": "f09",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1233,
+        "5": 2061
+      },
+      "latency_ms": 17.229771000074834
+    },
+    {
+      "sample_id": "f09",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1193,
+        "5": 1992
+      },
+      "latency_ms": 0.6369970001287584
+    },
+    {
+      "sample_id": "f09",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1233,
+        "5": 2061
+      },
+      "latency_ms": 10.704750000058993
+    },
+    {
+      "sample_id": "f09",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1233,
+        "5": 2061
+      },
+      "latency_ms": 202.81334399987827
+    },
+    {
+      "sample_id": "f10",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 467,
+        "3": 1417,
+        "5": 2179
+      },
+      "latency_ms": 16.764655000315543
+    },
+    {
+      "sample_id": "f10",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 467,
+        "3": 1301,
+        "5": 2254
+      },
+      "latency_ms": 0.6440629999815428
+    },
+    {
+      "sample_id": "f10",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 467,
+        "3": 1417,
+        "5": 2191
+      },
+      "latency_ms": 12.281659999644035
+    },
+    {
+      "sample_id": "f10",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.6666666666666666,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 462,
+        "3": 1417,
+        "5": 2191
+      },
+      "latency_ms": 811.4718499996343
+    },
+    {
+      "sample_id": "f11",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1206,
+        "5": 2120
+      },
+      "latency_ms": 14.232620000257157
+    },
+    {
+      "sample_id": "f11",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1187,
+        "5": 2122
+      },
+      "latency_ms": 0.9295459999520972
+    },
+    {
+      "sample_id": "f11",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1206,
+        "5": 2122
+      },
+      "latency_ms": 13.520195000182866
+    },
+    {
+      "sample_id": "f11",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1187,
+        "5": 2122
+      },
+      "latency_ms": 290.5335519999426
+    },
+    {
+      "sample_id": "f12",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 396,
+        "3": 1288,
+        "5": 2127
+      },
+      "latency_ms": 13.534026999877824
+    },
+    {
+      "sample_id": "f12",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 454,
+        "3": 1251,
+        "5": 2228
+      },
+      "latency_ms": 0.7864619997235422
+    },
+    {
+      "sample_id": "f12",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 396,
+        "3": 1340,
+        "5": 2121
+      },
+      "latency_ms": 10.709270999996079
+    },
+    {
+      "sample_id": "f12",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 490,
+        "3": 1415,
+        "5": 2234
+      },
+      "latency_ms": 919.9996150000516
+    },
+    {
+      "sample_id": "f13",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 451,
+        "3": 1252,
+        "5": 2047
+      },
+      "latency_ms": 9.306198999638582
+    },
+    {
+      "sample_id": "f13",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 451,
+        "3": 1482,
+        "5": 2285
+      },
+      "latency_ms": 1.1403280000195082
+    },
+    {
+      "sample_id": "f13",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 451,
+        "3": 1482,
+        "5": 2279
+      },
+      "latency_ms": 8.024965999993583
+    },
+    {
+      "sample_id": "f13",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 451,
+        "3": 1520,
+        "5": 2523
+      },
+      "latency_ms": 1124.7329299999365
+    },
+    {
+      "sample_id": "f14",
+      "strategy": "vector",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 383,
+        "3": 1219,
+        "5": 2267
+      },
+      "latency_ms": 25.27382199968997
+    },
+    {
+      "sample_id": "f14",
+      "strategy": "bm25",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 383,
+        "3": 1330,
+        "5": 2202
+      },
+      "latency_ms": 1.6146840002875251
+    },
+    {
+      "sample_id": "f14",
+      "strategy": "hybrid_rrf",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 383,
+        "3": 1330,
+        "5": 2265
+      },
+      "latency_ms": 10.251569000047311
+    },
+    {
+      "sample_id": "f14",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "FOMCpresconf20240918.pdf",
+      "retrieved_pages": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 383,
+        "3": 1330,
+        "5": 2233
+      },
+      "latency_ms": 2129.7018000000207
+    }
+  ],
+  "generation": {
+    "strategy": "hybrid_rrf_rerank",
+    "top_k": 3,
+    "answerable_questions": 22,
+    "unanswerable_questions": 4,
+    "mean_keyword_recall": 0.693939393939394,
+    "answer_rate": 0.9545454545454546,
+    "abstention_rate": 1.0,
+    "mean_latency_ms": 29614.563952961485,
+    "citation_rate": 1.0,
+    "invalid_citation_answers": 0,
+    "judged_correct_rate": 0.55,
+    "judged_grounded_rate": 0.7,
+    "judged_citations_rate": 0.7,
+    "judge_no_decision": 3
+  },
+  "answer_results": [
+    {
+      "sample_id": "c07",
+      "question": "What steps does the CSF describe for using an Organizational Profile?",
+      "answer": "According to the provided context [2], one way an organization could use an Organizational Profile to help inform continuous improvement of its cybersecurity is by:\n\n* Scoping the Organizational Profile\n* Documenting high-level facts and assumptions on which the Profile will be based to define its scope.\n\nAdditionally, according to [1], an action plan may involve updating the Organizational Profile to address gaps and move the organization toward the Target Profile.",
+      "answerable": true,
+      "keyword_recall": 0.6,
+      "abstained": false,
+      "latency_ms": 29455.9587509998,
+      "citations": [
+        2,
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "c08",
+      "question": "What are Informative References in the CSF?",
+      "answer": "Informative References in the CSF are mappings that indicate relationships between the Core and various standards, guidelines, regulations, or other content. They help inform how an organization may achieve the Core's outcomes. [1]\n\nAdditionally, Informative References can be sector- or technology-specific and may be produced by NIST or another organization. They provide a mapping that indicates a relationship between a CSF Core outcome and an existing standard, guideline, regulation, or other content. [2][3]",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 16802.255561000038,
+      "citations": [
+        1,
+        2,
+        3
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "c09",
+      "question": "What are CSF Quick-Start Guides?",
+      "answer": "According to [2], CSF Quick-Start Guides (QSGs) are brief documents that give actionable guidance on specific CSF-related topics. They can help an organization implement the CSF by distilling specific portions of the framework into \"first steps\" for improving their cybersecurity posture and managing associated risks.",
+      "answerable": true,
+      "keyword_recall": 0.6666666666666666,
+      "abstained": false,
+      "latency_ms": 13882.257888999902,
+      "citations": [
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "c10",
+      "question": "What was the Cybersecurity Framework called before version 2.0?",
+      "answer": "The Cybersecurity Framework was called \"Framework for Improving Critical Infrastructure Cybersecurity\" before version 2.0. [1]",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 13026.108052999916,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "c11",
+      "question": "In which ways can an organization handle risk according to the CSF?",
+      "answer": "According to the context, an organization may choose to handle risk in one or more ways by:\n\n* Mitigating negative risks\n* Transferring negative risks\n* Avoiding negative risks\n* Accepting negative risks\n* Realizing positive risks\n* Sharing positive risks\n* Enhancing positive risks\n* Accepting positive risks\n\nThese options are mentioned on page 15 of the NIST.CSWP.29.pdf [1].\n\nAdditionally, the context suggests that an organization can also handle risk by increasing revenue through actions to reduce cybersecurity risk, as mentioned in page 8 of the same document [2].",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 34924.297968000246,
+      "citations": [
+        1,
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": false,
+        "citations_supported": false,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "c12",
+      "question": "How does the Cybersecurity Framework relate to the NIST AI RMF?",
+      "answer": "The Cybersecurity Framework (CSF) relates to the NIST Artificial Intelligence Risk Management Framework (AI RMF) in that they are both developed by NIST. The CSF is mentioned as a framework used for managing risks related to AI, and the AI RMF was developed to help address cybersecurity and privacy risks associated with artificial intelligence [2]. Additionally, the AI RMF will continue to align with applicable international standards, guidelines, and practices, including the Cybersecurity Framework [3].\n\n[1][2]",
+      "answerable": true,
+      "keyword_recall": 0.25,
+      "abstained": false,
+      "latency_ms": 24446.139563000088,
+      "citations": [
+        2,
+        3,
+        1,
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": false,
+        "citations_supported": false,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "c13",
+      "question": "Which CSF Category covers cybersecurity supply chain risk management?",
+      "answer": "C-SCRM (Cybersecurity Supply Chain Risk Management) is covered under the C-SCRM Category in the CSF framework. [1][2]\n\nSpecifically, the C-SCRM Category is mentioned in the Subcategories within the CSF C-SCRM Category [GV.SC] on page 16 of NIST.CSWP.29.pdf.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 17292.407023000123,
+      "citations": [
+        1,
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": false,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "c14",
+      "question": "What does the DETECT Function enable?",
+      "answer": "The DETECT Function enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring [1].",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 28150.419037999654,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f01",
+      "question": "By how much did the FOMC lower the federal funds rate in September 2024, and to what target range?",
+      "answer": "The FOMC lowered the federal funds rate by ½ percentage point to a target range of 4¾ percent to 5 percent. [1]",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 17187.513784000203,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f02",
+      "question": "What was the peak of inflation and where did it stand as of August 2024?",
+      "answer": "The peak of inflation was 7 percent, and as of August 2024, it stood at an estimated 2.2 percent.\n\n[1]",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 13119.688486999621,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f03",
+      "question": "What federal funds rate did the median participant project for the end of 2024 and the end of 2025?",
+      "answer": "According to the context, the median participant projected that the appropriate level of the federal funds rate will be:\n\n* 4.4% at the end of this year [1]\n* 3.4% at the end of 2025 [1]\n\nNo information is provided regarding the likelihood of cheap money becoming the norm or any other related topic, as it falls outside the scope of the median participant's projections [2].",
+      "answerable": true,
+      "keyword_recall": 0.0,
+      "abstained": true,
+      "latency_ms": 19885.075446999963,
+      "citations": [
+        1,
+        1,
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "f04",
+      "question": "How did the median unemployment projection in the SEP change compared with June?",
+      "answer": "The median unemployment rate in the SEP was projected to be four-tenths higher at 4.4 percent at the end of this year, compared to the previous projection in June [1].\n\nSo, the median unemployment projection in the SEP increased by four-tenths compared with June.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 35922.33084500003,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f05",
+      "question": "How many FOMC participants wrote down three or more rate cuts for this year?",
+      "answer": "According to the context, seven of the 19 FOMC participants wrote down three or more rate cuts for this year. [1]",
+      "answerable": true,
+      "keyword_recall": 0.0,
+      "abstained": false,
+      "latency_ms": 13946.6548649998,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": false,
+        "citations_supported": false,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f06",
+      "question": "Why is the Fed continuing balance sheet runoff while cutting rates?",
+      "answer": "According to Chair Powell, the shrinkage in the Fed's balance sheet has come out of the overnight RRP facility and reserves have remained stable. He mentions that they're not thinking about stopping runoff because of this [3]. This suggests that the Fed is continuing balance sheet runoff despite cutting rates.\n\n[3]",
+      "answerable": true,
+      "keyword_recall": 0.3333333333333333,
+      "abstained": false,
+      "latency_ms": 24334.48125399991,
+      "citations": [
+        3,
+        3
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f07",
+      "question": "Which labor market indicators did Powell cite as signs of a solid labor market?",
+      "answer": "According to Chair Powell's statement, \"quits have come back down to normal levels\" and there are \"many, many employment indicators\" that suggest this is still a solid labor market [1]. However, he does not specifically mention which labor market indicators he is referring to.",
+      "answerable": true,
+      "keyword_recall": 0.25,
+      "abstained": false,
+      "latency_ms": 16397.599425000408,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": false,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f08",
+      "question": "Why has housing inflation been slow to come down?",
+      "answer": "According to Chair Powell, housing inflation is slow to come down because \"the leases that are rolling over are not coming down as much\" and OER (other economic rent) is coming in high [1]. Additionally, it's taking time for lower market rents to get into the system, but the direction of travel is clear, and once market rents remain relatively low, inflation will show up over time [3].\n\n[1]\n[3]",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 23890.33752899968,
+      "citations": [
+        1,
+        3,
+        1,
+        3
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": false,
+        "citations_supported": false,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f09",
+      "question": "Why is the housing market partly frozen?",
+      "answer": "According to Chair Powell, the housing market is partly frozen because of lock-in with low rates [1]. People don't want to sell their homes because it would be quite expensive to refinance with a very low mortgage.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 16852.02325399996,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f10",
+      "question": "According to Powell, why do democracies have independent central banks?",
+      "answer": "According to Chair Powell, democracies have independent central banks because insulating the central bank from direct control by political authorities avoids making monetary policy in a way that favors people who are in office as opposed to people who are not in office. This is stated on page 1 of the transcript [1].\n\nAdditionally, it is mentioned that this institutional arrangement has been good for the public and Powell hopes it will continue [3].",
+      "answerable": true,
+      "keyword_recall": 0.6666666666666666,
+      "abstained": false,
+      "latency_ms": 17669.704438999815,
+      "citations": [
+        1,
+        3
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f11",
+      "question": "Does Powell support Vice Chair Barr's Basel III endgame changes, and when do they aim to conclude?",
+      "answer": "According to the transcript, the answer is \"yes\", Chair Powell supports Vice Chair Barr's Basel III endgame changes [1]. Additionally, it seems that the Fed aims to re-propose these changes after negotiation with agencies, followed by taking comments on them.",
+      "answerable": true,
+      "keyword_recall": 0.6666666666666666,
+      "abstained": false,
+      "latency_ms": 65125.36779799985,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": true,
+        "citations_supported": false,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f12",
+      "question": "Does the Fed think it has fallen behind on rate cuts?",
+      "answer": "No, according to Chair Powell, the Fed has been very patient about reducing the policy rate [3]. They have waited for other central banks around the world to cut rates before doing so themselves. This patience has led to their confidence that inflation is moving sustainably under 2 percent.\n\nNote: There is no direct mention of whether the Fed thinks it has fallen behind on rate cuts in the provided context. The question asked if the Fed would have cut rates by 50 basis points if the market had been pricing in low odds of a 50-point move, implying that they may not have done so earlier, but this is not explicitly stated.",
+      "answerable": true,
+      "keyword_recall": 0.3333333333333333,
+      "abstained": false,
+      "latency_ms": 170734.96344700016,
+      "citations": [
+        3
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": false,
+        "grounded": false,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f13",
+      "question": "Does Powell see an elevated likelihood of a recession?",
+      "answer": "No, according to Chair Powell, he doesn't see anything that suggests the likelihood of a recession is elevated [1].",
+      "answerable": true,
+      "keyword_recall": 0.5,
+      "abstained": false,
+      "latency_ms": 36453.92864399991,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": true,
+        "grounded": true,
+        "citations_supported": true,
+        "no_decision": 0
+      }
+    },
+    {
+      "sample_id": "f14",
+      "question": "Would the Fed have cut rates in July if it had seen the July employment report before that meeting?",
+      "answer": "According to Chair Powell's statement, \"if you ask if we'd gotten the July report before the meeting, would we have cut? We might well have.\" [1]\n\nSo, based on this information, I can answer the question as follows:\n\nYes, the Fed might have cut rates in July if it had seen the July employment report before that meeting.",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 75102.74353099975,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": {
+        "correct": null,
+        "grounded": null,
+        "citations_supported": null,
+        "no_decision": 3
+      }
+    },
+    {
+      "sample_id": "q21",
+      "question": "How much funding did NIST allocate to develop the AI RMF?",
+      "answer": "I don't know.\n\nThe provided context does not mention any information about the amount of funding allocated by NIST for developing the AI RMF.",
+      "answerable": false,
+      "keyword_recall": null,
+      "abstained": true,
+      "latency_ms": 10020.58409600022,
+      "citations": [],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "q22",
+      "question": "Which programming language does NIST recommend for building machine learning models?",
+      "answer": "I don't know.\n\n[No relevant information provided in the given context]",
+      "answerable": false,
+      "keyword_recall": null,
+      "abstained": true,
+      "latency_ms": 9369.646023999849,
+      "citations": [],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "u01",
+      "question": "How many organizations had adopted CSF 2.0 by the end of 2024?",
+      "answer": "I don't know. The provided context does not contain information about the adoption rate or number of organizations that adopted the NIST Cybersecurity Framework (CSF) 2.0 by the end of 2024. [1][2]",
+      "answerable": false,
+      "keyword_recall": null,
+      "abstained": true,
+      "latency_ms": 11665.710282999953,
+      "citations": [
+        1,
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "u02",
+      "question": "What unemployment rate for Germany was discussed in the September 2024 press conference?",
+      "answer": "I don't know.\n\nThe provided context only discusses the US unemployment rate (3½ percent, then 4.2 percent) and does not mention Germany's unemployment rate at all. Therefore, I cannot provide an answer to this question based on the given context.",
+      "answerable": false,
+      "keyword_recall": null,
+      "abstained": true,
+      "latency_ms": 14320.465778999733,
+      "citations": [],
+      "invalid_citations": [],
+      "judgement": null
+    }
+  ],
+  "missing_evidence": []
+}

@@ -6,6 +6,7 @@ import pytest
 from evaluation import metrics
 from evaluation.dataset import EvalSample, load_dataset
 from evaluation.evaluator import Evaluator
+from evaluation.judge import Judgement
 from evaluation.report import render_markdown, write_reports
 from evaluation.strategies import HybridRerankStrategy, HybridStrategy
 from models import ChunkMetadata, RetrievedChunk
@@ -495,3 +496,50 @@ def test_report_shows_citation_rows(tmp_path):
 
     assert "| Citation rate (answered questions) | 1.000 |" in markdown
     assert "| Answers with invalid citations | 0 |" in markdown
+
+
+def test_evaluator_judges_answered_questions_only():
+    generator = Mock()
+    generator.generate.side_effect = [
+        "Python is a programming language [1].",
+        "I don't know.",
+        "I don't know.",
+    ]
+    judge = Mock()
+    judge.judge.return_value = Judgement(correct=True, grounded=False, citations_supported=True)
+    evaluator, _, _ = make_evaluator(generator=generator)
+    evaluator.judge = judge
+
+    report = evaluator.evaluate([
+        make_sample(evidence=["Python is a language."]),
+        make_sample(id="q2"),
+        make_sample(id="q3", relevant_pages=[], answerable=False),
+    ])
+
+    # The abstention (q2) and the unanswerable question (q3) are not graded.
+    judge.judge.assert_called_once()
+    kwargs = judge.judge.call_args.kwargs
+    assert kwargs["reference"] == ["Python is a language."]
+    assert len(kwargs["passages"]) == 2
+    # The judge sees each passage with its source and page, like the model.
+    assert kwargs["passages"][0].startswith("guide.pdf, page 2\n")
+
+    generation = report.generation
+    assert generation.judged_correct_rate == 1.0
+    assert generation.judged_grounded_rate == 0.0
+    assert generation.judged_citations_rate == 1.0
+    assert generation.judge_no_decision == 0
+
+    markdown = render_markdown(report, {})
+    assert "| LLM judge: grounded in the passages | 0.000 |" in markdown
+    assert "judge: correct, not grounded, citations supported" in markdown
+
+
+def test_report_has_no_judge_rows_without_a_judge():
+    generator = Mock()
+    generator.generate.return_value = "Python is a programming language [1]."
+    evaluator, _, _ = make_evaluator(generator=generator)
+
+    markdown = render_markdown(evaluator.evaluate([make_sample()]), {})
+
+    assert "LLM judge" not in markdown

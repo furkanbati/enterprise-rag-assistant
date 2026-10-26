@@ -16,17 +16,17 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 - Document management: re-uploading a file replaces its earlier version, and documents can be listed and removed
 - Heading-aware, sentence-aligned chunking that keeps each chunk's document title, with an optional semantic chunker evaluated against it
 - Metadata extraction for document source, page, heading, and chunk
-- Batch embedding generation with Ollama
+- Batch embedding generation with Ollama or OpenAI
 - Local (Ollama) or cloud (OpenAI) models, selected per role with environment variables
 - Persistent vector storage with ChromaDB
 - Hybrid retrieval using vector search and BM25
 - Reciprocal Rank Fusion (RRF) for combining retrieval results
 - Cross-encoder reranking
-- Source-aware answers with page metadata and preview snippets
+- Answers cite the passages they use with numbered references, linked to source cards with page metadata and previews
 - FastAPI REST endpoints, including a streaming chat endpoint, and interactive Swagger documentation
 - Streamlit chat interface with streamed answers, source previews and timings
 - Docker Compose-based application setup
-- Built-in evaluation harness comparing retrieval strategies and scoring generated answers
+- Built-in evaluation harness comparing retrieval strategies and scoring generated answers, with an optional LLM judge for correctness, grounding and citation support
 
 ## Architecture
 

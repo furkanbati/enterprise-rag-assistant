@@ -19,12 +19,13 @@ class Ingestion:
         vector_store: VectorStore,
         chunker: Chunker,
         keyword_search: KeywordSearch,
+        ocr_engine: str = "rapidocr",
     ) -> None:
         self.embedder = embedder
         self.vector_store = vector_store
         self.chunker = chunker
         self.keyword_search = keyword_search
-        self.document_parser = DocumentParser()
+        self.document_parser = DocumentParser(ocr_engine)
 
     def ingest(self, path: str) -> IngestionResult:
         """Index a document, replacing an earlier version with the same name.
@@ -44,8 +45,7 @@ class Ingestion:
 
         if not documents:
             raise ValueError(
-                f"No text could be extracted from {source}. "
-                "Scanned documents need OCR, which is not enabled."
+                f"No text could be extracted from {source}."
             )
 
         logger.info("Extracted %d document chunks", len(documents))

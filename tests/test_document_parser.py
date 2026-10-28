@@ -3,6 +3,7 @@ from types import SimpleNamespace
 
 import docx
 import pytest
+from docling.datamodel.base_models import InputFormat
 from docling_core.types.doc import DocItemLabel
 
 from document_parser import DocumentParser
@@ -48,10 +49,77 @@ def make_item(
     )
 
 
-def make_parser(items):
+def make_parser(items, ocr_items=()):
     parser = DocumentParser.__new__(DocumentParser)
     parser.converter = FakeConverter(items)
+    parser.ocr_converter = FakeConverter(list(ocr_items))
     return parser
+
+
+def test_parse_retries_a_pdf_without_text_with_ocr():
+    parser = make_parser(
+        [],
+        ocr_items=[
+            make_item(DocItemLabel.SECTION_HEADER, "Scanned policy", page=1),
+            make_item(DocItemLabel.TEXT, "Text read by OCR.", page=1),
+        ],
+    )
+
+    sections = parser.parse("scan.pdf")
+
+    assert [(s.heading, s.page, s.text) for s in sections] == [
+        ("Scanned policy", 1, "Text read by OCR."),
+    ]
+    assert parser.ocr_converter.received_path == "scan.pdf"
+
+
+def test_parse_skips_ocr_when_the_pdf_has_text():
+    parser = make_parser(
+        [make_item(DocItemLabel.TEXT, "Digital text.")],
+        ocr_items=[make_item(DocItemLabel.TEXT, "OCR text.")],
+    )
+
+    sections = parser.parse("guide.pdf")
+
+    assert [s.text for s in sections] == ["Digital text."]
+    assert parser.ocr_converter.received_path is None
+
+
+def test_parse_does_not_run_ocr_for_other_formats():
+    parser = make_parser(
+        [],
+        ocr_items=[make_item(DocItemLabel.TEXT, "OCR text.")],
+    )
+
+    assert parser.parse("empty.docx") == []
+    assert parser.ocr_converter.received_path is None
+
+
+def test_parse_returns_nothing_for_a_pdf_without_text_when_ocr_is_off():
+    parser = make_parser([])
+    parser.ocr_converter = None
+
+    assert parser.parse("scan.pdf") == []
+
+
+@pytest.mark.parametrize("engine", ["rapidocr", "easyocr"])
+def test_ocr_converter_uses_the_configured_engine(engine):
+    parser = DocumentParser(ocr_engine=engine)
+
+    options = parser.ocr_converter.format_to_options[InputFormat.PDF].pipeline_options
+
+    assert options.do_ocr
+    assert options.ocr_options.kind == engine
+    assert options.ocr_options.force_full_page_ocr
+
+
+def test_ocr_can_be_turned_off():
+    assert DocumentParser(ocr_engine="off").ocr_converter is None
+
+
+def test_unknown_ocr_engine_is_rejected():
+    with pytest.raises(ValueError, match="Unknown OCR engine 'tesseract'"):
+        DocumentParser(ocr_engine="tesseract")
 
 
 def test_parse_groups_text_under_section_headings():

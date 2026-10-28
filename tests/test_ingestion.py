@@ -82,7 +82,7 @@ def make_ingestion(monkeypatch, chunker):
     monkeypatch.setattr(
         ingestion_module,
         "DocumentParser",
-        lambda: parser,
+        lambda ocr_engine: parser,
     )
 
     embedder = FakeEmbedder()

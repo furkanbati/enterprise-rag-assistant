@@ -5,6 +5,8 @@ ollama
 pymupdf
 python-multipart
 docling==2.53.0
+rapidocr==3.10.0
+onnxruntime==1.31.0
 rank-bm25
 sentence-transformers==5.1.0
 openai==3.23.0

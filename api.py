@@ -22,6 +22,7 @@ from config import (
     EMBED_PROVIDER,
     LLM_PROVIDER,
     MIN_CHUNK_SIZE,
+    OCR_ENGINE,
     SEMANTIC_PERCENTILE,
     SEMANTIC_WINDOW,
     RERANK_MODEL,
@@ -118,6 +119,7 @@ ingestion = Ingestion(
     embedder=embedder,
     vector_store=vector_store,
     chunker=chunker,
+    ocr_engine=OCR_ENGINE,
 )
 
 

@@ -52,3 +52,6 @@ SEMANTIC_WINDOW = _env_int("SEMANTIC_WINDOW", 1)
 MAX_CHUNK_SIZE = _env_int("MAX_CHUNK_SIZE", 1000)
 
 MIN_CHUNK_SIZE = _env_int("MIN_CHUNK_SIZE", 300)
+
+# OCR engine for PDFs without a text layer: "rapidocr", "easyocr" or "off".
+OCR_ENGINE = os.getenv("OCR_ENGINE", "rapidocr")

@@ -18,6 +18,7 @@ services:
       - .:/app
       - ./data/chroma:/app/data/chroma
       - huggingface_cache:/root/.cache/huggingface
+      - easyocr_models:/root/.EasyOCR
 
     depends_on:
       - ollama
@@ -79,3 +80,4 @@ services:
 volumes:
   ollama:
   huggingface_cache:
+  easyocr_models:

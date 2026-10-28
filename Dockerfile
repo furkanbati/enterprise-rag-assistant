@@ -14,6 +14,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     && pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu \
     && pip install -r requirements.txt
 
+# RapidOCR downloads its models into its package directory on first use;
+# fetching them here keeps them in the image instead of each new container.
+RUN python -c "from rapidocr import RapidOCR; RapidOCR()"
+
 COPY . .
 
 EXPOSE 8000

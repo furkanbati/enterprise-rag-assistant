@@ -173,7 +173,7 @@ Endpoint:
 POST /upload
 ```
 
-The endpoint accepts `.pdf`, `.docx`, `.html`, `.htm`, `.md` and `.txt` files, processes their content, generates embeddings, and indexes the chunks in ChromaDB. Other file types are rejected with status 400, and a file with no extractable text (for example a scanned PDF, since OCR is not enabled) with status 422. The upload is written to a temporary directory and removed once it is indexed.
+The endpoint accepts `.pdf`, `.docx`, `.html`, `.htm`, `.md` and `.txt` files, processes their content, generates embeddings, and indexes the chunks in ChromaDB. Other file types are rejected with status 400, and a file with no extractable text with status 422. A PDF without a text layer, such as a scan, is read a second time with OCR (RapidOCR through Docling by default; see `OCR_ENGINE`) before it is rejected; OCR is skipped for PDFs that already contain text because it is much slower. The upload is written to a temporary directory and removed once it is indexed.
 
 Uploading a file with the same name as an indexed document replaces it. The new version is parsed and embedded first, and the old chunks are removed only then, so a file that fails to process leaves the indexed version untouched. The response reports the result:
 
@@ -299,6 +299,7 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `MIN_CHUNK_SIZE` | Minimum chunk size in characters |
 | `SEMANTIC_PERCENTILE` | Semantic chunking: split at boundaries above this percentile of embedding distances in the document |
 | `SEMANTIC_WINDOW` | Semantic chunking: sentences on each side embedded with each sentence |
+| `OCR_ENGINE` | OCR for PDFs without a text layer: `rapidocr` (default), `easyocr` or `off`. On two scanned pages RapidOCR took about 9 s per page and EasyOCR about 27 s |
 
 The default configuration uses the Ollama service provided by Docker Compose.
 
@@ -584,7 +585,7 @@ Answers depend on document quality, retrieval relevance, and model behavior. Sou
 
 ## Future Directions
 
-Potential extensions include a larger multi-document evaluation set, authentication, OCR for scanned documents, and monitoring.
+Potential extensions include a larger multi-document evaluation set, authentication, and monitoring.
 
 For chunking, the measurements point to three next steps: using the semantic chunker only for documents without headings, splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk), and prefixing chunks with document context so that similar frameworks such as the AI RMF and CSF are told apart more reliably.
 

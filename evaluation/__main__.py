@@ -14,10 +14,6 @@ from pathlib import Path
 
 from config import (
     CHAT_MODEL,
-    CHROMA_PATH,
-    CHUNK_CONTEXT,
-    CHUNKING_STRATEGY,
-    COLLECTION_NAME,
     EMBED_MODEL,
     EMBED_PROVIDER,
     FINAL_TOP_K,
@@ -26,28 +22,15 @@ from config import (
     LLM_PROVIDER,
     RERANK_MODEL,
     RETRIEVAL_TOP_K,
-    SEMANTIC_PERCENTILE,
-    SEMANTIC_WINDOW,
 )
-from chunking import chunking_id
 from evaluation import metrics
+from evaluation.components import build_components, build_strategies
 from evaluation.dataset import load_dataset
 from evaluation.evaluator import Evaluator
 from evaluation.report import write_reports
-from evaluation.strategies import (
-    HybridRerankStrategy,
-    HybridStrategy,
-    KeywordOnlyStrategy,
-    VectorOnlyStrategy,
-)
 from generator import Generator
 from evaluation.judge import AnswerJudge
-from providers.factory import build_chat_client, build_embedder
-from retrieval.fusion import ReciprocalRankFusion
-from retrieval.keyword_search import KeywordSearch
-from retrieval.reranker import CrossEncoderReranker
-from retrieval.vector_search import VectorSearch
-from vector_store import VectorStore, collection_name_for
+from providers.factory import build_chat_client
 
 DEFAULT_DATASET = Path(__file__).parent / "datasets" / "nist_ai_rmf.jsonl"
 DEFAULT_OUTPUT = Path(__file__).parent / "results"
@@ -98,23 +81,9 @@ def main() -> None:
 
     samples = load_dataset(args.dataset)
 
-    chunking = chunking_id(
-        CHUNKING_STRATEGY,
-        SEMANTIC_PERCENTILE,
-        SEMANTIC_WINDOW,
-        CHUNK_CONTEXT,
-    )
-
-    vector_store = VectorStore(
-        path=CHROMA_PATH,
-        collection_name=collection_name_for(
-            COLLECTION_NAME,
-            EMBED_PROVIDER,
-            EMBED_MODEL,
-            chunking,
-        ),
-        embedding_model=f"{EMBED_PROVIDER}/{EMBED_MODEL}",
-    )
+    components = build_components()
+    chunking = components.chunking
+    vector_store = components.vector_store
 
     if vector_store.collection.count() == 0:
         raise SystemExit(
@@ -122,32 +91,10 @@ def main() -> None:
             "through POST /upload before running the evaluation."
         )
 
-    embedder = build_embedder(provider=EMBED_PROVIDER, model=EMBED_MODEL)
-    vector_search = VectorSearch(vector_store)
-    keyword_search = KeywordSearch(vector_store)
-    keyword_search.rebuild()
-    fusion = ReciprocalRankFusion()
-
-    strategies = {
-        "vector": VectorOnlyStrategy(vector_search),
-        "bm25": KeywordOnlyStrategy(keyword_search),
-        "hybrid_rrf": HybridStrategy(
-            vector_search=vector_search,
-            keyword_search=keyword_search,
-            fusion=fusion,
-            candidate_top_k=RETRIEVAL_TOP_K,
-        ),
-        "hybrid_rrf_rerank": HybridRerankStrategy(
-            vector_search=vector_search,
-            keyword_search=keyword_search,
-            fusion=fusion,
-            reranker=CrossEncoderReranker(args.rerank_model),
-            candidate_top_k=RETRIEVAL_TOP_K,
-        ),
-    }
+    strategies = build_strategies(components, rerank_model=args.rerank_model)
 
     evaluator = Evaluator(
-        embedder=embedder,
+        embedder=components.embedder,
         strategies=strategies,
         ks=args.ks,
         generator=(

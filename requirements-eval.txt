@@ -1,0 +1,7 @@
+# Packages for the RAGAS evaluation (python -m evaluation.ragas_eval), kept
+# out of the API image. Install on top of requirements.txt, with the overrides
+# in requirements-eval-overrides.txt (see Dockerfile.eval).
+ragas==0.4.3
+# ragas 0.4.3 imports langchain_community.chat_models.vertexai, which
+# langchain-community 0.4.2 removed.
+langchain-community==0.4.1

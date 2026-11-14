@@ -48,6 +48,31 @@ services:
     depends_on:
       - ollama
 
+  # RAGAS evaluation, e.g.:
+  #   docker compose run --rm eval python -m evaluation.ragas_eval --config all
+  eval:
+    build:
+      context: .
+      dockerfile: Dockerfile.eval
+
+    profiles:
+      - eval
+
+    env_file:
+      - path: .env
+        required: false
+
+    environment:
+      HF_HOME: /root/.cache/huggingface
+
+    volumes:
+      - .:/app
+      - ./data/chroma:/app/data/chroma
+      - huggingface_cache:/root/.cache/huggingface
+
+    depends_on:
+      - ollama
+
   ui:
     build:
       context: .

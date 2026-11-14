@@ -26,10 +26,21 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL") or None
 OPENAI_REASONING_EFFORT = os.getenv("OPENAI_REASONING_EFFORT", "low") or None
 
-# Model that grades generated answers in the evaluation (python -m evaluation
-# --judge). A stronger model than the one answering avoids grading itself.
+# Model that grades generated answers in the evaluations (python -m evaluation
+# --judge and python -m evaluation.ragas_eval). A stronger model than the one
+# answering avoids grading itself.
 JUDGE_PROVIDER = os.getenv("JUDGE_PROVIDER", "openai")
-JUDGE_MODEL = os.getenv("JUDGE_MODEL", "gpt-6.1-sol")
+_DEFAULT_JUDGE_MODELS = {"ollama": "llama3", "openai": "gpt-6.1-sol"}
+JUDGE_MODEL = os.getenv("JUDGE_MODEL") or _DEFAULT_JUDGE_MODELS.get(JUDGE_PROVIDER, "")
+
+# Embedding model RAGAS uses for answer relevancy; defaults to the
+# application's embedding model.
+RAGAS_EMBED_PROVIDER = os.getenv("RAGAS_EMBED_PROVIDER") or EMBED_PROVIDER
+RAGAS_EMBED_MODEL = os.getenv("RAGAS_EMBED_MODEL") or (
+    EMBED_MODEL
+    if RAGAS_EMBED_PROVIDER == EMBED_PROVIDER
+    else _DEFAULT_EMBED_MODELS.get(RAGAS_EMBED_PROVIDER, "")
+)
 
 RERANK_MODEL = os.getenv("RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
 

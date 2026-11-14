@@ -38,6 +38,7 @@ from evaluation.ragas_eval.dataset import LANGUAGES, RagasSample, load_ragas_dat
 from evaluation.ragas_eval.report import write_config_results, write_summary
 from evaluation.ragas_eval.runner import (
     CONFIGS,
+    METRICS,
     check_judge,
     collect_records,
     score_records,
@@ -66,6 +67,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "Retrieval configuration: vector (vector search only), hybrid "
             "(vector + BM25 with RRF), hybrid_rerank (hybrid + cross-encoder, "
             "the production setup) or all. Default: hybrid_rerank."
+        ),
+    )
+    parser.add_argument(
+        "--metrics",
+        nargs="+",
+        choices=METRICS,
+        default=list(METRICS),
+        help=(
+            "Metrics to compute (default: all four). Context precision and "
+            "context recall grade retrieval only, so a run that changes only "
+            "the chat model can skip them: --metrics faithfulness "
+            "answer_relevancy needs about half the judge calls."
         ),
     )
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
@@ -135,6 +148,12 @@ def select_samples(
         samples = samples[:limit]
 
     return samples
+
+
+def select_metrics(metrics: dict, names: list[str]) -> dict:
+    """The requested metrics, in the order of METRICS, without duplicates."""
+
+    return {name: metrics[name] for name in METRICS if name in names}
 
 
 def resolve_judge_model(provider: str, model: str | None) -> str:
@@ -214,12 +233,13 @@ def main(argv: list[str] | None = None) -> None:
     # Build the judge first, so a missing key fails before any answering.
     from evaluation.ragas_eval.metrics import build_ragas_metrics
 
-    metrics = build_ragas_metrics(
+    all_metrics = build_ragas_metrics(
         judge_provider=args.judge_provider,
         judge_model=judge_model,
         embed_provider=RAGAS_EMBED_PROVIDER,
         embed_model=RAGAS_EMBED_MODEL,
     )
+    metrics = select_metrics(all_metrics, args.metrics)
 
     # One event loop for every judge call: the async clients keep their
     # connections, which belong to the loop that opened them, and fail with
@@ -287,7 +307,7 @@ def _run(args, samples, configs, judge_model, concurrency, metrics, loop) -> Non
             score_records(records, metrics, concurrency=concurrency)
         )
 
-        summary = summarize(config, records)
+        summary = summarize(config, records, metric_names=tuple(metrics))
         json_path, csv_path = write_config_results(
             args.output, summary, records, metadata
         )

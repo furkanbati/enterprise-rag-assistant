@@ -405,6 +405,46 @@ def test_render_summary_does_not_bold_a_single_configuration(tmp_path):
     assert "### By language" not in text
 
 
+ANSWER_METRICS = ("faithfulness", "answer_relevancy")
+
+
+def write_partial_result(tmp_path, config, score, metric_names=ANSWER_METRICS):
+    records = [make_record("q1", "en", {name: score for name in metric_names})]
+
+    return write_config_results(
+        tmp_path,
+        summarize(config, records, metric_names=metric_names),
+        records,
+        {"Judge model": "openai/judge"},
+    )
+
+
+def test_reports_show_only_the_computed_metrics(tmp_path):
+    _, csv_path = write_partial_result(tmp_path, "vector", 0.5)
+    write_partial_result(tmp_path, "hybrid", 0.7)
+
+    with open(csv_path, encoding="utf-8", newline="") as f:
+        header = next(csv.reader(f))
+
+    text = write_summary(tmp_path).read_text(encoding="utf-8")
+
+    assert "faithfulness" in header and "context_recall" not in header
+    assert "| Configuration | Retrieval | Faithfulness | Answer relevancy |" in text
+    assert "Context recall" not in text
+    assert "| `hybrid` | Vector + BM25, Reciprocal Rank Fusion | **0.700** | **0.700** |" in text
+
+
+def test_summary_marks_metrics_a_configuration_did_not_compute(tmp_path):
+    write_result(tmp_path, "vector", 0.6)
+    write_partial_result(tmp_path, "hybrid", 0.7)
+
+    text = write_summary(tmp_path).read_text(encoding="utf-8")
+
+    assert "| `hybrid` | Vector + BM25, Reciprocal Rank Fusion | **0.700** | **0.700** | — | — |" in text
+    # The only value of a column is its best.
+    assert "| `vector` | Vector search only | 0.600 | 0.600 | **0.600** | **0.600** |" in text
+
+
 def test_render_summary_without_results():
     assert "No results yet" in render_summary([])
 
@@ -419,6 +459,28 @@ def test_parse_args_defaults_to_the_production_configuration():
     assert args.config == "hybrid_rerank"
     assert args.dataset.name == "ragas_testset.jsonl"
     assert args.output.parts[-2:] == ("results", "ragas")
+
+
+def test_parse_args_computes_all_metrics_unless_told_otherwise():
+    assert cli.parse_args([]).metrics == list(METRICS)
+    assert cli.parse_args(
+        ["--metrics", "faithfulness", "answer_relevancy"]
+    ).metrics == ["faithfulness", "answer_relevancy"]
+
+    with pytest.raises(SystemExit):
+        cli.parse_args(["--metrics", "bleu"])
+
+
+def test_select_metrics_keeps_the_standard_order_without_duplicates():
+    metrics = {name: object() for name in METRICS}
+
+    selected = cli.select_metrics(
+        metrics,
+        ["answer_relevancy", "faithfulness", "answer_relevancy"],
+    )
+
+    assert list(selected) == ["faithfulness", "answer_relevancy"]
+    assert selected["faithfulness"] is metrics["faithfulness"]
 
 
 def test_parse_args_rejects_unknown_configuration():

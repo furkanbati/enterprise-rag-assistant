@@ -51,13 +51,16 @@ def write_config_results(
         encoding="utf-8",
     )
 
+    # Only the metrics this run computed.
+    names = list(summary.scores)
+
     with open(csv_path, "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow([
             "id",
             "language",
             "question",
-            *METRICS,
+            *names,
             "sources",
             "answer",
             "errors",
@@ -68,7 +71,7 @@ def write_config_results(
                 record.sample_id,
                 record.language,
                 record.question,
-                *(_csv_number(record.scores.get(name)) for name in METRICS),
+                *(_csv_number(record.scores.get(name)) for name in names),
                 "; ".join(record.sources),
                 record.answer,
                 "; ".join(f"{k}: {v}" for k, v in record.errors.items()),
@@ -109,28 +112,38 @@ def render_summary(results: list[dict]) -> str:
         return "# RAGAS Evaluation\n\nNo results yet.\n"
 
     summaries = [result["summary"] for result in results]
+    # Columns for the metrics any configuration computed (see --metrics).
+    names = [
+        name
+        for name in METRICS
+        if any(name in summary["scores"] for summary in summaries)
+    ]
     # Bold the best value of each column, when there is something to compare.
     best = {
         name: max(
-            (s["scores"][name] for s in summaries if s["scores"][name] is not None),
+            (
+                s["scores"][name]
+                for s in summaries
+                if s["scores"].get(name) is not None
+            ),
             default=None,
         ) if len(summaries) > 1 else None
-        for name in METRICS
+        for name in names
     }
 
     lines = [
         "# RAGAS Evaluation",
         "",
         "| Configuration | Retrieval | "
-        + " | ".join(METRIC_TITLES[name] for name in METRICS)
+        + " | ".join(METRIC_TITLES[name] for name in names)
         + " |",
-        "|---|---|" + "---|" * len(METRICS),
+        "|---|---|" + "---|" * len(names),
     ]
 
     for summary in summaries:
         cells = [
-            _score_cell(summary["scores"][name], best[name])
-            for name in METRICS
+            _metric_cell(summary["scores"], name, best[name])
+            for name in names
         ]
         lines.append(
             f"| `{summary['config']}` "
@@ -151,9 +164,9 @@ def render_summary(results: list[dict]) -> str:
             "### By language",
             "",
             "| Configuration | Language | "
-            + " | ".join(METRIC_TITLES[name] for name in METRICS)
+            + " | ".join(METRIC_TITLES[name] for name in names)
             + " |",
-            "|---|---|" + "---|" * len(METRICS),
+            "|---|---|" + "---|" * len(names),
         ]
 
         for summary in summaries:
@@ -166,7 +179,7 @@ def render_summary(results: list[dict]) -> str:
                 lines.append(
                     f"| `{summary['config']}` "
                     f"| {LANGUAGE_TITLES.get(language, language)} | "
-                    + " | ".join(_score_cell(scores[name]) for name in METRICS)
+                    + " | ".join(_metric_cell(scores, name) for name in names)
                     + " |"
                 )
 
@@ -231,6 +244,16 @@ def _run_details(results: list[dict]) -> list[str]:
     lines.append(f"- **Mean retrieval / generation time:** {timings}")
 
     return lines
+
+
+def _metric_cell(scores: dict, name: str, best: float | None = None) -> str:
+    """A metric's cell: a dash when the run did not compute it, n/a when no
+    question could be scored."""
+
+    if name not in scores:
+        return "—"
+
+    return _score_cell(scores[name], best)
 
 
 def _score_cell(value: float | None, best: float | None = None) -> str:

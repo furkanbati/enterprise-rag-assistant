@@ -1,0 +1,737 @@
+{
+  "metadata": {
+    "Date": "2026-11-14 16:20 UTC",
+    "Dataset": "ragas_testset.jsonl (29 questions)",
+    "Chat model": "ollama/llama3",
+    "Judge model": "openai/gpt-6.1-sol",
+    "Judge embeddings": "ollama/nomic-embed-text",
+    "Retrieval embeddings": "ollama/nomic-embed-text",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Passages per answer": 3,
+    "Candidates per retriever": 12
+  },
+  "summary": {
+    "config": "vector",
+    "strategy": "vector",
+    "questions": 29,
+    "scores": {
+      "faithfulness": 0.8313902572523262,
+      "answer_relevancy": 0.7063336255482235
+    },
+    "scores_by_language": {
+      "en": {
+        "faithfulness": 0.8828042328042328,
+        "answer_relevancy": 0.8288642576690383
+      },
+      "tr": {
+        "faithfulness": 0.6964285714285714,
+        "answer_relevancy": 0.3846907162310851
+      }
+    },
+    "unscored": {
+      "faithfulness": 0,
+      "answer_relevancy": 0
+    },
+    "mean_retrieval_ms": 975.9053131034808,
+    "mean_generation_ms": 81157.89610258621
+  },
+  "records": [
+    {
+      "sample_id": "r01",
+      "language": "en",
+      "question": "What are the four core functions of the NIST AI Risk Management Framework?",
+      "reference": "The AI RMF Core has four functions: GOVERN, MAP, MEASURE and MANAGE. They are broken down further into categories and subcategories.",
+      "answer": "Unfortunately, the context does not provide information on the four core functions of the NIST AI Risk Management Framework. The provided passages only mention the use of Functions, Categories, and Subcategories to describe AI outcomes and help manage risks related to AI, but they do not specify the four core functions.\n\nI don't know.",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n5.2. Improving Integration with Other Risk Management Programs\n\nThe AI RMF Core uses Functions, Categories, and Subcategories to describe AI outcomes and help manage risks related to AI.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n\nNIST AI 100-1",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n4. Effectiveness of the AI RMF\n\nNIST intends to work collaboratively with others to develop metrics, methodologies, and goals for evaluating the AI RMF's effectiveness, and to broadly share results and supporting information."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.16",
+        "nist.ai.100-1.pdf p.1",
+        "nist.ai.100-1.pdf p.24"
+      ],
+      "retrieval_ms": 850.5806729999676,
+      "generation_ms": 88191.65556200006,
+      "scores": {
+        "faithfulness": 0.8,
+        "answer_relevancy": 0.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r02",
+      "language": "en",
+      "question": "How does the AI RMF define risk?",
+      "reference": "In the AI RMF, risk is the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event.",
+      "answer": "According to the context, risk is defined as the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event. [1]\n\nThis definition is adapted from ISO 31000:2018.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.1 Understanding and Addressing Risks, Impacts, and Harms\n\nIn the context of the AI RMF, risk refers to the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event. The impacts, or consequences, of AI systems can be positive, negative, or both and can result in opportunities or threats (Adapted from: ISO 31000:2018).",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nExecutive Summary\n\nThe AI RMF refers to an AI system as an engineered or machine-based system that can, for a given set of objectives, generate outputs such as predictions, recommendations, or decisions influencing real or virtual environments. AI systems are designed to operate with varying levels of autonomy (Adapted from: OECD Recommendation on AI:2019; ISO/IEC 22989:2022).",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.1 Understanding and Addressing Risks, Impacts, and Harms\n\n'Risk management refers to coordinated activities to direct and control an organization with regard to risk' (Source: ISO 31000:2018). While risk management processes generally address negative impacts, this Framework offers approaches to minimize anticipated negative impacts of AI systems and identify opportunities to maximize positive impacts."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.9",
+        "nist.ai.100-1.pdf p.6",
+        "nist.ai.100-1.pdf p.9"
+      ],
+      "retrieval_ms": 921.1337740000545,
+      "generation_ms": 57354.54659399988,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7184400070688021
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r03",
+      "language": "en",
+      "question": "What are the characteristics of trustworthy AI systems?",
+      "reference": "Trustworthy AI systems are valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with their harmful biases managed.",
+      "answer": "According to the context, the characteristics of trustworthy AI systems include:\n\n* Valid and reliable\n* Safe\n* Secure and resilient\n* Accountable and transparent\n* Explainable and interpretable\n* Privacy-enhanced\n* Fair with harmful bias managed\n\nThese characteristics are mentioned in [1] as essential for creating trustworthy AI systems.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3. AI Risks and Trustworthiness\n\nCharacteristics of trustworthy AI systems include: valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with harmful bias managed. Creating trustworthy AI requires balancing each of these characteristics based on the AI system's context of use.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3. AI Risks and Trustworthiness\n\nWhile all characteristics are socio-technical system attributes, accountability and transparency also relate to the processes and activities internal to an AI system and its external setting. Neglecting these characteristics can increase the probability and magnitude of negative consequences. Trustworthiness characteristics (shown in Figure 4) are inextricably tied to social and organizational behavior, the datasets used by AI systems, selection of AI models and algorithms and the decisions made by those who build them, and the interactions with the humans who provide insight from and oversight of such systems.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3. AI Risks and Trustworthiness\n\nHuman judgment should be employed when deciding on the specific metrics related to AI trustworthiness characteristics and the precise threshold values for those metrics. Addressing AI trustworthiness characteristics individually will not ensure AI system trustworthiness; tradeoffs are usually involved, rarely do all characteristics apply in every setting, and some will be more or less important in any given situation."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.17",
+        "nist.ai.100-1.pdf p.17",
+        "nist.ai.100-1.pdf p.17"
+      ],
+      "retrieval_ms": 998.5041520001232,
+      "generation_ms": 77736.29513900005,
+      "scores": {
+        "answer_relevancy": 0.9999999999999991,
+        "faithfulness": 1.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r04",
+      "language": "en",
+      "question": "What are common security concerns for AI systems?",
+      "reference": "Common security concerns are adversarial examples, data poisoning, and the exfiltration of models, training data or other intellectual property through AI system endpoints.",
+      "answer": "Common security concerns for AI systems relate to adversarial examples, data poisoning, and the exfiltration of models, training data, or other intellectual property through AI system endpoints [1].\n\nAdditionally, other security concerns include privacy concerns related to the use of underlying data to train AI systems, security concerns related to the confidentiality, integrity, and availability of the system and its training and output data [2].",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.3 Secure and Resilient\n\nCommon security concerns relate to adversarial examples, data poisoning, and the exfiltration of models, training data, or other intellectual property through AI system endpoints. AI systems that can maintain confidentiality, integrity, and availability through protection mechanisms that prevent unauthorized access and use may be said to be secure .",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.2.4 Organizational Integration and Management of Risk\n\nExamples of overlapping risks include: privacy concerns related to the use of underlying data to train AI systems; the energy and environmental implications associated with resource-heavy computing demands; security concerns related to the confidentiality, integrity, and availability of the system and its training and output data; and general security of the underlying software and hardware for AI systems.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nExecutive Summary\n\nWhile there are myriad standards and best practices to help organizations mitigate the risks of traditional software or information-based systems, the risks posed by AI systems are in many ways unique (See Appendix B). AI systems, for example, may be trained on data that can change over time, sometimes significantly and unexpectedly, affecting system functionality and trustworthiness in ways that are hard to understand."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.20",
+        "nist.ai.100-1.pdf p.13",
+        "nist.ai.100-1.pdf p.6"
+      ],
+      "retrieval_ms": 1001.8777350001074,
+      "generation_ms": 91263.23053500005,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9446808655794862
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r05",
+      "language": "en",
+      "question": "What is the difference between explainability and interpretability?",
+      "reference": "Explainability is a representation of the mechanisms underlying how an AI system operates, while interpretability is the meaning of the AI system's output in the context of its designed functional purposes.",
+      "answer": "According to the provided context, explainability refers to a representation of the mechanisms underlying AI systems' operation, whereas interpretability refers to the meaning of AI systems' output in the context of their designed functional purposes. [1]\n\nIn other words, explainability answers the question of \"how\" a decision was made, whereas interpretability answers the question of \"why\" a decision was made and its meaning or context to the user. [3]\n\nThese two characteristics support each other, and together, they assist in gaining deeper insights into the functionality and trustworthiness of the system.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.5 Explainable and Interpretable\n\nExplainability refers to a representation of the mechanisms underlying AI systems' operation, whereas interpretability refers to the meaning of AI systems' output in the context of their designed functional purposes. Together, explainability and interpretability assist those operating or overseeing an AI system, as well as users of an AI system, to gain deeper insights into the functionality and trustworthiness of the system, including its outputs.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.5 Explainable and Interpretable\n\nRisks to interpretability often can be addressed by communicating a description of why an AI system made a particular prediction or recommendation. (See 'Four Principles of Explainable Artificial Intelligence' and 'Psychological Foundations of Explainability and Interpretability in Artificial Intelligence' found here.)\nTransparency, explainability, and interpretability are distinct characteristics that support each other.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.5 Explainable and Interpretable\n\nTransparency can answer the question of 'what happened' in the system. Explainability can answer the question of 'how' a decision was made in the system. Interpretability can answer the question of 'why' a decision was made by the system and its meaning or context to the user."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.21",
+        "nist.ai.100-1.pdf p.21",
+        "nist.ai.100-1.pdf p.21"
+      ],
+      "retrieval_ms": 985.8002030000534,
+      "generation_ms": 130234.30721099999,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8838190475114004
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r06",
+      "language": "en",
+      "question": "What are the three major categories of AI bias identified by NIST?",
+      "reference": "NIST identifies three major categories of AI bias: systemic, computational and statistical, and human-cognitive.",
+      "answer": "The three major categories of AI bias identified by NIST are: systemic, computational and statistical, and human-cognitive. [1]",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.7 Fair - with Harmful Bias Managed\n\nBias is broader than demographic balance and data representativeness. NIST has identified three major categories of AI bias to be considered and managed: systemic, computational and statistical, and human-cognitive. Each of these can occur in the absence of prejudice, partiality, or discriminatory intent.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.7 Fair - with Harmful Bias Managed\n\nBias is tightly associated with the concepts of transparency as well as fairness in society. (For more information about bias, including the three categories, see NIST Special Publication 1270, Towards a Standard for Identifying and Managing Bias in Artificial Intelligence.)",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.7 Fair - with Harmful Bias Managed\n\nHuman-cognitive biases relate to how an individual or group perceives AI system information to make a decision or fill in missing information, or how humans think about purposes and functions of an AI system. Human-cognitive biases are omnipresent in decision-making processes across the AI lifecycle and system use, including the design, implementation, operation, and maintenance of AI."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.22",
+        "nist.ai.100-1.pdf p.22",
+        "nist.ai.100-1.pdf p.22"
+      ],
+      "retrieval_ms": 912.6508970000486,
+      "generation_ms": 34148.78461500007,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999991
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r07",
+      "language": "en",
+      "question": "What should happen when an AI system presents unacceptable negative risk levels?",
+      "reference": "When an AI system presents unacceptable negative risk levels, for example when significant negative impacts are imminent, severe harms are occurring or catastrophic risks are present, development and deployment should cease in a safe manner until the risks can be sufficiently managed.",
+      "answer": "According to the provided context [1], when an AI system presents unacceptable negative risk levels, development and deployment should cease in a safe manner until risks can be sufficiently managed.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.2.3 Risk Prioritization\n\nIn cases where an AI system presents unacceptable negative risk levels - such as where significant negative impacts are imminent, severe harms are actually occurring, or catastrophic risks are present - development and deployment should cease in a safe manner until risks can be sufficiently managed.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.1 Understanding and Addressing Risks, Impacts, and Harms\n\nThe AI RMF is designed to address new risks as they emerge. This flexibility is particularly important where impacts are not easily foreseeable and applications are evolving. While some AI risks and benefits are well-known, it can be challenging to assess negative impacts and the degree of harms. Figure 1 provides examples of potential harms that can be related to AI systems.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nExecutive Summary\n\nAI technologies, however, also pose risks that can negatively impact individuals, groups, organizations, communities, society, the environment, and the planet. Like risks for other types of technology, AI risks can emerge in a variety of ways and can be characterized as long- or short-term, highor low-probability, systemic or localized, and high- or low-impact."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.12",
+        "nist.ai.100-1.pdf p.9",
+        "nist.ai.100-1.pdf p.6"
+      ],
+      "retrieval_ms": 874.3173860000297,
+      "generation_ms": 42563.08045100013,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999997
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r08",
+      "language": "en",
+      "question": "Which AI RMF function is described as cross-cutting, and why?",
+      "reference": "GOVERN is the cross-cutting function: it is infused throughout AI risk management and enables the other functions of the process.",
+      "answer": "According to the context, the AI RMF function described as cross-cutting is the process itself, which should be iterative, with cross-referencing between functions as necessary. This is stated in [1] page 25: \"However users integrate the functions, the process should be iterative, with cross-referencing between functions as necessary.\"\n\nThis cross-cutting nature allows users to integrate the functions in a way that suits their specific needs, rather than being limited to a linear process.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5. AI RMF Core\n\nAfter instituting the outcomes in GOVERN , most users of the AI RMF would start with the MAP function and continue to MEASURE or MANAGE . However users integrate the functions, the process should be iterative, with cross-referencing between functions as necessary. Similarly, there are categories and subcategories with elements that apply to multiple functions, or that logically should take place before certain subcategory decisions.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nExecutive Summary\n\nThe AI RMF refers to an AI system as an engineered or machine-based system that can, for a given set of objectives, generate outputs such as predictions, recommendations, or decisions influencing real or virtual environments. AI systems are designed to operate with varying levels of autonomy (Adapted from: OECD Recommendation on AI:2019; ISO/IEC 22989:2022).",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n6. AI RMF Profiles\n\nAI RMF cross-sectoral profiles cover risks of models or applications that can be used across use cases or sectors. Cross-sectoral profiles can also cover how to govern, map, measure, and manage risks for activities or business processes common across sectors such as the use of large language models, cloud-based services or acquisition."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.25",
+        "nist.ai.100-1.pdf p.6",
+        "nist.ai.100-1.pdf p.38"
+      ],
+      "retrieval_ms": 795.2745009999944,
+      "generation_ms": 111609.12289499992,
+      "scores": {
+        "faithfulness": 0.3333333333333333,
+        "answer_relevancy": 0.9206917683725026
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r09",
+      "language": "en",
+      "question": "What does the MEASURE function do?",
+      "reference": "The MEASURE function uses quantitative, qualitative or mixed-method tools, techniques and methodologies to analyze, assess, benchmark and monitor AI risk and related impacts.",
+      "answer": "The MEASURE function employs quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk and related impacts. [1]\n\nIt uses knowledge relevant to AI risks identified in the MAP function and informs the MANAGE function. AI systems should be tested before their deployment and regularly while in operation. [1]\n\nIn summary, the MEASURE function analyzes, assesses, benchmarks, and monitors AI risks and related impacts. [1][3]",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5.3 Measure\n\nThe MEASURE function employs quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk and related impacts. It uses knowledge relevant to AI risks identified in the MAP function and informs the MANAGE function. AI systems should be tested before their deployment and regularly while in operation.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5.3 Measure\n\nTable 3 lists the MEASURE function's categories and subcategories. Continued on next page Continued on next page",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5.3 Measure\n\nMeasurement outcomes will be utilized in the MANAGE function to assist risk monitoring and response efforts. It is incumbent on Framework users to continue applying the MEASURE function to AI systems as knowledge, methodologies, risks, and impacts evolve over time. Practices related to measuring AI risks are described in the NIST AI RMF Playbook."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.33",
+        "nist.ai.100-1.pdf p.33",
+        "nist.ai.100-1.pdf p.33"
+      ],
+      "retrieval_ms": 1028.2774170000266,
+      "generation_ms": 111349.7296989999,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7542419339957059
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r10",
+      "language": "en",
+      "question": "What are the six Functions of the NIST Cybersecurity Framework 2.0 Core?",
+      "reference": "The six CSF 2.0 Core Functions are GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND and RECOVER. They organize cybersecurity outcomes at their highest level.",
+      "answer": "According to the provided context, the six Functions of the NIST Cybersecurity Framework 2.0 Core are not explicitly listed. However, we can infer that the six Functions are related to the outcomes mentioned in the context, which include GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND, and RECOVER. [1][2]\n\nSince the exact names of the six Functions are not provided in the given context, I don't know the exact names of the six Functions.",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nAll Functions have vital roles related to cybersecurity incidents. GOVERN, IDENTIFY, and PROTECT outcomes help prevent and prepare for incidents, while GOVERN, DETECT, RESPOND, and RECOVER outcomes help discover and manage incidents. Each Function is named after a verb that summarizes its contents. Each Function is divided into Categories , which are related cybersecurity outcomes that collectively comprise the Function.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nThis Function also includes the identification of\n- improvement opportunities for the organization's policies, plans, processes, procedures, and practices that support cybersecurity risk management to inform efforts under all six Functions. - PROTECT (PR) -Safeguards to manage the organization's cybersecurity risks are used.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n1. Cybersecurity Framework (CSF) Overview\n\nThis document is version 2.0 of the NIST Cybersecurity Framework ( Framework or CSF ). It includes the following components:\n- CSF Core , the nucleus of the CSF, which is a taxonomy of high-level cybersecurity outcomes that can help any organization manage its cybersecurity risks. The CSF Core components are a hierarchy of Functions, Categories, and Subcategories that detail each outcome."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.6"
+      ],
+      "retrieval_ms": 1010.0316489999841,
+      "generation_ms": 112703.36083999996,
+      "scores": {
+        "faithfulness": 0.25,
+        "answer_relevancy": 0.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r11",
+      "language": "en",
+      "question": "Why is GOVERN shown at the center of the CSF Functions wheel?",
+      "reference": "GOVERN is in the center of the wheel because it informs how an organization will implement the other five Functions.",
+      "answer": "According to the context, GOVERN is shown at the center of the CSF Functions wheel because it informs how an organization will implement the other five Functions. [1] This means that the GOVERN function sets the stage for the other functions, providing outcomes that inform what an organization may do to achieve and prioritize the outcomes of the other five functions.",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nGOVERN is in the center of the wheel because it informs how an organization will implement the other five Functions. The Functions should be addressed concurrently. Actions that support GOVERN, IDENTIFY, PROTECT, and DETECT should all happen continuously, and actions that support RESPOND and RECOVER should be ready at all times and happen when cybersecurity incidents occur.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nFigure 2 shows the CSF Functions as a wheel because all of the Functions relate to one another. For example, an organization will categorize assets under IDENTIFY and take steps to secure those assets under PROTECT. Investments in planning and testing in the GOVERN and IDENTIFY Functions will support timely detection of unexpected events in the DETECT Function, as well as enabling incident response and recovery actions for cybersecurity incidents in the RESPOND and RECOVER Functions.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\n- GOVERN (GV) -The organization's cybersecurity risk management strategy, expectations, and policy are established, communicated, and monitored. The GOVERN Function provides outcomes to inform what an organization may do to achieve and prioritize the outcomes of the other five Functions in the context of its mission and stakeholder expectations."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.8"
+      ],
+      "retrieval_ms": 1029.8665700001948,
+      "generation_ms": 80118.33221200004,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r12",
+      "language": "en",
+      "question": "What are the four CSF Tiers?",
+      "reference": "The four CSF Tiers describe an organization's cybersecurity risk management practices as Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3) and Adaptive (Tier 4).",
+      "answer": "The four CSF Tiers are: Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4). [2][3]",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3. Introduction to CSF Profiles and Tiers\n\nThis section defines the concepts of CSF Profiles and Tiers.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3.2. CSF Tiers\n\nThe Tiers, as shown in Fig. 4 and notionally illustrated in Appendix B, reflect an organization's practices for managing cybersecurity risk as Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4). The Tiers describe a progression from informal, ad hoc responses to approaches that are agile, risk-informed, and continuously improving.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3.2. CSF Tiers\n\nAn organization can choose to use the Tiers to inform its Current and Target Profiles. Tiers characterize the rigor of an organization's cybersecurity risk governance and management practices, and they provide context for how an organization views cybersecurity risks and the processes in place to manage those risks."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.11",
+        "NIST.CSWP.29.pdf p.12",
+        "NIST.CSWP.29.pdf p.12"
+      ],
+      "retrieval_ms": 996.7277079999803,
+      "generation_ms": 48375.99689799981,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999991
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r13",
+      "language": "en",
+      "question": "What is a CSF Community Profile and how can an organization use one?",
+      "reference": "A Community Profile is a baseline of CSF outcomes created and published to address shared interests and goals among a number of organizations, typically for a sector, subsector, technology, threat type or other use case. An organization can use a Community Profile as the basis for its own Target Profile.",
+      "answer": "A CSF Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. It is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.\n\n[1] [2]",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3.1. CSF Profiles\n\nA Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. A Community Profile is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nCSF Community Profile\n\nA baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. A Community Profile is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3.1. CSF Profiles\n\nExamples of Community Profiles can be found on the NIST CSF website. The steps shown in Fig. 3 and summarized below illustrate one way that an organization could use an Organizational Profile to help inform continuous improvement of its cybersecurity. - Scope the Organizational Profile. Document the high-level facts and assumptions on which the Profile will be based to define its scope."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.11",
+        "NIST.CSWP.29.pdf p.31",
+        "NIST.CSWP.29.pdf p.11"
+      ],
+      "retrieval_ms": 932.4260229996071,
+      "generation_ms": 83372.13572700012,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9944418829663988
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r14",
+      "language": "en",
+      "question": "In which ways can an organization handle risk according to the CSF?",
+      "reference": "Depending on the potential impacts and likelihoods, an organization can handle negative risks by mitigating, transferring, avoiding or accepting them, and positive risks by realizing, sharing, enhancing or accepting them.",
+      "answer": "According to the context, an organization may handle risk in the following ways:\n\n* Mitigating negative risks [1]\n* Transferring negative risks [1]\n* Avoiding negative risks [1]\n* Accepting negative risks [1]\n* Realizing positive risks [1]\n* Sharing positive risks [1]\n* Enhancing positive risks [1]\n* Accepting positive risks [1]\n\nThese ways of handling risk are mentioned in [1] on page 15.",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n5. Improving Cybersecurity Risk Communication and Integration\n\nAn organization may choose to handle risk in one or more ways - including mitigating, transferring, avoiding, or accepting negative risks and realizing, sharing, enhancing, or accepting positive risks - depending on the potential impacts and likelihoods. Importantly, an organization can use the CSF both internally to manage its cybersecurity capabilities and externally to oversee or communicate with third parties.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nPreface\n\nNevertheless, the CSF does not embrace a one-size-fitsall approach. Each organization has both common and unique risks, as well as varying risk appetites and tolerances, specific missions, and objectives to achieve those missions. By necessity, the way organizations implement the CSF will vary. Ideally, the CSF will be used to address cybersecurity risks alongside other risks of the enterprise, including those that are financial, privacy, supply chain, reputational, technological, or physical in nature.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n5.2. Improving Integration with Other Risk Management Programs\n\nSmall organizations by their nature may monitor risk at the enterprise level, while larger companies may maintain separate risk management efforts integrated into the ERM. Organizations can employ an ERM approach to balance a portfolio of risk considerations, including cybersecurity, and make informed decisions."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.15",
+        "NIST.CSWP.29.pdf p.5",
+        "NIST.CSWP.29.pdf p.16"
+      ],
+      "retrieval_ms": 931.1556530001326,
+      "generation_ms": 108532.41030800018,
+      "scores": {
+        "faithfulness": 0.8888888888888888,
+        "answer_relevancy": 0.8083876175687684
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r15",
+      "language": "en",
+      "question": "What was the Cybersecurity Framework called before version 2.0?",
+      "reference": "Before version 2.0, the Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity'.",
+      "answer": "The Cybersecurity Framework was called the \"Framework for Improving Critical Infrastructure Cybersecurity\" before version 2.0. [1]",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\nNote to Readers\n\nUnless otherwise noted, documents cited, referenced, or excerpted in this publication are not wholly incorporated into this publication. Before version 2.0, the Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity.' This title is not used for CSF 2.0.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n1. Cybersecurity Framework (CSF) Overview\n\nThe CSF is a foundational resource that may be adopted voluntarily and through governmental policies and mandates. The CSF's taxonomy and referenced standards, guidelines, and practices are not country-specific, and previous versions of the CSF have been leveraged successfully by many governments and other organizations both inside and outside of the United States.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n1. Cybersecurity Framework (CSF) Overview\n\nThis document is version 2.0 of the NIST Cybersecurity Framework ( Framework or CSF ). It includes the following components:\n- CSF Core , the nucleus of the CSF, which is a taxonomy of high-level cybersecurity outcomes that can help any organization manage its cybersecurity risks. The CSF Core components are a hierarchy of Functions, Categories, and Subcategories that detail each outcome."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.2",
+        "NIST.CSWP.29.pdf p.6",
+        "NIST.CSWP.29.pdf p.6"
+      ],
+      "retrieval_ms": 896.8763039997611,
+      "generation_ms": 34293.620658999775,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999991
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r16",
+      "language": "en",
+      "question": "What does the DETECT Function enable?",
+      "reference": "DETECT enables the timely discovery and analysis of anomalies, indicators of compromise and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring.",
+      "answer": "The DETECT Function enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring. [1]\n\nIt also supports successful incident response and recovery activities. [1]",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\n- DETECT (DE) -Possible cybersecurity attacks and compromises are found and analyzed. DETECT enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring. This Function supports successful incident response and recovery activities.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nFigure 2 shows the CSF Functions as a wheel because all of the Functions relate to one another. For example, an organization will categorize assets under IDENTIFY and take steps to secure those assets under PROTECT. Investments in planning and testing in the GOVERN and IDENTIFY Functions will support timely detection of unexpected events in the DETECT Function, as well as enabling incident response and recovery actions for cybersecurity incidents in the RESPOND and RECOVER Functions.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nDETECT (DE): Possible cybersecurity attacks and compromises are found and analyzed\n\n- Continuous Monitoring (DE.CM): Assets are monitored to find anomalies, indicators of compromise, and other potentially adverse events\n- o DE.CM-01: Networks and network services are monitored to find potentially adverse events\n- o DE.CM-02: The physical environment is monitored to find potentially adverse events\n- o DE.CM-03: Personnel activity and technology usage are monitored to find potentially adverse events\n- o DE.CM-06: External service provider activities and services are monitored to find potentially adverse events\n- o DE.CM-09: Computing hardware and software, runtime environments, and their data are monitored to find potentially adverse events\n- Adverse Event Analysis (DE.AE): Anomalies, indicators of compromise, and other potentially adverse events are analyzed to characterize the events and detect cybersecurity incidents\n- o DE.AE-02: Potentially adverse events are analyzed to better understand associated activities\n- o DE.AE-03: Information is correlated from multiple sources\n- o DE.AE-04: The estimated impact and scope of adverse events are understood\n- o DE.AE-06: Information on adverse events is provided to authorized staff and tools\n- o DE.AE-07: Cyber threat intelligence and other contextual information are integrated into the analysis\n- o DE.AE-08: Incidents are declared when adverse events meet the defined incident criteria"
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.26"
+      ],
+      "retrieval_ms": 864.1782360000434,
+      "generation_ms": 62649.30907400003,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8227215074870896
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r17",
+      "language": "en",
+      "question": "By how much did the FOMC lower the federal funds rate in September 2024, and to what target range?",
+      "reference": "The Committee lowered the target range for the federal funds rate by half a percentage point, to 4¾ to 5 percent.",
+      "answer": "The FOMC lowered the federal funds rate by ½ percentage point to a target range of 4¾ percent to 5 percent. [2]",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nIn our SEP, FOMC participants wrote down their individual assessments of an appropriate path for the federal funds rate, based on what each participant judges to be the most likely scenario going forward. If the economy evolves as expected, the median participant projects that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year and 3.4 percent at the end of 2025.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWe now see the risks to achieving our employment and inflation goals as roughly in balance, and we are attentive to the risks to both sides of our dual mandate. In light of the progress on inflation and the balance of risks, at today's meeting, the Committee decided to lower the target range for the federal funds rate by ½ percentage point to 4¾ percent to 5 percent.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nInflation has eased substantially from a peak of 7 percent to an estimated 2.2 percent as of August. We're committed to maintaining our economy's strength by supporting maximum employment and returning inflation to our 2 percent goal. Today, the Federal Open Market Committee decided to reduce the degree of policy restraint by lowering our policy interest rate by ½ percentage point."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 1059.6357479998915,
+      "generation_ms": 44790.807767000384,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9374430927814563
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r18",
+      "language": "en",
+      "question": "What was the peak of inflation and where did it stand as of August 2024?",
+      "reference": "Inflation eased from a peak of 7 percent to an estimated 2.2 percent as of August 2024.",
+      "answer": "The peak of inflation was 7 percent, and as of August 2024, it stood at an estimated 2.2 percent. [1][3]",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nInflation has eased notably over the past two years but remains above our longer-run goal of 2 percent. Estimates based on the consumer price index and other data indicate that total PCE prices rose 2.2 percent over the 12 months ending in August and that, excluding the volatile food and energy categories, core PCE prices rose 2.7 percent.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nLonger-term inflation expectations appear to remain well anchored, as reflected in a broad range of surveys of households, businesses, and forecasters as well as measures from financial markets. The median projection in the SEP for total PCE inflation is 2.3 percent this year and 2.1 percent next year, somewhat lower than projected in June.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nInflation has eased substantially from a peak of 7 percent to an estimated 2.2 percent as of August. We're committed to maintaining our economy's strength by supporting maximum employment and returning inflation to our 2 percent goal. Today, the Federal Open Market Committee decided to reduce the degree of policy restraint by lowering our policy interest rate by ½ percentage point."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 880.062007000106,
+      "generation_ms": 41894.916204000314,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9423195150096909
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r19",
+      "language": "en",
+      "question": "What federal funds rate did the median participant project for the end of 2024 and the end of 2025?",
+      "reference": "The median participant projected a federal funds rate of 4.4 percent at the end of 2024 and 3.4 percent at the end of 2025.",
+      "answer": "According to the context, the median participant projected that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year (2024) and 3.4 percent at the end of 2025 [1].",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nIn our SEP, FOMC participants wrote down their individual assessments of an appropriate path for the federal funds rate, based on what each participant judges to be the most likely scenario going forward. If the economy evolves as expected, the median participant projects that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year and 3.4 percent at the end of 2025.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nMICHELLE SMITH. Let's go to Chris. CHRIS RUGABER. Hi. Chris Rugaber at Associated Press. Thank you. The projections show that the Fed-Fed officials expect the fed funds rate to still be above their estimate of long-run neutral by the end of next year. So does that suggest that you see rates as restrictive for that entire period?",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nOr is this about the level of the funds rate-the high nominal level of funds rate relative to what might be expected if you're trying to maintain equilibrium? CHAIR POWELL. So I think it's about-we come into this with a policy position that was put in place, as you know, I mentioned, in July of 2023, which was a time of high inflation and very low unemployment."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 1076.5405410002131,
+      "generation_ms": 63222.114155999865,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.979696546500111
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r20",
+      "language": "en",
+      "question": "Why is the housing market partly frozen?",
+      "reference": "The housing market is partly frozen because of lock-in with low rates: people with very low mortgages do not want to sell their homes, because it would be expensive to refinance.",
+      "answer": "The housing market is partly frozen because of lock-in with low rates. People don't want to sell their homes because it would be quite expensive to refinance due to their very low mortgage. [1]\n\n(Note: I only cite the relevant passage [1] since it directly answers the question.)",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWhat's the likelihood of that, and how would you react to that? CHAIR POWELL. The housing market, it's hard to-it's a game that-the housing market is in part frozen because of lock-in with low rates. People don't want to sell their homes. So, because they have a very low mortgage, it would be quite expensive to refinance.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nYeah. CHAIR POWELL. So housing inflation is the-is the one piece that is kind of dragging a bit, if I can say. We know that market rents are doing what we would want them to do, which is to be moving up at relatively low levels, but they're not rolling over-the leases that are rolling over are not coming down as much and OER is coming in high.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nAnd so it's going to be challenging. It's hard to find-to zone lots that are in places where people want to live. It's-all of the aspects of housing are more and more difficult, and, you know, where are we going to get the supply? And this is not something that the Fed can, can really fix. But I think, as we normalize rates, you'll see the housing market normalize."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 792.8695539999353,
+      "generation_ms": 76430.1999309996,
+      "scores": {
+        "faithfulness": 0.6666666666666666,
+        "answer_relevancy": 0.8378305834306694
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r21",
+      "language": "en",
+      "question": "Does the Fed think it has fallen behind on rate cuts?",
+      "reference": "No. Powell said the Fed does not think it is behind; it sees the cut as timely and as a sign of its commitment not to get behind.",
+      "answer": "According to the transcript, the Fed has been patient in reducing the policy rate and has waited for other central banks to cut rates, suggesting that they may not feel like they have fallen behind on rate cuts.\n\n[2] We've been very patient about, about reducing the policy rate. We've waited.",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nMICHELLE SMITH. Let's go to Chris. CHRIS RUGABER. Hi. Chris Rugaber at Associated Press. Thank you. The projections show that the Fed-Fed officials expect the fed funds rate to still be above their estimate of long-run neutral by the end of next year. So does that suggest that you see rates as restrictive for that entire period?",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWe've been very patient about, about reducing the policy rate. We've waited. Other central banks around the world have cut, many of them several times. We've waited, and I think that that patience has really paid dividends in the form of our confidence that inflation is moving sustainably under 2 percent.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\neconomy. And we'll do that by returning rates from their high level, which has really been-the purpose of which has been to get inflation under control. We're, we're going to move those down over time to a more normal level over time. JO LING KENT. Just have a follow-up to that. Listening to you talk about inflation moving meaningfully down to 2 percent, is the Federal Reserve effectively declaring a decisive victory over inflation and rising prices?"
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 1130.9237370001028,
+      "generation_ms": 96651.25387399984,
+      "scores": {
+        "faithfulness": 0.6,
+        "answer_relevancy": 0.8614350427777261
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t01",
+      "language": "tr",
+      "question": "Kişisel Verilerin Korunması Kanunu'nun amacı nedir?",
+      "reference": "Kanunun amacı, kişisel verilerin işlenmesinde başta özel hayatın gizliliği olmak üzere kişilerin temel hak ve özgürlüklerini korumak ve kişisel verileri işleyen gerçek ve tüzel kişilerin yükümlülükleri ile uyacakları usul ve esasları düzenlemektir.",
+      "answer": "The aim of the Kişisel Verilerin Korunması Kanunu (KVKK) is to regulate the processing of personal data.\n\n[1] [page 3] states the aim of the KVKK as \"Kişisel verilerin aktarılması\".",
+      "contexts": [
+        "Amaç\nKişisel verilerin aktarılması\n\n(3) Kişisel verilerin aktarılmasına ilişkin diğer kanunlarda yer alan hükümler saklıdır.",
+        "Amaç\nKişisel verilerin işlenme şartları\n\n- Bir hakkın tesisi, kullanılması veya korunması için veri işlemenin zorunlu olması. - İlgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla, veri sorumlusunun meşru menfaatleri için veri işlenmesinin zorunlu olması.",
+        "Amaç\nVeri Sorumluları Sicili\n\n- ç) Kişisel verilerin aktarılabileceği alıcı veya alıcı grupları. - Yabancı ülkelere aktarımı öngörülen kişisel veriler. - Kişisel veri güvenliğine ilişkin alınan tedbirler. - Kişisel verilerin işlendikleri amaç için gerekli olan azami süre. - Üçüncü fıkra uyarınca verilen bilgilerde meydana gelen değişiklikler derhâl Başkanlığa bildirilir."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.3",
+        "kvkk_6698.pdf p.2",
+        "kvkk_6698.pdf p.8"
+      ],
+      "retrieval_ms": 971.4758889999757,
+      "generation_ms": 72199.0431979998,
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.7120289920186726
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t02",
+      "language": "tr",
+      "question": "KVKK'ya göre veri sorumlusu kimdir?",
+      "reference": "Veri sorumlusu, kişisel verilerin işleme amaçlarını ve vasıtalarını belirleyen, veri kayıt sisteminin kurulmasından ve yönetilmesinden sorumlu olan gerçek veya tüzel kişidir.",
+      "answer": "According to the context, veri sorumlusu is not explicitly defined. However, based on the passages provided, it seems that veri sorumlusu refers to an individual or entity that makes a request to the institution.\n\n[3] states that the institution will perform regulatory procedures related to the duties, powers, and responsibilities of veri sorumlusu and their representatives.\n\n[2] mentions that veri sorumlusu makes a request and the institution responds to it.\n\nIt is not clear what specific characteristics or qualifications veri sorumlusu must possess.",
+      "contexts": [
+        "Amaç\nKurumun görevleri\n\n- Kanunlarla verilen diğer görevleri yerine getirmek.",
+        "Amaç\nVeri sorumlusuna başvuru\n\n(3) Veri sorumlusu talebi kabul eder veya gerekçesini açıklayarak reddeder ve cevabını ilgili kişiye yazılı olarak veya elektronik ortamda bildirir. Başvuruda yer alan talebin kabul edilmesi hâlinde veri sorumlusunca gereği yerine getirilir. Başvurunun veri sorumlusunun hatasından kaynaklanması hâlinde alınan ücret ilgiliye iade edilir.",
+        "Amaç\nKurulun görev ve yetkileri\n\n- Veri sorumlusunun ve temsilcisinin görev, yetki ve sorumluluklarına ilişkin düzenleyici işlem yapmak. - ğ) Bu Kanunda öngörülen idari yaptırımlara karar vermek. - Diğer kurum ve kuruluşlarca hazırlanan ve kişisel verilere ilişkin hüküm içeren mevzuat taslakları hakkında görüş bildirmek. - ı) Kurumun; stratejik planını karara bağlamak, amaç ve hedeflerini, hizmet kalite standartlarını ve performans kriterlerini belirlemek."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.10",
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.12"
+      ],
+      "retrieval_ms": 1146.879359000195,
+      "generation_ms": 199698.04699999985,
+      "scores": {
+        "faithfulness": 0.5714285714285714,
+        "answer_relevancy": 0.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t03",
+      "language": "tr",
+      "question": "Kişisel verilerin işlenmesinde uyulması zorunlu genel ilkeler nelerdir?",
+      "reference": "Kişisel veriler hukuka ve dürüstlük kurallarına uygun, doğru ve gerektiğinde güncel, belirli, açık ve meşru amaçlar için, işlendikleri amaçla bağlantılı, sınırlı ve ölçülü olarak işlenmeli ve ilgili mevzuatta öngörülen veya işlendikleri amaç için gerekli olan süre kadar muhafaza edilmelidir.",
+      "answer": "Kişisel verilerin işlenmesinde uyulması zorunlu genel ilkeler şunlardır:\n\n* Hukuka ve dürüstlük kurallarına uygun olma.\n* Doğru ve gerektiğinde güncel olma.\n* Belirli, açık ve meşru amaçlar için işlenme.\n\n[3]",
+      "contexts": [
+        "Amaç\nKişisel verilerin işlenme şartları\n\n- Bir hakkın tesisi, kullanılması veya korunması için veri işlemenin zorunlu olması. - İlgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla, veri sorumlusunun meşru menfaatleri için veri işlenmesinin zorunlu olması.",
+        "Amaç\nKişisel verilerin işlenme şartları\n\n- Bir sözleşmenin kurulması veya ifasıyla doğrudan doğruya ilgili olması kaydıyla, sözleşmenin taraflarına ait kişisel verilerin işlenmesinin gerekli olması. - ç) Veri sorumlusunun hukuki yükümlülüğünü yerine getirebilmesi için zorunlu olması. - İlgili kişinin kendisi tarafından alenileştirilmiş olması.",
+        "Amaç\nGenel ilkeler\n\nMADDE 4(1) Kişisel veriler, ancak bu Kanunda ve diğer kanunlarda öngörülen usul ve esaslara uygun olarak işlenebilir. - Kişisel verilerin işlenmesinde aşağıdaki ilkelere uyulması zorunludur:\n- Hukuka ve dürüstlük kurallarına uygun olma. - Doğru ve gerektiğinde güncel olma. - Belirli, açık ve meşru amaçlar için işlenme."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.2",
+        "kvkk_6698.pdf p.2",
+        "kvkk_6698.pdf p.2"
+      ],
+      "retrieval_ms": 1341.4168409999547,
+      "generation_ms": 96534.95789599992,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999991
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t04",
+      "language": "tr",
+      "question": "Hangi veriler özel nitelikli kişisel veri sayılır?",
+      "reference": "Kişilerin ırkı, etnik kökeni, siyasi düşüncesi, felsefi inancı, dini, mezhebi veya diğer inançları, kılık ve kıyafeti, dernek, vakıf ya da sendika üyeliği, sağlığı, cinsel hayatı, ceza mahkûmiyeti ve güvenlik tedbirleriyle ilgili verileri ile biyometrik ve genetik verileri özel nitelikli kişisel veridir.",
+      "answer": "According to the provided context, the following data are considered special categories of personal data:\n\n* Kişilerin ırkı, etnik kökeni, siyasi düşüncesi, felsefi inancı, dini, mezhebi veya diğer inançları, kılık ve kıyafeti, dernek, vakıf ya da sendika üyeliği, sağlığı, cinsel hayatı, ceza mahkûmiyeti ve güvenlik tedbirleriyle ilgili verileri [2]\n* Biyometrik ve genetik verileri [2]\n\nThese data are considered special categories of personal data according to the Turkish Personal Data Protection Law (KVKK) [2].",
+      "contexts": [
+        "Amaç\nÖzel nitelikli kişisel verilerin işlenme şartları\n\n(4) Özel nitelikli kişisel verilerin işlenmesinde, ayrıca Kurul tarafından belirlenen yeterli önlemlerin alınması şarttır.",
+        "Amaç\nÖzel nitelikli kişisel verilerin işlenme şartları\n\nMADDE 6(1) Kişilerin ırkı, etnik kökeni, siyasi düşüncesi, felsefi inancı, dini, mezhebi veya diğer inançları, kılık ve kıyafeti, dernek, vakıf ya da sendika üyeliği, sağlığı, cinsel hayatı, ceza mahkûmiyeti ve güvenlik tedbirleriyle ilgili verileri ile biyometrik ve genetik verileri özel nitelikli kişisel veridir.",
+        "Amaç\nVeri Sorumluları Sicili\n\n- ç) Kişisel verilerin aktarılabileceği alıcı veya alıcı grupları. - Yabancı ülkelere aktarımı öngörülen kişisel veriler. - Kişisel veri güvenliğine ilişkin alınan tedbirler. - Kişisel verilerin işlendikleri amaç için gerekli olan azami süre. - Üçüncü fıkra uyarınca verilen bilgilerde meydana gelen değişiklikler derhâl Başkanlığa bildirilir."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.2",
+        "kvkk_6698.pdf p.2",
+        "kvkk_6698.pdf p.8"
+      ],
+      "retrieval_ms": 919.729062999977,
+      "generation_ms": 164798.42151899994,
+      "scores": {
+        "answer_relevancy": 0.5289373312912922,
+        "faithfulness": 1.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t05",
+      "language": "tr",
+      "question": "Veri sorumlusu ilgili kişinin başvurusunu en geç ne kadar sürede sonuçlandırmalıdır?",
+      "reference": "Veri sorumlusu başvurudaki talepleri, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde ücretsiz olarak sonuçlandırır. İşlemin ayrıca bir maliyet gerektirmesi hâlinde Kurulca belirlenen tarifedeki ücret alınabilir.",
+      "answer": "The context does not provide information on the timeframe for the data controller to respond to the individual's request. Therefore, I don't know.",
+      "contexts": [
+        "Amaç\nVeri sorumlusuna başvuru\n\n(3) Veri sorumlusu talebi kabul eder veya gerekçesini açıklayarak reddeder ve cevabını ilgili kişiye yazılı olarak veya elektronik ortamda bildirir. Başvuruda yer alan talebin kabul edilmesi hâlinde veri sorumlusunca gereği yerine getirilir. Başvurunun veri sorumlusunun hatasından kaynaklanması hâlinde alınan ücret ilgiliye iade edilir.",
+        "Amaç\nKişisel Verileri Koruma Kurulu\n\nBunların Kurumda geçirdiği süreler, özlük ve diğer hakları açısından önceki kurum veya kuruluşlarında geçirilmiş sayılır.",
+        "Amaç\nVeri güvenliğine ilişkin yükümlülükler\n\n(2) Veri sorumlusu, kişisel verilerin kendi adına başka bir gerçek veya tüzel kişi tarafından işlenmesi hâlinde, birinci fıkrada belirtilen tedbirlerin alınması hususunda bu kişilerle birlikte müştereken sorumludur. (3) Veri sorumlusu, kendi kurum veya kuruluşunda, bu Kanun hükümlerinin uygulanmasını sağlamak amacıyla gerekli denetimleri yapmak veya yaptırmak zorundadır."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.10",
+        "kvkk_6698.pdf p.6"
+      ],
+      "retrieval_ms": 880.3620160001628,
+      "generation_ms": 48704.62188600004,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t06",
+      "language": "tr",
+      "question": "Başvurusu reddedilen ilgili kişi Kurula ne zamana kadar şikâyette bulunabilir?",
+      "reference": "İlgili kişi, veri sorumlusunun cevabını öğrendiği tarihten itibaren otuz gün ve her hâlde başvuru tarihinden itibaren altmış gün içinde Kurula şikâyette bulunabilir. Başvuru yolu tüketilmeden şikâyet yoluna başvurulamaz.",
+      "answer": "The related individual can file a complaint with the Council within 30 days from the date they learned of the response, and in any case, within 60 days from the date of the application. [1]\n\nNote: This answer only considers the provided context and does not take into account any external information.",
+      "contexts": [
+        "Amaç\nKurula şikâyet\n\nMADDE 14(1) Başvurunun reddedilmesi, verilen cevabın yetersiz bulunması veya süresinde başvuruya cevap verilmemesi hâllerinde; ilgili kişi, veri sorumlusunun cevabını öğrendiği tarihten itibaren otuz ve her hâlde başvuru tarihinden itibaren altmış gün içinde Kurula şikâyette bulunabilir. (2) 13 üncü madde uyarınca başvuru yolu tüketilmeden şikâyet yoluna başvurulamaz.",
+        "Amaç\nKurula şikâyet\n\n(3) Kişilik hakları ihlal edilenlerin, genel hükümlere göre tazminat hakkı saklıdır.",
+        "Amaç\nKişisel Verileri Koruma Kurulu\n\nBu üyeliklerde, görev süresi dolmadan herhangi bir sebeple boşalma olması hâlinde ise bildirimden itibaren on beş gün içinde seçim yapılır. (7) Kurul, üyeleri arasından Başkan ve İkinci Başkanı seçer. Kurulun Başkanı, Kurumun da başkanıdır. (8) Kurul üyelerinin görev süresi dört yıldır. Süresi biten üye yeniden seçilebilir."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.10"
+      ],
+      "retrieval_ms": 1200.0646260003123,
+      "generation_ms": 74413.70799400011,
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.43286759469742425
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t07",
+      "language": "tr",
+      "question": "Kişisel Verileri Koruma Kurulu kaç üyeden oluşur ve üyeler kim tarafından seçilir?",
+      "reference": "Kurul dokuz üyeden oluşur. Üyelerin beşi Türkiye Büyük Millet Meclisi, dördü Cumhurbaşkanı tarafından seçilir.",
+      "answer": "According to the context, the Personal Data Protection Council is composed of nine members [3]. The members are selected by the Council itself, and the Council selects the President and Vice President among its members [1].",
+      "contexts": [
+        "Amaç\nKişisel Verileri Koruma Kurulu\n\nBu üyeliklerde, görev süresi dolmadan herhangi bir sebeple boşalma olması hâlinde ise bildirimden itibaren on beş gün içinde seçim yapılır. (7) Kurul, üyeleri arasından Başkan ve İkinci Başkanı seçer. Kurulun Başkanı, Kurumun da başkanıdır. (8) Kurul üyelerinin görev süresi dört yıldır. Süresi biten üye yeniden seçilebilir.",
+        "Amaç\nKişisel Verileri Koruma Kurulu\n\nBunların Kurumda geçirdiği süreler, özlük ve diğer hakları açısından önceki kurum veya kuruluşlarında geçirilmiş sayılır.",
+        "Amaç\nKişisel Verileri Koruma Kurulu\n\nMADDE 21(1) Kurul, bu Kanunla ve diğer mevzuatla verilen görev ve yetkilerini kendi sorumluluğu altında, bağımsız olarak yerine getirir ve kullanır. Görev alanına giren konularla ilgili olarak hiçbir organ, makam, merci veya kişi, Kurula emir ve talimat veremez, tavsiye veya telkinde bulunamaz. - Kurul, dokuz üyeden oluşur."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.10",
+        "kvkk_6698.pdf p.10",
+        "kvkk_6698.pdf p.10"
+      ],
+      "retrieval_ms": 905.7652569999846,
+      "generation_ms": 51853.46759499998,
+      "scores": {
+        "faithfulness": 0.75,
+        "answer_relevancy": 0.4036918118412924
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t08",
+      "language": "tr",
+      "question": "Veri güvenliğine ilişkin yükümlülükleri yerine getirmeyenlere ne kadar idari para cezası verilir?",
+      "reference": "Kanunun 12. maddesindeki veri güvenliğine ilişkin yükümlülükleri yerine getirmeyenler hakkında 15.000 Türk lirasından 1.000.000 Türk lirasına kadar idari para cezası verilir.",
+      "answer": "I don't know.\n\nThe provided context only discusses the responsibilities and measures to ensure data security, but it does not mention the specific administrative fine for those who fail to meet these responsibilities.",
+      "contexts": [
+        "Amaç\nVeri güvenliğine ilişkin yükümlülükler\n\nMADDE 12(1) Veri sorumlusu;\n- Kişisel verilerin hukuka aykırı olarak işlenmesini önlemek,\n- Kişisel verilere hukuka aykırı olarak erişilmesini önlemek,\n- Kişisel verilerin muhafazasını sağlamak,\namacıyla uygun güvenlik düzeyini temin etmeye yönelik gerekli her türlü teknik ve idari tedbirleri almak zorundadır.",
+        "Amaç\nVeri güvenliğine ilişkin yükümlülükler\n\nKurul, gerekmesi hâlinde bu durumu, kendi internet sitesinde ya da uygun göreceği başka bir yöntemle ilan edebilir.",
+        "Amaç\nVeri güvenliğine ilişkin yükümlülükler\n\n(4) Veri sorumluları ile veri işleyen kişiler, öğrendikleri kişisel verileri bu Kanun hükümlerine aykırı olarak başkasına açıklayamaz ve işleme amacı dışında kullanamazlar. Bu yükümlülük görevden ayrılmalarından sonra da devam eder. (5) İşlenen kişisel verilerin kanuni olmayan yollarla başkaları tarafından elde edilmesi hâlinde, veri sorumlusu bu durumu en kısa sürede ilgilisine ve Kurula bildirir."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.6",
+        "kvkk_6698.pdf p.6",
+        "kvkk_6698.pdf p.6"
+      ],
+      "retrieval_ms": 965.8505610000248,
+      "generation_ms": 47891.50953600029,
+      "scores": {
+        "faithfulness": 0.75,
+        "answer_relevancy": 0.0
+      },
+      "errors": {}
+    }
+  ]
+}

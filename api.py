@@ -2,11 +2,12 @@ import json
 import logging
 import tempfile
 import time
-from collections.abc import Iterator
+from collections.abc import AsyncIterator, Callable, Iterator
 from pathlib import Path
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.responses import StreamingResponse
+from starlette.concurrency import iterate_in_threadpool
 from pydantic import BaseModel
 from models import ChatResponse, SourceResponse
 from retrieval.reranker import CrossEncoderReranker
@@ -35,6 +36,7 @@ from generator import Generator
 from document_parser import SUPPORTED_EXTENSIONS
 from ingestion import Ingestion
 from pipeline import Pipeline
+from providers.base import close_stream
 from providers.factory import build_chat_client, build_embedder
 from retrieval.retriever import Retriever
 from vector_store import VectorStore, collection_name_for
@@ -228,27 +230,91 @@ def chat(request: ChatRequest) -> ChatResponse:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Keep proxies (nginx and others) from buffering the stream, which would
+# deliver the answer in one piece at the end.
+STREAM_HEADERS = {
+    "Cache-Control": "no-cache",
+    "X-Accel-Buffering": "no",
+}
+
+
 @app.post("/chat/stream")
-def chat_stream(request: ChatRequest) -> StreamingResponse:
+def chat_stream(request: ChatRequest, http_request: Request) -> StreamingResponse:
     """
-    Stream the answer as newline-delimited JSON events: the sources once
-    retrieval is done, then the answer tokens, then a final "done" event
-    with timings, or an "error" event if anything fails.
+    Stream the answer as events: the sources once retrieval is done, then
+    the answer tokens, then a final "done" event with timings, or an "error"
+    event if anything fails.
+
+    The events are newline-delimited JSON by default, or Server-Sent Events
+    when the request accepts text/event-stream.
     """
 
+    if accepts_event_stream(http_request.headers.get("accept", "")):
+        format_event, media_type = _sse_event, "text/event-stream"
+    else:
+        format_event, media_type = _event, "application/x-ndjson"
+
     return StreamingResponse(
-        _stream_events(request.question),
-        media_type="application/x-ndjson",
+        close_when_done(_stream_events(request.question, format_event)),
+        media_type=media_type,
+        headers=STREAM_HEADERS,
     )
 
 
-def _stream_events(question: str) -> Iterator[str]:
+async def close_when_done(events: Iterator[str]) -> AsyncIterator[str]:
+    """Run a blocking event generator in the thread pool and close it as soon
+    as the response ends, whatever the reason.
+
+    When the client disconnects, Starlette cancels the response but leaves a
+    plain generator to the garbage collector, which on an idle server can
+    take minutes; meanwhile the model keeps generating an answer nobody
+    reads. Closing it here stops the model's stream right away."""
+
+    try:
+        async for event in iterate_in_threadpool(events):
+            yield event
+    finally:
+        # The worker thread has returned by now (cancellation waits for it),
+        # so the generator is not running and can be closed.
+        close_stream(events)
+
+
+def accepts_event_stream(accept: str) -> bool:
+    """Whether an Accept header asks for text/event-stream (with a non-zero
+    quality). Other values, including */*, keep the NDJSON default."""
+
+    for media_range in accept.split(","):
+        media_type, *params = [part.strip() for part in media_range.split(";")]
+
+        if media_type.lower() != "text/event-stream":
+            continue
+
+        for param in params:
+            name, _, value = param.partition("=")
+
+            if name.strip().lower() == "q":
+                try:
+                    return float(value) > 0
+                except ValueError:
+                    return False
+
+        return True
+
+    return False
+
+
+def _stream_events(
+    question: str,
+    format_event: Callable[[dict], str],
+) -> Iterator[str]:
+    tokens = None
+
     try:
         started = time.perf_counter()
         chunks = pipeline.retrieve(question)
         retrieval_ms = (time.perf_counter() - started) * 1000
 
-        yield _event({
+        yield format_event({
             "type": "sources",
             "sources": [
                 _source_response(chunk).model_dump()
@@ -257,19 +323,31 @@ def _stream_events(question: str) -> Iterator[str]:
         })
 
         started = time.perf_counter()
+        first_token_ms = None
+        tokens = pipeline.stream(question, chunks)
 
-        for text in pipeline.stream(question, chunks):
-            yield _event({"type": "token", "text": text})
+        for text in tokens:
+            if first_token_ms is None:
+                first_token_ms = (time.perf_counter() - started) * 1000
 
-        yield _event({
+            yield format_event({"type": "token", "text": text})
+
+        yield format_event({
             "type": "done",
             "retrieval_ms": round(retrieval_ms),
+            "first_token_ms": (
+                None if first_token_ms is None else round(first_token_ms)
+            ),
             "generation_ms": round((time.perf_counter() - started) * 1000),
         })
 
     except Exception as e:
         logger.exception("Failed to stream response")
-        yield _event({"type": "error", "detail": str(e)})
+        yield format_event({"type": "error", "detail": str(e)})
+
+    finally:
+        # When the client disconnects, stop the model's stream right away.
+        close_stream(tokens)
 
 
 def _documents() -> list[dict]:
@@ -280,7 +358,18 @@ def _documents() -> list[dict]:
 
 
 def _event(data: dict) -> str:
+    """One NDJSON event: a JSON object on its own line."""
+
     return json.dumps(data, ensure_ascii=False) + "\n"
+
+
+def _sse_event(data: dict) -> str:
+    """One Server-Sent Event, named after the event type. The JSON is on a
+    single line: json.dumps escapes newlines inside strings."""
+
+    payload = json.dumps(data, ensure_ascii=False)
+
+    return f"event: {data['type']}\ndata: {payload}\n\n"
 
 
 def _source_response(chunk) -> SourceResponse:

@@ -249,10 +249,31 @@ The request is the same as for `POST /chat`. The response is newline-delimited J
 {"type": "token", "text": "The four core"}
 {"type": "token", "text": " functions are"}
 ...
-{"type": "done", "retrieval_ms": 612, "generation_ms": 6909}
+{"type": "done", "retrieval_ms": 612, "first_token_ms": 410, "generation_ms": 6909}
 ```
 
-The sources are sent as soon as retrieval is done, before the model starts writing. If anything fails, the stream ends with `{"type": "error", "detail": "..."}` instead of `done`.
+The sources are sent as soon as retrieval is done, before the model starts writing. `first_token_ms` is the time from the start of generation to the first token (`null` if the model wrote nothing). If anything fails, the stream ends with `{"type": "error", "detail": "..."}` instead of `done`.
+
+Send `Accept: text/event-stream` to receive the same events as [Server-Sent Events](https://html.spec.whatwg.org/multipage/server-sent-events.html), named after their type:
+
+```text
+event: sources
+data: {"type": "sources", "sources": [...]}
+
+event: token
+data: {"type": "token", "text": "The four core"}
+
+event: done
+data: {"type": "done", "retrieval_ms": 612, "first_token_ms": 410, "generation_ms": 6909}
+```
+
+```bash
+curl -N -X POST http://localhost:8000/chat/stream \
+  -H "Content-Type: application/json" -H "Accept: text/event-stream" \
+  -d '{"question": "What are the four CSF Tiers?"}'
+```
+
+Both formats send `Cache-Control: no-cache` and `X-Accel-Buffering: no`, so a reverse proxy such as nginx passes the events on as they arrive instead of buffering the answer. When the client disconnects, the model's stream is closed.
 
 ### Inspect the configuration
 

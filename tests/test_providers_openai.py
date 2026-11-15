@@ -136,3 +136,45 @@ def test_chat_client_streams_deltas_and_skips_empty_chunks():
     assert call["stream"] is True
     assert call["reasoning_effort"] == "low"
     assert call["model"] == "gpt-test"
+
+
+class ClosableStream:
+    """A provider response stream that records whether it was closed."""
+
+    def __init__(self, items):
+        self.items = iter(items)
+        self.closed = False
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return next(self.items)
+
+    def close(self):
+        self.closed = True
+
+
+def test_chat_client_closes_the_stream_when_the_reader_stops():
+    chunks = ClosableStream([stream_chunk("GOVERN "), stream_chunk("is cross-cutting.")])
+    client = Mock()
+    client.chat.completions.create.return_value = chunks
+
+    stream = OpenAIChatClient(client=client, model="gpt-test").stream(
+        system="S.", user="Q?",
+    )
+    assert next(stream) == "GOVERN "
+    stream.close()
+
+    assert chunks.closed
+
+
+def test_chat_client_closes_the_stream_when_it_ends():
+    chunks = ClosableStream([stream_chunk("Done.")])
+    client = Mock()
+    client.chat.completions.create.return_value = chunks
+
+    chat = OpenAIChatClient(client=client, model="gpt-test")
+
+    assert list(chat.stream(system="S.", user="Q?")) == ["Done."]
+    assert chunks.closed

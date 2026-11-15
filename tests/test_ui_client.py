@@ -126,3 +126,36 @@ def test_rejected_upload_raises_with_the_reason(monkeypatch):
 
     with pytest.raises(ApiError, match="Only PDF files can be uploaded"):
         ApiClient("http://api:8000").upload("notes.txt", b"text")
+
+
+def test_stream_answer_raises_when_the_stream_ends_without_a_final_event(monkeypatch):
+    fake_request(
+        monkeypatch,
+        FakeResponse(lines=[
+            b'{"type": "sources", "sources": []}',
+            b'{"type": "token", "text": "Partial"}',
+        ]),
+    )
+
+    received = []
+
+    with pytest.raises(ApiError, match="ended before the answer was complete"):
+        for event in ApiClient("http://api:8000").stream_answer("Q?"):
+            received.append(event["type"])
+
+    # The events that did arrive are still delivered first.
+    assert received == ["sources", "token"]
+
+
+def test_stream_answer_accepts_an_error_event_as_the_end(monkeypatch):
+    fake_request(
+        monkeypatch,
+        FakeResponse(lines=[
+            b'{"type": "sources", "sources": []}',
+            b'{"type": "error", "detail": "Model unavailable"}',
+        ]),
+    )
+
+    events = list(ApiClient("http://api:8000").stream_answer("Q?"))
+
+    assert events[-1] == {"type": "error", "detail": "Model unavailable"}

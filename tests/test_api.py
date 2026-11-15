@@ -1,5 +1,7 @@
 
+import asyncio
 import json
+import threading
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -416,3 +418,201 @@ def test_info_reports_models_and_indexed_documents(monkeypatch):
         {"source": "a.pdf", "chunks": 5},
         {"source": "b.pdf", "chunks": 3},
     ]
+
+
+def read_sse_events(response):
+    """Parse a Server-Sent Events body into (event name, data) pairs."""
+
+    events = []
+
+    for block in response.text.split("\n\n"):
+        if not block.strip():
+            continue
+
+        fields = dict(line.split(": ", 1) for line in block.splitlines())
+        events.append((fields["event"], json.loads(fields["data"])))
+
+    return events
+
+
+def fake_answer(monkeypatch, tokens=("Python is ", "a language.")):
+    monkeypatch.setattr(api.pipeline, "retrieve", lambda question: [make_chunk()])
+    monkeypatch.setattr(api.pipeline, "stream", lambda question, chunks: iter(tokens))
+
+
+def test_chat_stream_sends_server_sent_events_when_asked(monkeypatch):
+    fake_answer(monkeypatch, tokens=("Line one\n", "line two."))
+
+    response = client.post(
+        "/chat/stream",
+        json={"question": "What is Python?"},
+        headers={"Accept": "text/event-stream"},
+    )
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/event-stream")
+
+    events = read_sse_events(response)
+    assert [name for name, _ in events] == ["sources", "token", "token", "done"]
+    assert all(name == data["type"] for name, data in events)
+    assert events[1][1]["text"] == "Line one\n"
+    assert events[0][1]["sources"][0]["source"] == "guide.pdf"
+
+
+@pytest.mark.parametrize(
+    "accept", [None, "*/*", "application/json", "application/x-ndjson"],
+)
+def test_chat_stream_defaults_to_ndjson(monkeypatch, accept):
+    fake_answer(monkeypatch)
+    headers = {"Accept": accept} if accept else {}
+
+    response = client.post("/chat/stream", json={"question": "Q?"}, headers=headers)
+
+    assert response.headers["content-type"].startswith("application/x-ndjson")
+    assert [event["type"] for event in read_events(response)] == [
+        "sources", "token", "token", "done",
+    ]
+
+
+@pytest.mark.parametrize(
+    ("accept", "expected"),
+    [
+        ("text/event-stream", True),
+        ("Text/Event-Stream", True),
+        ("application/json, text/event-stream;q=0.5", True),
+        ("text/event-stream; charset=utf-8", True),
+        ("text/event-stream;q=0", False),
+        ("text/event-stream;q=bad", False),
+        ("*/*", False),
+        ("", False),
+    ],
+)
+def test_accepts_event_stream(accept, expected):
+    assert api.accepts_event_stream(accept) is expected
+
+
+@pytest.mark.parametrize("accept", ["application/x-ndjson", "text/event-stream"])
+def test_chat_stream_asks_proxies_not_to_buffer(monkeypatch, accept):
+    fake_answer(monkeypatch)
+
+    response = client.post(
+        "/chat/stream", json={"question": "Q?"}, headers={"Accept": accept},
+    )
+
+    assert response.headers["cache-control"] == "no-cache"
+    assert response.headers["x-accel-buffering"] == "no"
+
+
+def test_chat_stream_reports_time_to_first_token(monkeypatch):
+    fake_answer(monkeypatch)
+
+    done = read_events(client.post("/chat/stream", json={"question": "Q?"}))[-1]
+
+    assert done["type"] == "done"
+    assert 0 <= done["first_token_ms"] <= done["generation_ms"]
+
+
+def test_chat_stream_without_tokens_has_no_first_token_time(monkeypatch):
+    fake_answer(monkeypatch, tokens=())
+
+    done = read_events(client.post("/chat/stream", json={"question": "Q?"}))[-1]
+
+    assert done["type"] == "done"
+    assert done["first_token_ms"] is None
+
+
+@pytest.mark.parametrize("accept", ["application/x-ndjson", "text/event-stream"])
+def test_chat_stream_sends_only_an_error_when_retrieval_fails(monkeypatch, accept):
+    def failing_retrieve(question):
+        raise RuntimeError("Vector store unavailable")
+
+    monkeypatch.setattr(api.pipeline, "retrieve", failing_retrieve)
+
+    response = client.post(
+        "/chat/stream", json={"question": "Q?"}, headers={"Accept": accept},
+    )
+
+    if accept == "text/event-stream":
+        events = read_sse_events(response)
+    else:
+        events = [(event["type"], event) for event in read_events(response)]
+
+    assert response.status_code == 200
+    assert events == [
+        ("error", {"type": "error", "detail": "Vector store unavailable"}),
+    ]
+
+
+def test_stream_events_closes_the_model_stream_when_the_client_leaves(monkeypatch):
+    closed = []
+
+    def model_stream(question, chunks):
+        try:
+            yield "one"
+            yield "two"
+            yield "three"
+        finally:
+            closed.append(True)
+
+    monkeypatch.setattr(api.pipeline, "retrieve", lambda question: [])
+    monkeypatch.setattr(api.pipeline, "stream", model_stream)
+
+    events = api._stream_events("Q?", api._event)
+    assert json.loads(next(events))["type"] == "sources"
+    assert json.loads(next(events))["text"] == "one"
+
+    # What the server does when the client disconnects mid-answer.
+    events.close()
+
+    assert closed == [True]
+
+
+def test_close_when_done_closes_the_generator_when_the_response_is_cancelled():
+    closed = []
+    started = threading.Event()
+
+    def events():
+        try:
+            yield "sources"
+            started.set()
+            while True:
+                yield "token"
+        finally:
+            closed.append(True)
+
+    async def consume():
+        async for _ in api.close_when_done(events()):
+            await asyncio.sleep(0)
+
+    async def run():
+        task = asyncio.create_task(consume())
+
+        while not started.is_set():
+            await asyncio.sleep(0.01)
+
+        # What Starlette does when the client disconnects.
+        task.cancel()
+
+        with pytest.raises(asyncio.CancelledError):
+            await task
+
+    asyncio.run(run())
+
+    assert closed == [True]
+
+
+def test_close_when_done_passes_events_through_and_closes_at_the_end():
+    closed = []
+
+    def events():
+        try:
+            yield "a"
+            yield "b"
+        finally:
+            closed.append(True)
+
+    async def collect():
+        return [event async for event in api.close_when_done(events())]
+
+    assert asyncio.run(collect()) == ["a", "b"]
+    assert closed == [True]

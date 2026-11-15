@@ -3,6 +3,8 @@ from collections.abc import Iterator
 
 from openai import OpenAI
 
+from providers.base import close_stream
+
 logger = logging.getLogger(__name__)
 
 
@@ -68,13 +70,18 @@ class OpenAIChatClient:
         return response.choices[0].message.content or ""
 
     def stream(self, system: str, user: str) -> Iterator[str]:
-        for chunk in self.client.chat.completions.create(
+        chunks = self.client.chat.completions.create(
             **self._request(system, user),
             stream=True,
-        ):
-            # Some chunks, such as a final usage chunk, carry no choices.
-            if chunk.choices and chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
+        )
+
+        try:
+            for chunk in chunks:
+                # Some chunks, such as a final usage chunk, carry no choices.
+                if chunk.choices and chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
+        finally:
+            close_stream(chunks)
 
     def _request(self, system: str, user: str) -> dict:
         request = {

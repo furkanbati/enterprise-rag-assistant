@@ -3,6 +3,8 @@ from collections.abc import Iterator
 
 from ollama import Client
 
+from providers.base import close_stream
+
 logger = logging.getLogger(__name__)
 
 
@@ -55,13 +57,18 @@ class OllamaChatClient:
         return response.message.content
 
     def stream(self, system: str, user: str) -> Iterator[str]:
-        for part in self.client.chat(
+        parts = self.client.chat(
             model=self.model,
             messages=_messages(system, user),
             stream=True,
-        ):
-            if part.message.content:
-                yield part.message.content
+        )
+
+        try:
+            for part in parts:
+                if part.message.content:
+                    yield part.message.content
+        finally:
+            close_stream(parts)
 
 
 def _messages(system: str, user: str) -> list[dict[str, str]]:

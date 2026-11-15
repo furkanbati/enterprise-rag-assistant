@@ -7,10 +7,17 @@ context recall. Usage (inside the eval container, see docker-compose.yml):
     python -m evaluation.ragas_eval --config hybrid_rerank
     python -m evaluation.ragas_eval --config all --ingest
     python -m evaluation.ragas_eval --config vector --limit 5 --judge-provider ollama
+    python -m evaluation.ragas_eval --config all --rescore
+
+The judge scores on a background thread: the local model goes on answering
+the next configuration while the judge scores the previous one. When the
+judge cannot be reached (connection lost), answering continues and scoring
+waits until the connection is back (or --judge-wait minutes). Answers are
+saved before they are scored, so scores missing after an interruption can be
+filled in later with --rescore, which reuses the saved answers.
 """
 
 import argparse
-import asyncio
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,12 +42,18 @@ from evaluation.components import (
     build_strategies,
 )
 from evaluation.ragas_eval.dataset import LANGUAGES, RagasSample, load_ragas_dataset
-from evaluation.ragas_eval.report import write_config_results, write_summary
+from evaluation.ragas_eval.report import (
+    load_config_results,
+    write_config_results,
+    write_summary,
+)
 from evaluation.ragas_eval.runner import (
     CONFIGS,
     METRICS,
+    JudgeWorker,
     check_judge,
     collect_records,
+    is_network_error,
     score_records,
     summarize,
 )
@@ -129,6 +142,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         default=Path("."),
         help="Where --ingest looks for the documents (default: current directory).",
+    )
+    parser.add_argument(
+        "--judge-wait",
+        type=float,
+        default=None,
+        help=(
+            "Minutes to keep retrying a judge request while the judge cannot "
+            "be reached (no connection, timeout) before leaving the score "
+            "empty. Default: wait until the connection is back. Answering "
+            "goes on in the meantime."
+        ),
+    )
+    parser.add_argument(
+        "--rescore",
+        action="store_true",
+        help=(
+            "Do not answer questions: load the saved results of each "
+            "configuration from --output and score only the missing scores, "
+            "for example after the connection to the judge was lost."
+        ),
     )
     parser.add_argument("--rerank-model", default=RERANK_MODEL)
     parser.add_argument("--verbose", action="store_true")
@@ -239,24 +272,108 @@ def main(argv: list[str] | None = None) -> None:
         embed_provider=RAGAS_EMBED_PROVIDER,
         embed_model=RAGAS_EMBED_MODEL,
     )
-    metrics = select_metrics(all_metrics, args.metrics)
-
-    # One event loop for every judge call: the async clients keep their
-    # connections, which belong to the loop that opened them, and fail with
-    # "Event loop is closed" in a new loop.
-    loop = asyncio.new_event_loop()
+    judge = JudgeWorker()
 
     try:
-        _run(args, samples, configs, judge_model, concurrency, metrics, loop)
+        if args.rescore:
+            _rescore(args, configs, concurrency, all_metrics, judge)
+        else:
+            metrics = select_metrics(all_metrics, args.metrics)
+            _run(args, samples, configs, judge_model, concurrency, metrics, judge)
     finally:
-        loop.close()
+        judge.close()
 
 
-def _run(args, samples, configs, judge_model, concurrency, metrics, loop) -> None:
+def load_local_models(strategies: dict) -> None:
+    """Load the reranker before answering starts. Its first load downloads
+    it, so loading it on the first reranked question would make a run that
+    has been answering offline fail once it reaches hybrid_rerank."""
+
+    for strategy in strategies.values():
+        reranker = getattr(strategy, "reranker", None)
+
+        if reranker is not None and reranker.model is None:
+            logger.info("Loading reranker %s", reranker.model_name)
+            reranker.load()
+
+
+def judge_wait_seconds(args: argparse.Namespace) -> float | None:
+    return None if args.judge_wait is None else args.judge_wait * 60
+
+
+def _rescore(args, configs, concurrency, all_metrics, judge) -> None:
+    """Fill in the missing scores of saved results, reusing their answers.
+    Each configuration is scored with the metrics its run computed."""
+
+    retry_wait = judge_wait_seconds(args)
+    rescored = 0
+
+    for config in configs:
+        saved = load_config_results(args.output, config)
+
+        if saved is None:
+            logger.warning("[%s] no saved results in %s, skipping", config, args.output)
+            continue
+
+        metadata, metric_names, records = saved
+        metrics = select_metrics(all_metrics, metric_names)
+        missing = sum(
+            record.scores.get(name) is None
+            for record in records
+            for name in metrics
+        )
+
+        if not missing:
+            logger.info("[%s] all scores present, nothing to rescore", config)
+            continue
+
+        if not rescored:
+            try:
+                judge.run(check_judge(metrics, retry_wait=retry_wait))
+            except RuntimeError as e:
+                raise SystemExit(str(e)) from e
+
+        logger.info("[%s] rescoring %d missing scores", config, missing)
+        judge.run(
+            score_records(
+                records,
+                metrics,
+                concurrency=concurrency,
+                retry_wait=retry_wait,
+                only_missing=True,
+            )
+        )
+        rescored += 1
+
+        summary = summarize(config, records, metric_names=tuple(metrics))
+        json_path, _ = write_config_results(args.output, summary, records, metadata)
+        logger.info("[%s] results written to %s", config, json_path)
+
+    summary_path = write_summary(args.output)
+
+    print(summary_path.read_text(encoding="utf-8"))
+    print(f"Summary written to {summary_path}")
+
+
+def _run(args, samples, configs, judge_model, concurrency, metrics, judge) -> None:
+    """Answer with every configuration and score the answers. Scoring runs on
+    the judge thread, so the local model goes on answering the next
+    configuration while the judge scores the previous one, or waits for the
+    connection to come back."""
+
     try:
-        loop.run_until_complete(check_judge(metrics))
+        judge.run(check_judge(metrics))
     except RuntimeError as e:
-        raise SystemExit(str(e)) from e
+        if not is_network_error(e):
+            raise SystemExit(str(e)) from e
+
+        logger.warning(
+            "The judge cannot be reached (%s). Answering goes on; scoring "
+            "waits for the connection.",
+            e,
+        )
+
+    retry_wait = judge_wait_seconds(args)
 
     components = build_components()
     ensure_documents_indexed(
@@ -271,6 +388,7 @@ def _run(args, samples, configs, judge_model, concurrency, metrics, loop) -> Non
         rerank_model=args.rerank_model,
         names=[CONFIGS[config] for config in configs],
     )
+    load_local_models(strategies)
     generator = Generator(
         client=build_chat_client(provider=LLM_PROVIDER, model=CHAT_MODEL)
     )
@@ -302,21 +420,50 @@ def _run(args, samples, configs, judge_model, concurrency, metrics, loop) -> Non
             ),
         )
 
-        logger.info("[%s] scoring with %s/%s", config, args.judge_provider, judge_model)
-        loop.run_until_complete(
-            score_records(records, metrics, concurrency=concurrency)
+        # Save the answers before scoring, so that if scoring is interrupted
+        # --rescore can finish it without generating them again.
+        write_config_results(
+            args.output,
+            summarize(config, records, metric_names=tuple(metrics)),
+            records,
+            metadata,
         )
 
-        summary = summarize(config, records, metric_names=tuple(metrics))
-        json_path, csv_path = write_config_results(
-            args.output, summary, records, metadata
-        )
-        logger.info("[%s] results written to %s and %s", config, json_path, csv_path)
+        judge.submit(_score_and_save(
+            args, config, records, metrics, metadata,
+            judge_label=f"{args.judge_provider}/{judge_model}",
+            concurrency=concurrency,
+            retry_wait=retry_wait,
+        ))
 
+    if judge.pending():
+        logger.info(
+            "Answering finished; waiting for the judge to score %d configuration(s)",
+            judge.pending(),
+        )
+
+    judge.wait()
     summary_path = write_summary(args.output)
 
     print(summary_path.read_text(encoding="utf-8"))
     print(f"Summary written to {summary_path}")
+
+
+async def _score_and_save(
+    args, config, records, metrics, metadata, judge_label, concurrency, retry_wait
+) -> None:
+    logger.info("[%s] scoring with %s", config, judge_label)
+
+    await score_records(
+        records,
+        metrics,
+        concurrency=concurrency,
+        retry_wait=retry_wait,
+    )
+
+    summary = summarize(config, records, metric_names=tuple(metrics))
+    json_path, csv_path = write_config_results(args.output, summary, records, metadata)
+    logger.info("[%s] results written to %s and %s", config, json_path, csv_path)
 
 
 if __name__ == "__main__":

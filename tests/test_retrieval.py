@@ -233,3 +233,20 @@ def test_retriever_returns_empty_when_fusion_finds_no_chunks():
 
     assert results == []
     reranker.rerank.assert_not_called()
+
+
+def test_reranker_load_loads_the_model_once(monkeypatch):
+    loaded = []
+
+    class FakeCrossEncoder:
+        def __init__(self, model_name):
+            loaded.append(model_name)
+
+    monkeypatch.setattr(reranker_module, "CrossEncoder", FakeCrossEncoder)
+
+    reranker = CrossEncoderReranker("test-model")
+    reranker.load()
+    reranker.load()
+
+    assert loaded == ["test-model"]
+    assert isinstance(reranker.model, FakeCrossEncoder)

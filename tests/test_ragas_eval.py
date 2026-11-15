@@ -10,8 +10,10 @@ import pytest
 from evaluation import components as components_module
 from evaluation.ragas_eval import __main__ as cli
 from evaluation.ragas_eval import metrics as ragas_metrics
+from evaluation.ragas_eval import runner as runner_module
 from evaluation.ragas_eval.dataset import RagasSample, load_ragas_dataset
 from evaluation.ragas_eval.report import (
+    load_config_results,
     render_summary,
     write_config_results,
     write_summary,
@@ -671,3 +673,388 @@ def test_build_ragas_metrics_adapts_parameters_for_reasoning_judges(monkeypatch)
     model_args = metrics["faithfulness"].llm.model_args
     assert "max_tokens" not in model_args
     assert model_args["max_completion_tokens"] == ragas_metrics.JUDGE_MAX_TOKENS
+
+
+# ----------------------------
+# Lost connection to the judge
+# ----------------------------
+
+class ConnectError(Exception):
+    """Named like httpx.ConnectError, which the runner recognises by name."""
+
+
+class FlakyMetric:
+    """Fails with a network error the first `failures` times, then scores."""
+
+    def __init__(self, failures, result=0.9, error=None):
+        self.failures = failures
+        self.result = result
+        self.error = error or ConnectError("connection refused")
+        self.calls = 0
+
+    async def ascore(self, **kwargs):
+        self.calls += 1
+
+        if self.calls <= self.failures:
+            raise self.error
+
+        return self.result
+
+
+def no_sleep(delays):
+    async def sleep(seconds):
+        delays.append(seconds)
+
+    return sleep
+
+
+def test_is_network_error_follows_the_cause_chain():
+    try:
+        try:
+            raise ConnectError("dns failure")
+        except ConnectError as e:
+            raise RuntimeError("APIConnectionError: Connection error.") from e
+    except RuntimeError as wrapped:
+        assert runner_module.is_network_error(wrapped)
+
+    assert runner_module.is_network_error(TimeoutError())
+    assert not runner_module.is_network_error(ValueError("bad JSON"))
+
+
+def test_score_records_retries_while_the_judge_is_unreachable():
+    delays = []
+    metric = FlakyMetric(failures=3)
+    record = make_record()
+
+    asyncio.run(score_records(
+        [record],
+        {"faithfulness": metric},
+        retry_wait=600,
+        sleep=no_sleep(delays),
+    ))
+
+    assert record.scores == {"faithfulness": 0.9}
+    assert record.errors == {}
+    assert delays == list(runner_module.RETRY_DELAYS[:3])
+
+
+def test_score_records_gives_up_after_the_wait_and_keeps_the_error():
+    delays = []
+    metric = FlakyMetric(failures=100)
+    record = make_record()
+
+    asyncio.run(score_records(
+        [record],
+        {"faithfulness": metric},
+        retry_wait=50,
+        sleep=no_sleep(delays),
+    ))
+
+    assert record.scores == {"faithfulness": None}
+    assert record.errors["faithfulness"].startswith("ConnectError")
+    assert sum(delays) == 50
+
+
+def test_score_records_does_not_retry_errors_other_than_network_ones():
+    delays = []
+    metric = FlakyMetric(failures=1, error=ValueError("bad JSON"))
+    record = make_record()
+
+    asyncio.run(score_records(
+        [record],
+        {"faithfulness": metric},
+        retry_wait=600,
+        sleep=no_sleep(delays),
+    ))
+
+    assert metric.calls == 1
+    assert delays == []
+    assert record.errors["faithfulness"] == "ValueError: bad JSON"
+
+
+def test_score_records_only_missing_keeps_existing_scores():
+    metric = FakeMetric(0.7)
+    scored = make_record(sample_id="q1", scores={"faithfulness": 0.4})
+    unscored = make_record(sample_id="q2", scores={"faithfulness": None})
+    unscored.errors["faithfulness"] = "ConnectError: connection refused"
+
+    asyncio.run(score_records(
+        [scored, unscored],
+        {"faithfulness": metric},
+        only_missing=True,
+    ))
+
+    assert len(metric.calls) == 1
+    assert scored.scores["faithfulness"] == 0.4
+    assert unscored.scores["faithfulness"] == 0.7
+    assert unscored.errors == {}
+
+
+def test_check_judge_waits_for_the_judge_to_come_back():
+    delays = []
+    metric = FlakyMetric(failures=2)
+
+    asyncio.run(check_judge(
+        {"faithfulness": metric},
+        retry_wait=600,
+        sleep=no_sleep(delays),
+    ))
+
+    assert metric.calls == 3
+
+
+def test_check_judge_without_wait_fails_on_the_first_network_error():
+    with pytest.raises(RuntimeError, match="connection refused"):
+        asyncio.run(check_judge({"faithfulness": FlakyMetric(failures=1)}))
+
+
+def test_load_config_results_restores_records_and_metrics(tmp_path):
+    record = make_record(scores={"faithfulness": 0.5, "answer_relevancy": None})
+    summary = summarize(
+        "vector", [record], metric_names=("faithfulness", "answer_relevancy")
+    )
+    write_config_results(tmp_path, summary, [record], {"Chat model": "x"})
+
+    metadata, metric_names, records = load_config_results(tmp_path, "vector")
+
+    assert metadata == {"Chat model": "x"}
+    assert metric_names == ["faithfulness", "answer_relevancy"]
+    assert records == [record]
+    assert load_config_results(tmp_path, "hybrid") is None
+
+
+def test_rescore_fills_missing_scores_without_answering_again(tmp_path, monkeypatch):
+    records = [
+        make_record(sample_id="q1", scores={"faithfulness": 0.5, "answer_relevancy": 0.6}),
+        make_record(sample_id="q2", scores={"faithfulness": None, "answer_relevancy": 0.8}),
+    ]
+    records[1].errors["faithfulness"] = "ConnectError: connection refused"
+    names = ("faithfulness", "answer_relevancy")
+    write_config_results(
+        tmp_path,
+        summarize("vector", records, metric_names=names),
+        records,
+        {"Chat model": "ollama/llama3"},
+    )
+
+    metrics = {name: FakeMetric(0.9) for name in METRICS}
+    monkeypatch.setattr(ragas_metrics, "build_ragas_metrics", lambda **kwargs: metrics)
+    monkeypatch.setattr(
+        cli, "build_components", Mock(side_effect=AssertionError("no answering"))
+    )
+
+    cli.main(["--config", "all", "--rescore", "--output", str(tmp_path)])
+
+    _, metric_names, rescored = load_config_results(tmp_path, "vector")
+    assert metric_names == list(names)
+    assert [r.scores["faithfulness"] for r in rescored] == [0.5, 0.9]
+    assert rescored[1].errors == {}
+    # The judge test request plus the one missing score; the metrics the run
+    # did not compute are not requested.
+    assert len(metrics["faithfulness"].calls) == 2
+    assert len(metrics["answer_relevancy"].calls) == 0
+    assert metrics["context_recall"].calls == []
+    assert metrics["context_precision"].calls == []
+    assert "| `vector` |" in (tmp_path / "summary.md").read_text(encoding="utf-8")
+
+
+def test_run_saves_answers_before_scoring(tmp_path, monkeypatch):
+    record = make_record(scores={})
+
+    class Interrupted(Exception):
+        pass
+
+    async def interrupted(*args, **kwargs):
+        raise Interrupted
+
+    monkeypatch.setattr(cli, "build_components", lambda: SimpleNamespace(
+        chunking="sentence-ctx", embedder=None,
+    ))
+    monkeypatch.setattr(cli, "ensure_documents_indexed", lambda *a, **k: None)
+    monkeypatch.setattr(cli, "build_strategies", lambda *a, **k: {"vector": None})
+    monkeypatch.setattr(cli, "build_chat_client", lambda **k: None)
+    monkeypatch.setattr(cli, "Generator", lambda **k: None)
+    monkeypatch.setattr(cli, "check_judge", lambda *a, **k: asyncio.sleep(0))
+    monkeypatch.setattr(cli, "collect_records", lambda *a, **k: [record])
+    monkeypatch.setattr(cli, "score_records", interrupted)
+    monkeypatch.setattr(
+        ragas_metrics,
+        "build_ragas_metrics",
+        lambda **kwargs: {name: FakeMetric() for name in METRICS},
+    )
+
+    with pytest.raises(Interrupted):
+        cli.main([
+            "--config", "vector",
+            "--metrics", "faithfulness",
+            "--limit", "1",
+            "--output", str(tmp_path),
+        ])
+
+    _, metric_names, saved = load_config_results(tmp_path, "vector")
+    assert metric_names == ["faithfulness"]
+    assert saved[0].answer == record.answer
+    assert saved[0].contexts == record.contexts
+
+
+def test_score_records_waits_without_limit_by_default_in_the_cli():
+    assert cli.parse_args([]).judge_wait is None
+    assert cli.judge_wait_seconds(cli.parse_args(["--judge-wait", "2"])) == 120
+
+    delays = []
+    metric = FlakyMetric(failures=8)
+    record = make_record()
+
+    asyncio.run(score_records(
+        [record],
+        {"faithfulness": metric},
+        retry_wait=None,
+        sleep=no_sleep(delays),
+    ))
+
+    assert record.scores == {"faithfulness": 0.9}
+    assert len(delays) == 8
+    assert max(delays) == runner_module.RETRY_DELAYS[-1]
+
+
+def test_judge_worker_runs_jobs_in_order_and_reports_failures():
+    worker = runner_module.JudgeWorker()
+    order = []
+
+    async def job(name, delay):
+        await asyncio.sleep(delay)
+        order.append(name)
+
+    async def failing():
+        raise ValueError("judge broke")
+
+    try:
+        worker.submit(job("first", 0.05))
+        worker.submit(job("second", 0))
+        assert worker.run(job("direct", 0)) is None
+        worker.submit(failing())
+
+        with pytest.raises(ValueError, match="judge broke"):
+            worker.wait()
+    finally:
+        worker.close()
+
+    assert order.index("first") < order.index("second")
+
+
+def patch_run_dependencies(monkeypatch, collect_records):
+    monkeypatch.setattr(cli, "build_components", lambda: SimpleNamespace(
+        chunking="sentence-ctx", embedder=None,
+    ))
+    monkeypatch.setattr(cli, "ensure_documents_indexed", lambda *a, **k: None)
+    monkeypatch.setattr(
+        cli,
+        "build_strategies",
+        lambda *a, **k: {name: name for name in cli.CONFIGS.values()},
+    )
+    monkeypatch.setattr(cli, "build_chat_client", lambda **k: None)
+    monkeypatch.setattr(cli, "Generator", lambda **k: None)
+    monkeypatch.setattr(cli, "collect_records", collect_records)
+    monkeypatch.setattr(
+        ragas_metrics,
+        "build_ragas_metrics",
+        lambda **kwargs: {name: FakeMetric() for name in METRICS},
+    )
+
+
+def test_answering_goes_on_while_the_judge_waits_for_the_connection(
+    tmp_path, monkeypatch,
+):
+    answered = []
+    scored = []
+
+    def collect(samples, strategy, **kwargs):
+        answered.append(strategy)
+        return [make_record(scores={})]
+
+    async def unreachable(*args, **kwargs):
+        try:
+            raise ConnectError("network is unreachable")
+        except ConnectError as e:
+            raise RuntimeError(f"The judge model failed a test request: {e}") from e
+
+    async def score_when_back(records, metrics, **kwargs):
+        # The "connection" comes back only after every configuration has
+        # been answered: if scoring blocked answering, this would never end.
+        for _ in range(500):
+            if len(answered) == len(cli.CONFIGS):
+                break
+            await asyncio.sleep(0.01)
+        else:
+            raise AssertionError("answering waited for the judge")
+
+        assert kwargs["retry_wait"] is None
+        for record in records:
+            record.scores = {name: 0.5 for name in metrics}
+        scored.append(len(answered))
+
+    patch_run_dependencies(monkeypatch, collect)
+    monkeypatch.setattr(cli, "check_judge", unreachable)
+    monkeypatch.setattr(cli, "score_records", score_when_back)
+
+    cli.main([
+        "--config", "all",
+        "--metrics", "faithfulness",
+        "--limit", "1",
+        "--output", str(tmp_path),
+    ])
+
+    assert answered == list(cli.CONFIGS.values())
+    assert scored == [3, 3, 3]
+    for config in cli.CONFIGS:
+        _, _, records = load_config_results(tmp_path, config)
+        assert records[0].scores == {"faithfulness": 0.5}
+    assert (tmp_path / "summary.md").exists()
+
+
+def test_run_stops_when_the_judge_rejects_the_test_request(tmp_path, monkeypatch):
+    collect = Mock()
+
+    async def rejected(*args, **kwargs):
+        raise RuntimeError("The judge model failed a test request: invalid API key")
+
+    patch_run_dependencies(monkeypatch, collect)
+    monkeypatch.setattr(cli, "check_judge", rejected)
+
+    with pytest.raises(SystemExit, match="invalid API key"):
+        cli.main(["--config", "vector", "--limit", "1", "--output", str(tmp_path)])
+
+    collect.assert_not_called()
+
+
+def test_run_loads_the_reranker_before_answering(tmp_path, monkeypatch):
+    events = []
+    reranker = SimpleNamespace(
+        model=None,
+        model_name="cross-encoder/test",
+        load=lambda: events.append("reranker loaded"),
+    )
+
+    def collect(samples, strategy, **kwargs):
+        events.append(f"answered {strategy}")
+        return [make_record(scores={})]
+
+    patch_run_dependencies(monkeypatch, collect)
+    monkeypatch.setattr(
+        cli,
+        "build_strategies",
+        lambda *a, **k: {
+            "vector": "vector",
+            "hybrid_rrf_rerank": SimpleNamespace(reranker=reranker),
+        },
+    )
+    monkeypatch.setattr(cli, "check_judge", lambda *a, **k: asyncio.sleep(0))
+
+    cli.main([
+        "--config", "vector",
+        "--metrics", "faithfulness",
+        "--limit", "1",
+        "--output", str(tmp_path),
+    ])
+
+    assert events == ["reranker loaded", "answered vector"]

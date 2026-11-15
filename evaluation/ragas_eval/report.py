@@ -93,6 +93,27 @@ def write_summary(output_dir: str | Path) -> Path:
     return path
 
 
+def load_config_results(
+    output_dir: str | Path,
+    config: str,
+) -> tuple[dict, list[str], list[RagRecord]] | None:
+    """A configuration's saved metadata, the metrics that run computed and its
+    records, or None when it has no results in the directory."""
+
+    path = Path(output_dir) / f"{config}.json"
+
+    if not path.exists():
+        return None
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+
+    return (
+        data["metadata"],
+        list(data["summary"]["scores"]),
+        [RagRecord(**record) for record in data["records"]],
+    )
+
+
 def load_results(output_dir: Path) -> list[dict]:
     """The saved configuration results, in the order of CONFIGS."""
 

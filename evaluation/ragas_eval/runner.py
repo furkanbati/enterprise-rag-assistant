@@ -2,10 +2,12 @@
 answers with RAGAS metrics."""
 
 import asyncio
+import concurrent.futures
 import logging
 import math
+import threading
 import time
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from statistics import mean
 from typing import Any, Protocol
@@ -47,6 +49,29 @@ METRIC_INPUTS = {
 
 # Metrics that grade the answer cannot score an empty one.
 NEEDS_RESPONSE = {"faithfulness", "answer_relevancy"}
+
+# Exceptions (by class name, anywhere in the cause chain) that mean the judge
+# could not be reached, as opposed to a judge that answered badly. Names, not
+# classes, so the runner does not import openai or httpx.
+NETWORK_ERRORS = {
+    "APIConnectionError",
+    "APITimeoutError",
+    "ConnectError",
+    "ConnectTimeout",
+    "ReadTimeout",
+    "WriteTimeout",
+    "PoolTimeout",
+    "NetworkError",
+    "RemoteProtocolError",
+    "ConnectionError",
+    "TimeoutError",
+    "gaierror",
+}
+
+# Seconds between attempts while the judge is unreachable.
+RETRY_DELAYS = (15, 30, 60, 120, 300)
+
+Sleep = Callable[[float], Awaitable[None]]
 
 
 class Metric(Protocol):
@@ -143,18 +168,146 @@ def collect_records(
     return records
 
 
+def is_network_error(error: BaseException) -> bool:
+    """Whether the error, or one it was raised from, means the judge could not
+    be reached (no connection, DNS failure, timeout)."""
+
+    seen: set[int] = set()
+    current: BaseException | None = error
+
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+
+        if any(cls.__name__ in NETWORK_ERRORS for cls in type(current).__mro__):
+            return True
+
+        current = current.__cause__ or current.__context__
+
+    return False
+
+
+class JudgeWorker:
+    """Runs the judge calls on an event loop in a background thread, so that
+    answering, which needs only the local model, goes on while the judge
+    scores, or waits for the connection to come back.
+
+    Everything goes through one loop because the async clients keep their
+    connections, which belong to the loop that opened them, and fail with
+    "Event loop is closed" in another loop. Submitted jobs run one at a time,
+    in order."""
+
+    def __init__(self) -> None:
+        self.loop = asyncio.new_event_loop()
+        self._thread = threading.Thread(
+            target=self.loop.run_forever,
+            name="judge",
+            daemon=True,
+        )
+        self._thread.start()
+        self._futures: list[concurrent.futures.Future] = []
+        self._lock = self.run(_new_lock())
+
+    def run(self, coro: Awaitable[Any]) -> Any:
+        """Run a coroutine on the judge loop and wait for its result."""
+
+        return asyncio.run_coroutine_threadsafe(coro, self.loop).result()
+
+    def submit(self, coro: Awaitable[Any]) -> concurrent.futures.Future:
+        """Queue a coroutine after the ones already submitted, without
+        waiting for it."""
+
+        async def in_turn() -> Any:
+            async with self._lock:
+                return await coro
+
+        future = asyncio.run_coroutine_threadsafe(in_turn(), self.loop)
+        self._futures.append(future)
+
+        return future
+
+    def pending(self) -> int:
+        return sum(not future.done() for future in self._futures)
+
+    def wait(self) -> None:
+        """Wait for every submitted job; re-raises the first that failed."""
+
+        for future in self._futures:
+            future.result()
+
+    def close(self) -> None:
+        self.loop.call_soon_threadsafe(self.loop.stop)
+        self._thread.join()
+        self.loop.close()
+
+
+async def _new_lock() -> asyncio.Lock:
+    return asyncio.Lock()
+
+
+async def call_judge(
+    call: Callable[[], Awaitable[Any]],
+    retry_wait: float | None = 0,
+    sleep: Sleep = asyncio.sleep,
+    label: str = "judge",
+) -> Any:
+    """Run one judge request. While the judge cannot be reached, wait and try
+    again for up to retry_wait seconds in total, or for as long as it takes
+    when retry_wait is None; any other error, and a network error after that
+    time, is raised."""
+
+    waited = 0.0
+    attempt = 0
+
+    while True:
+        try:
+            return await call()
+        except Exception as e:
+            if not is_network_error(e):
+                raise
+
+            if retry_wait is not None and waited >= retry_wait:
+                raise
+
+            delay = RETRY_DELAYS[min(attempt, len(RETRY_DELAYS) - 1)]
+
+            if retry_wait is not None:
+                delay = min(delay, retry_wait - waited)
+
+            logger.warning(
+                "%s: judge unreachable (%s), retrying in %.0f s",
+                label,
+                type(e).__name__,
+                delay,
+            )
+            await sleep(delay)
+            waited += delay
+            attempt += 1
+
+
 async def score_records(
     records: list[RagRecord],
     metrics: dict[str, Metric],
     concurrency: int = 1,
+    retry_wait: float | None = 0,
+    only_missing: bool = False,
+    sleep: Sleep = asyncio.sleep,
 ) -> None:
     """Score every record with every metric, storing the results on the
     records. A metric that fails on a record leaves that score empty and
-    records why, so one bad judge reply does not stop the run."""
+    records why, so one bad judge reply does not stop the run.
+
+    While the judge cannot be reached, a request is retried for up to
+    retry_wait seconds. With only_missing, scores a record already has are
+    kept and not requested again."""
 
     semaphore = asyncio.Semaphore(max(concurrency, 1))
 
     async def score(record: RagRecord, name: str, metric: Metric) -> None:
+        if only_missing and record.scores.get(name) is not None:
+            return
+
+        record.errors.pop(name, None)
+
         inputs = {
             "user_input": record.question,
             "response": record.answer,
@@ -174,8 +327,13 @@ async def score_records(
 
         async with semaphore:
             try:
-                result = await metric.ascore(
-                    **{key: inputs[key] for key in METRIC_INPUTS[name]}
+                result = await call_judge(
+                    lambda: metric.ascore(
+                        **{key: inputs[key] for key in METRIC_INPUTS[name]}
+                    ),
+                    retry_wait=retry_wait,
+                    sleep=sleep,
+                    label=f"{name} {record.sample_id}",
                 )
             except Exception as e:
                 logger.warning("%s failed for %s: %s", name, record.sample_id, e)
@@ -196,10 +354,15 @@ async def score_records(
     ))
 
 
-async def check_judge(metrics: dict[str, Metric]) -> None:
+async def check_judge(
+    metrics: dict[str, Metric],
+    retry_wait: float | None = 0,
+    sleep: Sleep = asyncio.sleep,
+) -> None:
     """Score one trivial example, so that a judge that cannot be reached or
     rejects the request fails the run before any answers are generated,
-    instead of every score failing at the end."""
+    instead of every score failing at the end. With retry_wait, an
+    unreachable judge is waited for up to that many seconds."""
 
     name = "context_recall" if "context_recall" in metrics else next(iter(metrics))
     metric = metrics[name]
@@ -211,7 +374,12 @@ async def check_judge(metrics: dict[str, Metric]) -> None:
     }
 
     try:
-        await metric.ascore(**{key: inputs[key] for key in METRIC_INPUTS[name]})
+        await call_judge(
+            lambda: metric.ascore(**{key: inputs[key] for key in METRIC_INPUTS[name]}),
+            retry_wait=retry_wait,
+            sleep=sleep,
+            label="test request",
+        )
     except Exception as e:
         raise RuntimeError(f"The judge model failed a test request: {e}") from e
 

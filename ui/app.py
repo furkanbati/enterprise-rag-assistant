@@ -47,10 +47,13 @@ def render_sources(sources: list[dict]) -> None:
 
 def render_timing(timing: dict | None) -> None:
     if timing:
-        st.caption(
-            f"Retrieval {timing['retrieval_ms'] / 1000:.1f} s · "
-            f"Generation {timing['generation_ms'] / 1000:.1f} s"
-        )
+        parts = [f"Retrieval {timing['retrieval_ms'] / 1000:.1f} s"]
+
+        if timing.get("first_token_ms") is not None:
+            parts.append(f"First token {timing['first_token_ms'] / 1000:.1f} s")
+
+        parts.append(f"Generation {timing['generation_ms'] / 1000:.1f} s")
+        st.caption(" · ".join(parts))
 
 
 def render_document(document: dict) -> None:
@@ -134,6 +137,7 @@ def answer(question: str) -> dict:
     message for the history."""
 
     result = {"sources": [], "timing": None, "error": None}
+    received: list[str] = []
     status = st.empty()
     status.caption("Searching the documents...")
 
@@ -146,6 +150,7 @@ def answer(question: str) -> dict:
                 )
             elif event["type"] == "token":
                 status.empty()
+                received.append(event["text"])
                 yield event["text"]
             elif event["type"] == "done":
                 result["timing"] = event
@@ -155,7 +160,8 @@ def answer(question: str) -> dict:
     try:
         content = st.write_stream(tokens())
     except ApiError as e:
-        content = ""
+        # Keep the part of the answer that arrived before the stream broke.
+        content = "".join(received)
         result["error"] = str(e)
 
     status.empty()

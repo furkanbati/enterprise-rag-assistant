@@ -9,6 +9,8 @@ import requests
 CONNECT_TIMEOUT_SECONDS = 10
 # Local models can take minutes to answer, especially on a cold start.
 ANSWER_TIMEOUT_SECONDS = 600
+# The events that end a complete answer stream.
+FINAL_EVENTS = {"done", "error"}
 
 
 class ApiError(Exception):
@@ -51,7 +53,9 @@ class ApiClient:
         return response.json()
 
     def stream_answer(self, question: str) -> Iterator[dict]:
-        """Yield the events of POST /chat/stream as they arrive."""
+        """Yield the events of POST /chat/stream as they arrive. A stream that
+        ends without a "done" or "error" event was cut off (the API restarted
+        or the connection dropped) and raises ApiError."""
 
         response = self._request(
             "post",
@@ -60,12 +64,20 @@ class ApiClient:
             stream=True,
             timeout=(CONNECT_TIMEOUT_SECONDS, ANSWER_TIMEOUT_SECONDS),
         )
+        finished = False
 
         with response:
             try:
-                yield from parse_events(response.iter_lines())
+                for event in parse_events(response.iter_lines()):
+                    finished = event.get("type") in FINAL_EVENTS
+                    yield event
             except requests.RequestException as e:
                 raise ApiError(f"The answer stream was interrupted: {e}") from e
+
+        if not finished:
+            raise ApiError(
+                "The answer stream ended before the answer was complete."
+            )
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
         url = f"{self.base_url}{path}"

@@ -79,3 +79,48 @@ def test_chat_client_streams_message_parts(monkeypatch):
     assert list(chat.stream(system="S.", user="Q?")) == ["Python ", "is a language."]
     assert client.chat.call_args.kwargs["stream"] is True
     assert client.chat.call_args.kwargs["messages"][1] == {"role": "user", "content": "Q?"}
+
+
+class ClosableStream:
+    """A provider response stream that records whether it was closed."""
+
+    def __init__(self, items):
+        self.items = iter(items)
+        self.closed = False
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return next(self.items)
+
+    def close(self):
+        self.closed = True
+
+
+def test_chat_client_closes_the_stream_when_the_reader_stops(monkeypatch):
+    parts = ClosableStream([
+        SimpleNamespace(message=SimpleNamespace(content="Python ")),
+        SimpleNamespace(message=SimpleNamespace(content="is a language.")),
+    ])
+    client = Mock()
+    client.chat.return_value = parts
+    patch_client(monkeypatch, client)
+
+    stream = OllamaChatClient(model="test-model").stream(system="S.", user="Q?")
+    assert next(stream) == "Python "
+    stream.close()
+
+    assert parts.closed
+
+
+def test_chat_client_closes_the_stream_when_it_ends(monkeypatch):
+    parts = ClosableStream([SimpleNamespace(message=SimpleNamespace(content="Hi"))])
+    client = Mock()
+    client.chat.return_value = parts
+    patch_client(monkeypatch, client)
+
+    chat = OllamaChatClient(model="test-model")
+
+    assert list(chat.stream(system="S.", user="Q?")) == ["Hi"]
+    assert parts.closed

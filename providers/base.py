@@ -18,3 +18,14 @@ class ChatClient(Protocol):
     def stream(self, system: str, user: str) -> Iterator[str]:
         """Yield the reply in pieces as the model generates it."""
         ...
+
+
+def close_stream(stream: object) -> None:
+    """Close a provider's response stream, if it can be closed, so that its
+    HTTP connection is released as soon as the reader stops (for example
+    when the client disconnects) instead of when it is garbage-collected."""
+
+    close = getattr(stream, "close", None)
+
+    if callable(close):
+        close()

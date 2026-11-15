@@ -9,6 +9,13 @@ class CrossEncoderReranker:
         self.model_name = model_name
         self.model: CrossEncoder | None = None
 
+    def load(self) -> None:
+        """Load the model now instead of on the first rerank. The first load
+        downloads it from Hugging Face; later loads read the local cache."""
+
+        if self.model is None:
+            self.model = CrossEncoder(self.model_name)
+
     def rerank(
         self,
         question: str,
@@ -18,8 +25,7 @@ class CrossEncoderReranker:
         if not chunks:
             return []
 
-        if self.model is None:
-            self.model = CrossEncoder(self.model_name)
+        self.load()
 
         pairs = [
             (question, chunk.document)

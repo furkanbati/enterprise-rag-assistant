@@ -1,11 +1,24 @@
 # Evaluation Datasets
 
-Each file is JSON Lines: one labelled question per line. See `EvalSample` in [`../dataset.py`](../dataset.py) for the fields.
+Each file is JSON Lines: one labelled question per line. See `EvalSample` in [`../dataset.py`](../dataset.py) for the fields, and `RagasSample` in [`../ragas_eval/dataset.py`](../ragas_eval/dataset.py) for the RAGAS test set.
 
 | Dataset | Questions | Documents | Purpose |
 |---|---|---|---|
 | [`nist_ai_rmf.jsonl`](nist_ai_rmf.jsonl) | 22 (20 answerable) | NIST AI RMF 1.0 | Regression baseline for retrieval and answers, labelled at page level |
 | [`chunking_benchmark.jsonl`](chunking_benchmark.jsonl) | 52 (48 answerable) | NIST AI RMF 1.0, NIST CSF 2.0, FOMC press conference | Comparing chunking strategies across documents with different structure |
+| [`ragas_testset.jsonl`](ragas_testset.jsonl) | 29 (21 English, 8 Turkish) | NIST AI RMF 1.0, NIST CSF 2.0, FOMC press conference, KVKK (Law No. 6698) | RAGAS ablation of the retrieval configurations, with a reference answer per question |
+
+## RAGAS test set
+
+Every line has an `id`, a `question`, a `reference` answer (the ground truth that context recall and context precision compare against), the `source` document that contains the answer and its `language` (`en` or `tr`). The English references paraphrase the evidence sentences of the chunking benchmark. The Turkish questions cover the Turkish Personal Data Protection Law (KVKK, Law No. 6698), and their references follow the wording of the law. The fine amounts in question `t08` are the ones written in the law; the amounts applied in a given year are revalued annually.
+
+To add a question, append a line with the same fields. Lines with an unknown `language` or an empty `reference` are rejected when the file is loaded.
+
+The KVKK text is published by the Turkish government and, as a law, is not protected by copyright (Law No. 5846, Article 31). Download it next to the NIST documents:
+
+```bash
+curl -o kvkk_6698.pdf https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6698.pdf
+```
 
 ## Chunking benchmark
 

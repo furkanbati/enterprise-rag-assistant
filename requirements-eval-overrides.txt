@@ -1,0 +1,5 @@
+# instructor, which RAGAS uses for structured judge replies, caps jiter below
+# 0.15, while the pinned openai SDK needs jiter 0.16 or newer. No instructor
+# release accepts both, so the cap is overridden; RAGAS only uses non-streaming
+# JSON replies, which do not depend on the jiter version.
+jiter>=0.16

@@ -1,0 +1,103 @@
+id,language,question,faithfulness,answer_relevancy,sources,answer,errors
+r01,en,What are the four core functions of the NIST AI Risk Management Framework?,1.0000,1.0000,NIST.CSWP.29.pdf p.16; nist.ai.100-1.pdf p.25; nist.ai.100-1.pdf p.1,"The four core functions of the NIST AI Risk Management Framework are GOVERN, MAP, MEASURE, and MANAGE.
+
+[2]",
+r02,en,How does the AI RMF define risk?,1.0000,1.0000,nist.ai.100-1.pdf p.47; nist.ai.100-1.pdf p.9; nist.ai.100-1.pdf p.45,"According to the context, the AI RMF defines risk as ""the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event"" [2].",
+r03,en,What are the characteristics of trustworthy AI systems?,0.8750,1.0000,nist.ai.100-1.pdf p.17; nist.ai.100-1.pdf p.17; nist.ai.100-1.pdf p.17,"The characteristics of trustworthy AI systems include: valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with harmful bias managed. [1]
+
+(Note: I only cited the relevant passage from the provided context.)",
+r04,en,What are common security concerns for AI systems?,1.0000,1.0000,nist.ai.100-1.pdf p.20; nist.ai.100-1.pdf p.13; nist.ai.100-1.pdf p.43,"Common security concerns for AI systems relate to adversarial examples, data poisoning, and the exfiltration of models, training data, or other intellectual property through AI system endpoints. Additionally, security concerns include confidentiality, integrity, and availability of the system and its training and output data. [1]",
+r05,en,What is the difference between explainability and interpretability?,1.0000,0.9144,nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.21,"According to the context, explainability refers to a representation of the mechanisms underlying AI systems' operation, whereas interpretability refers to the meaning of AI systems' output in the context of their designed functional purposes.
+
+[2]
+
+In other words, explainability explains ""how"" a decision was made in the system, whereas interpretability explains ""why"" a decision was made by the system and its meaning or context to the user.
+
+[3]",
+r06,en,What are the three major categories of AI bias identified by NIST?,1.0000,1.0000,nist.ai.100-1.pdf p.22; nist.ai.100-1.pdf p.22; nist.ai.100-1.pdf p.22,"According to the context, the three major categories of AI bias identified by NIST are:
+
+* Systemic
+* Computational and statistical
+* Human-cognitive
+
+These categories can occur in the absence of prejudice, partiality, or discriminatory intent. [1]
+
+Note that these categories are mentioned in the first passage provided, [1].",
+r07,en,What should happen when an AI system presents unacceptable negative risk levels?,1.0000,0.6675,nist.ai.100-1.pdf p.12; nist.ai.100-1.pdf p.29; nist.ai.100-1.pdf p.21,Development and deployment should cease in a safe manner until risks can be sufficiently managed. [1],
+r08,en,"Which AI RMF function is described as cross-cutting, and why?",1.0000,0.7069,nist.ai.100-1.pdf p.5; nist.ai.100-1.pdf p.14; nist.ai.100-1.pdf p.25,"According to the context, the Governance (GOVERN) function is described as cross-cutting [1, page 5]. This is because it is designed to inform and be infused throughout the other three functions.",
+r09,en,What does the MEASURE function do?,1.0000,0.6958,nist.ai.100-1.pdf p.33; nist.ai.100-1.pdf p.33; nist.ai.100-1.pdf p.33,"The MEASURE function employs quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk and related impacts. [1]
+
+It uses knowledge relevant to AI risks identified in the MAP function and informs the MANAGE function. AI systems should be tested before their deployment and regularly while in operation. [1]",
+r10,en,What are the six Functions of the NIST Cybersecurity Framework 2.0 Core?,1.0000,0.9373,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.6; NIST.CSWP.29.pdf p.31,"The six CSF Functions of the NIST Cybersecurity Framework 2.0 Core are: Govern, Identify, Protect, Detect, Respond, and Recover. [3]",
+r11,en,Why is GOVERN shown at the center of the CSF Functions wheel?,1.0000,0.9823,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8,"GOVERN is shown at the center of the CSF Functions wheel because it informs how an organization will implement the other five Functions. [1]
+
+This is also supported by [2], which explains that investments in planning and testing in the GOVERN and IDENTIFY Functions will support timely detection of unexpected events in the DETECT Function, as well as enabling incident response and recovery actions for cybersecurity incidents in the RESPOND and RECOVER Functions.
+
+Additionally, [3] states that the GOVERN Function provides outcomes to inform what an organization may do to achieve and prioritize the outcomes of the other five Functions in the context of its mission and stakeholder expectations.",
+r12,en,What are the four CSF Tiers?,1.0000,1.0000,NIST.CSWP.29.pdf p.11; NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.12,"The four CSF Tiers are: Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4). [2]",
+r13,en,What is a CSF Community Profile and how can an organization use one?,1.0000,0.9944,NIST.CSWP.29.pdf p.11; NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.11,"A CSF Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. It is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.
+
+[1][2]",
+r14,en,In which ways can an organization handle risk according to the CSF?,0.8000,0.8081,NIST.CSWP.29.pdf p.15; NIST.CSWP.29.pdf p.5; NIST.CSWP.29.pdf p.8,"According to the provided context, an organization can handle risk in the following ways: mitigating, transferring, avoiding, or accepting negative risks, and realizing, sharing, enhancing, or accepting positive risks. [1]
+
+These ways of handling risk are mentioned on page 15 of the NIST Cybersecurity Framework (CSF) 2.0.",
+r15,en,What was the Cybersecurity Framework called before version 2.0?,1.0000,1.0000,NIST.CSWP.29.pdf p.2; NIST.CSWP.29.pdf p.6; NIST.CSWP.29.pdf p.6,The Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity' before version 2.0. [1],
+r16,en,What does the DETECT Function enable?,1.0000,0.8999,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8,"The DETECT Function enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring.
+
+[Cite: [1]]",
+r17,en,"By how much did the FOMC lower the federal funds rate in September 2024, and to what target range?",0.7500,0.0000,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"According to the context, the FOMC lowered the federal funds rate by ½ percentage point to a target range of 4¾ percent to 5 percent. [2]
+
+The passage does not specify the exact level of the federal funds rate before the rate cut, so I don't know the exact amount by which the rate was lowered.",
+r18,en,What was the peak of inflation and where did it stand as of August 2024?,1.0000,0.9492,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"According to the context, the peak of inflation was 7 percent, and as of August 2024, it stood at an estimated 2.2 percent.
+
+[1][2]",
+r19,en,What federal funds rate did the median participant project for the end of 2024 and the end of 2025?,1.0000,0.9596,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,The median participant projected the appropriate level of the federal funds rate to be 4.4 percent at the end of this year and 3.4 percent at the end of 2025. [1],
+r20,en,Why is the housing market partly frozen?,1.0000,0.8530,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,The housing market is partly frozen because of lock-in with low rates. People don't want to sell their homes because it would be quite expensive to refinance with high mortgage rates. [1],
+r21,en,Does the Fed think it has fallen behind on rate cuts?,1.0000,0.9207,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"The Fed doesn't think it has fallen behind on rate cuts. According to Chair Powell, ""We don't think we're behind. We think this is timely, but I think you can take this as a sign of our commitment not to get behind."" [3]
+
+Supporting passage: [3]",
+t01,tr,Kişisel Verilerin Korunması Kanunu'nun amacı nedir?,1.0000,0.7120,kvkk_6698.pdf p.2; kvkk_6698.pdf p.1; kvkk_6698.pdf p.3,"The aim of the Kişisel Verilerin Korunması Kanunu (KVKK) is to protect individuals' basic rights and freedoms, particularly the privacy of their personal lives, and to regulate the responsibilities and procedures of individuals and entities that process personal data.
+
+[1][2]",
+t02,tr,KVKK'ya göre veri sorumlusu kimdir?,0.3333,0.6803,kvkk_6698.pdf p.6; kvkk_6698.pdf p.8; kvkk_6698.pdf p.7,"According to the provided context, a ""Veri sorumlusu"" (Data Controller) is someone who is responsible for the personal data in question. This is stated in [1], specifically in (2) and (3).
+
+Supporting passages:
+
+[1][2][3]",
+t03,tr,Kişisel verilerin işlenmesinde uyulması zorunlu genel ilkeler nelerdir?,1.0000,0.3948,kvkk_6698.pdf p.2; kvkk_6698.pdf p.2; kvkk_6698.pdf p.2,"According to the provided context, the necessary general principles for processing personal data are:
+
+* Hukuka ve dürüstlük kurallarına uygun olma.
+* Doğru ve gerektiğinde güncel olma.
+* Belirli, açık ve meşru amaçlar için işlenme.
+
+These principles are mentioned in [1] as the conditions for processing personal data.",
+t04,tr,Hangi veriler özel nitelikli kişisel veri sayılır?,1.0000,0.4426,kvkk_6698.pdf p.2; kvkk_6698.pdf p.2; kvkk_6698.pdf p.2,"According to the context, the following data are considered special category personal data:
+
+* ırkı (race) [2]
+* etnik kökeni (ethnic origin) [2]
+* siyasi düşüncesi (political opinion) [2]
+* felsefi inancı (philosophical belief) [2]
+* dini (religion) [2]
+* mezhebi (sect) [2]
+* Diğer inançları (other beliefs) [2]
+* kılık ve kıyafeti (physical characteristics) [2]
+* dernek, vakıf ya da sendika üyeliği (membership in associations, foundations, or trade unions) [2]
+* sağlığı (health) [2]
+* cinsel hayatı (sex life) [2]
+* ceza mahkûmiyeti ve güvenlik tedbirleriyle ilgili verileri (criminal conviction and security measures related data) [2]
+* biyometrik verileri (biometric data) [2]
+* genetik verileri (genetic data) [2]
+
+These are mentioned in [2] MADDE 6(1).",
+t05,tr,Veri sorumlusu ilgili kişinin başvurusunu en geç ne kadar sürede sonuçlandırmalıdır?,1.0000,0.4093,kvkk_6698.pdf p.7; kvkk_6698.pdf p.7; kvkk_6698.pdf p.10,"The Veri sorumlusu (data controller) must result the related person's application within 30 days. [2]
+
+Note: The timeframe applies to cases where there is no additional cost involved, as mentioned in paragraph (2) of the same document.",
+t06,tr,Başvurusu reddedilen ilgili kişi Kurula ne zamana kadar şikâyette bulunabilir?,0.7500,0.4260,kvkk_6698.pdf p.7; kvkk_6698.pdf p.10; kvkk_6698.pdf p.7,"The related individual can file a complaint with the Council within 60 days from the application date, or from the date they learned of the response, if the response was deemed insufficient. [1]
+
+This is supported by the passage:
+
+""Başvurunun reddedilmesi, verilen cevabın yetersiz bulunması veya süresinde başvuruya cevap verilmemesi hâllerinde; ilgili kişi, veri sorumlusunun cevabını öğrendiği tarihten itibaren otuz ve her hâlde başvuru tarihinden itibaren altmış gün içinde Kurula şikâyette bulunabilir."" [1]",
+t07,tr,Kişisel Verileri Koruma Kurulu kaç üyeden oluşur ve üyeler kim tarafından seçilir?,1.0000,0.7135,kvkk_6698.pdf p.10; kvkk_6698.pdf p.10; kvkk_6698.pdf p.9,The Kişisel Verileri Koruma Kurulu is composed of nine members [1].,
+t08,tr,Veri güvenliğine ilişkin yükümlülükleri yerine getirmeyenlere ne kadar idari para cezası verilir?,0.5000,0.0000,kvkk_6698.pdf p.6; kvkk_6698.pdf p.6; kvkk_6698.pdf p.6,"I don't know.
+
+(The provided context does not mention the specific amount of administrative fine for those who do not fulfill their data security obligations.)",

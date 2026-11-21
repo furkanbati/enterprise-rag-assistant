@@ -1120,3 +1120,46 @@ def test_collect_records_answers_turkish_questions_with_the_turkish_generator():
     )
 
     assert [record.answer for record in records] == ["default", "turkish"]
+
+
+def test_load_ragas_dataset_ignores_retrieval_fields(tmp_path):
+    path = tmp_path / "set.jsonl"
+    write_jsonl(path, [{
+        "id": "t1", "question": "Q?", "reference": "A.", "source": "kvkk.pdf",
+        "language": "tr", "relevant_pages": [2], "evidence": ["A."],
+        "answerable": True, "type": "tanım",
+    }])
+
+    (sample,) = load_ragas_dataset(path)
+
+    assert (sample.id, sample.language) == ("t1", "tr")
+
+
+TURKISH_SETS = {
+    name: BUNDLED_DATASET.parent / name
+    for name in ("kvkk_tr_dev.jsonl", "kvkk_tr_test.jsonl")
+}
+
+
+def test_turkish_sets_load_in_both_evaluations():
+    from evaluation.dataset import load_dataset
+
+    dev, test = (TURKISH_SETS[name] for name in TURKISH_SETS)
+    dev_ids = [s.id for s in load_ragas_dataset(dev)]
+    test_ids = [s.id for s in load_ragas_dataset(test)]
+
+    assert len(dev_ids) == 20 and len(test_ids) == 12
+    assert not set(dev_ids) & set(test_ids)
+    assert [s.id for s in load_dataset(dev)] == dev_ids
+    assert all(s.language == "tr" for s in load_ragas_dataset(test))
+
+
+def test_turkish_dev_set_keeps_the_original_questions():
+    original = {
+        s.id: s for s in load_ragas_dataset(BUNDLED_DATASET) if s.language == "tr"
+    }
+    dev = {s.id: s for s in load_ragas_dataset(TURKISH_SETS["kvkk_tr_dev.jsonl"])}
+
+    for sample_id, sample in original.items():
+        assert dev[sample_id].question == sample.question
+        assert dev[sample_id].reference == sample.reference

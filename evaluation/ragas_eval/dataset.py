@@ -22,8 +22,16 @@ class RagasSample:
     language: str = "en"
 
 
+# Fields of the retrieval format (see evaluation/dataset.py) and descriptive
+# labels, so one file can serve both evaluations.
+IGNORED_FIELDS = frozenset(
+    {"relevant_pages", "expected_keywords", "answerable", "evidence", "type"}
+)
+
+
 def load_ragas_dataset(path: str | Path) -> list[RagasSample]:
-    """Load RAGAS test questions from a JSON Lines file."""
+    """Load RAGAS test questions from a JSON Lines file. Fields that only the
+    retrieval evaluation uses are ignored."""
 
     samples: list[RagasSample] = []
     seen: set[str] = set()
@@ -36,7 +44,12 @@ def load_ragas_dataset(path: str | Path) -> list[RagasSample]:
                 continue
 
             try:
-                sample = RagasSample(**json.loads(line))
+                row = json.loads(line)
+                sample = RagasSample(**{
+                    key: value
+                    for key, value in row.items()
+                    if key not in IGNORED_FIELDS
+                })
             except (json.JSONDecodeError, TypeError) as e:
                 raise ValueError(
                     f"Invalid RAGAS sample on line {line_number}: {e}"

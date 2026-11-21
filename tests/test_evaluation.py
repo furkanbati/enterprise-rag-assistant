@@ -566,3 +566,23 @@ def test_hybrid_rerank_strategy_routes_turkish_questions_to_their_reranker():
     assert strategy.retrieve("Veri sorumlusu kimdir?", [0.1], top_k=1) == ["turkish"]
     assert strategy.retrieve("Who is the data controller?", [0.1], top_k=1) == ["default"]
     assert strategy.rerankers() == [default, turkish]
+
+
+def test_load_dataset_ignores_ragas_fields(tmp_path):
+    path = tmp_path / "set.jsonl"
+    path.write_text(json.dumps({
+        "id": "t1", "question": "Q?", "relevant_pages": [2],
+        "reference": "A.", "language": "tr", "type": "tanım",
+    }) + "\n", encoding="utf-8")
+
+    (sample,) = load_dataset(path)
+
+    assert (sample.id, sample.relevant_pages) == ("t1", [2])
+
+
+def test_load_dataset_still_rejects_unknown_fields(tmp_path):
+    path = tmp_path / "set.jsonl"
+    path.write_text(json.dumps({"id": "t1", "question": "Q?", "pagez": [2]}) + "\n")
+
+    with pytest.raises(ValueError, match="line 1"):
+        load_dataset(path)

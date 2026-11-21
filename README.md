@@ -308,6 +308,7 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `CHAT_MODEL` | Answer-generation model; defaults to `llama3` for Ollama and `gpt-6-luna` for OpenAI |
 | `EMBED_MODEL` | Embedding model; defaults to `nomic-embed-text` for Ollama and `text-embedding-3-small` for OpenAI |
 | `OLLAMA_HOST` | Ollama service URL |
+| `OLLAMA_THINK` | Reasoning of thinking Ollama models such as `qwen3.5`: `false` turns it off, `true` or `low`/`medium`/`high` turns it on; empty keeps the model's default |
 | `OPENAI_API_KEY` | Required when a provider is `openai` |
 | `OPENAI_BASE_URL` | Optional: any OpenAI-compatible API |
 | `OPENAI_REASONING_EFFORT` | Reasoning effort for OpenAI reasoning models (default `low`; empty to omit) |

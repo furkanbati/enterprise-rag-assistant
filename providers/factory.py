@@ -2,12 +2,13 @@ from openai import OpenAI
 
 from config import (
     OLLAMA_HOST,
+    OLLAMA_THINK,
     OPENAI_API_KEY,
     OPENAI_BASE_URL,
     OPENAI_REASONING_EFFORT,
 )
 from providers.base import ChatClient, Embedder
-from providers.ollama import OllamaChatClient, OllamaEmbedder
+from providers.ollama import OllamaChatClient, OllamaEmbedder, parse_think
 from providers.openai import OpenAIChatClient, OpenAIEmbedder
 
 PROVIDERS = ("ollama", "openai")
@@ -28,7 +29,11 @@ def build_embedder(provider: str, model: str) -> Embedder:
 
 def build_chat_client(provider: str, model: str) -> ChatClient:
     if provider == "ollama":
-        return OllamaChatClient(model=model, host=OLLAMA_HOST)
+        return OllamaChatClient(
+            model=model,
+            host=OLLAMA_HOST,
+            think=parse_think(OLLAMA_THINK),
+        )
 
     if provider == "openai":
         return OpenAIChatClient(

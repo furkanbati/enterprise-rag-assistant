@@ -21,6 +21,9 @@ CHAT_MODEL = os.getenv("CHAT_MODEL") or _DEFAULT_CHAT_MODELS.get(LLM_PROVIDER, "
 EMBED_MODEL = os.getenv("EMBED_MODEL") or _DEFAULT_EMBED_MODELS.get(EMBED_PROVIDER, "")
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
+# Reasoning of thinking chat models (e.g. qwen3.5): empty keeps the model's
+# default; true / false, or low / medium / high on models with levels.
+OLLAMA_THINK = os.getenv("OLLAMA_THINK", "")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL") or None

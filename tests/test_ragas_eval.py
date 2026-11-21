@@ -1058,3 +1058,65 @@ def test_run_loads_the_reranker_before_answering(tmp_path, monkeypatch):
     ])
 
     assert events == ["reranker loaded", "answered vector"]
+
+
+def test_build_strategies_adds_the_turkish_reranker_only_when_it_differs(monkeypatch):
+    built = []
+    monkeypatch.setattr(
+        components_module,
+        "CrossEncoderReranker",
+        lambda name: built.append(name) or SimpleNamespace(model_name=name, model=None),
+    )
+    components = SimpleNamespace(vector_search=Mock(), keyword_search=Mock(), fusion=Mock())
+
+    routed = components_module.build_strategies(
+        components, rerank_model="en-model", names=["hybrid_rrf_rerank"],
+        rerank_model_tr="tr-model",
+    )["hybrid_rrf_rerank"]
+    same = components_module.build_strategies(
+        components, rerank_model="en-model", names=["hybrid_rrf_rerank"],
+        rerank_model_tr="en-model",
+    )["hybrid_rrf_rerank"]
+
+    assert routed.language_rerankers["tr"].model_name == "tr-model"
+    assert same.language_rerankers == {}
+    assert built == ["en-model", "tr-model", "en-model"]
+
+
+def test_load_local_models_loads_the_turkish_reranker_too():
+    loaded = []
+
+    def reranker(name):
+        return SimpleNamespace(model=None, model_name=name, load=lambda: loaded.append(name))
+
+    strategy = SimpleNamespace(
+        rerankers=lambda: [reranker("en-model"), reranker("tr-model")],
+    )
+
+    cli.load_local_models({"hybrid_rrf_rerank": strategy})
+
+    assert loaded == ["en-model", "tr-model"]
+
+
+def test_collect_records_answers_turkish_questions_with_the_turkish_generator():
+    strategy = Mock()
+    strategy.retrieve.return_value = [make_chunk()]
+    embedder = Mock()
+    embedder.embed.return_value = [0.1]
+    default, turkish = Mock(), Mock()
+    default.generate.return_value = "default"
+    turkish.generate.return_value = "turkish"
+
+    records = collect_records(
+        [
+            make_sample(id="q1", question="What is Python?"),
+            make_sample(id="t1", question="Veri sorumlusu kimdir?", language="tr"),
+        ],
+        strategy=strategy,
+        embedder=embedder,
+        generator=default,
+        top_k=3,
+        language_generators={"tr": turkish},
+    )
+
+    assert [record.answer for record in records] == ["default", "turkish"]

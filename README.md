@@ -306,6 +306,7 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `LLM_PROVIDER` | `ollama` (default) or `openai` |
 | `EMBED_PROVIDER` | `ollama` (default) or `openai` |
 | `CHAT_MODEL` | Answer-generation model; defaults to `llama3` for Ollama and `gpt-6-luna` for OpenAI |
+| `CHAT_MODEL_TR` | Chat model for Turkish questions, on the same provider; empty uses `CHAT_MODEL` |
 | `EMBED_MODEL` | Embedding model; defaults to `nomic-embed-text` for Ollama and `text-embedding-3-small` for OpenAI |
 | `OLLAMA_HOST` | Ollama service URL |
 | `OLLAMA_THINK` | Reasoning of thinking Ollama models such as `qwen3.5`: `false` turns it off, `true` or `low`/`medium`/`high` turns it on; empty keeps the model's default |
@@ -313,6 +314,7 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `OPENAI_BASE_URL` | Optional: any OpenAI-compatible API |
 | `OPENAI_REASONING_EFFORT` | Reasoning effort for OpenAI reasoning models (default `low`; empty to omit) |
 | `RERANK_MODEL` | Cross-encoder reranking model |
+| `RERANK_MODEL_TR` | Reranker for Turkish questions (default `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`, multilingual); set it to `RERANK_MODEL` to use one reranker for both |
 | `CHROMA_PATH` | Persistent vector database path |
 | `COLLECTION_NAME` | Base name of the ChromaDB collection; the embedding model and chunking configuration are appended, so each combination has its own collection |
 | `RETRIEVAL_TOP_K` | Number of candidates retrieved |

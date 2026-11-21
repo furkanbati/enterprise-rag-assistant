@@ -159,3 +159,24 @@ def test_stream_answer_accepts_an_error_event_as_the_end(monkeypatch):
     events = list(ApiClient("http://api:8000").stream_answer("Q?"))
 
     assert events[-1] == {"type": "error", "detail": "Model unavailable"}
+
+
+def test_turkish_route_lists_only_what_differs_from_the_defaults():
+    info = {
+        "chat_model": "ollama/llama3",
+        "reranker": "en-reranker",
+        "turkish": {"chat_model": "ollama/llama3", "reranker": "tr-reranker"},
+    }
+
+    assert client_module.turkish_route(info) == "- **Reranker:** `tr-reranker`"
+
+
+def test_turkish_route_is_empty_without_a_separate_route():
+    same = {
+        "chat_model": "ollama/llama3",
+        "reranker": "r",
+        "turkish": {"chat_model": "ollama/llama3", "reranker": "r"},
+    }
+
+    assert client_module.turkish_route(same) == ""
+    assert client_module.turkish_route({"chat_model": "m", "reranker": "r"}) == ""

@@ -543,3 +543,26 @@ def test_report_has_no_judge_rows_without_a_judge():
     markdown = render_markdown(evaluator.evaluate([make_sample()]), {})
 
     assert "LLM judge" not in markdown
+
+
+def test_hybrid_rerank_strategy_routes_turkish_questions_to_their_reranker():
+    vector_search = Mock()
+    vector_search.search.return_value = [make_chunk(1)]
+    keyword_search = Mock()
+    keyword_search.search.return_value = [make_chunk(3)]
+    default, turkish = Mock(), Mock()
+    default.rerank.return_value = ["default"]
+    turkish.rerank.return_value = ["turkish"]
+
+    strategy = HybridRerankStrategy(
+        vector_search=vector_search,
+        keyword_search=keyword_search,
+        fusion=ReciprocalRankFusion(),
+        reranker=default,
+        candidate_top_k=5,
+        language_rerankers={"tr": turkish},
+    )
+
+    assert strategy.retrieve("Veri sorumlusu kimdir?", [0.1], top_k=1) == ["turkish"]
+    assert strategy.retrieve("Who is the data controller?", [0.1], top_k=1) == ["default"]
+    assert strategy.rerankers() == [default, turkish]

@@ -24,6 +24,7 @@ from pathlib import Path
 
 from config import (
     CHAT_MODEL,
+    CHAT_MODEL_TR,
     EMBED_MODEL,
     EMBED_PROVIDER,
     FINAL_TOP_K,
@@ -33,6 +34,7 @@ from config import (
     RAGAS_EMBED_MODEL,
     RAGAS_EMBED_PROVIDER,
     RERANK_MODEL,
+    RERANK_MODEL_TR,
     RETRIEVAL_TOP_K,
 )
 from evaluation.components import (
@@ -164,6 +166,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument("--rerank-model", default=RERANK_MODEL)
+    parser.add_argument(
+        "--rerank-model-tr",
+        default=RERANK_MODEL_TR,
+        help="Reranker for Turkish questions (default RERANK_MODEL_TR).",
+    )
     parser.add_argument("--verbose", action="store_true")
 
     return parser.parse_args(argv)
@@ -290,11 +297,16 @@ def load_local_models(strategies: dict) -> None:
     has been answering offline fail once it reaches hybrid_rerank."""
 
     for strategy in strategies.values():
-        reranker = getattr(strategy, "reranker", None)
+        rerankers = (
+            strategy.rerankers()
+            if hasattr(strategy, "rerankers")
+            else [getattr(strategy, "reranker", None)]
+        )
 
-        if reranker is not None and reranker.model is None:
-            logger.info("Loading reranker %s", reranker.model_name)
-            reranker.load()
+        for reranker in rerankers:
+            if reranker is not None and reranker.model is None:
+                logger.info("Loading reranker %s", reranker.model_name)
+                reranker.load()
 
 
 def judge_wait_seconds(args: argparse.Namespace) -> float | None:
@@ -387,16 +399,25 @@ def _run(args, samples, configs, judge_model, concurrency, metrics, judge) -> No
         components,
         rerank_model=args.rerank_model,
         names=[CONFIGS[config] for config in configs],
+        rerank_model_tr=args.rerank_model_tr,
     )
     load_local_models(strategies)
     generator = Generator(
         client=build_chat_client(provider=LLM_PROVIDER, model=CHAT_MODEL)
+    )
+    # As in the API, Turkish questions get their own chat model when set.
+    language_generators = (
+        {"tr": Generator(client=build_chat_client(provider=LLM_PROVIDER, model=CHAT_MODEL_TR))}
+        if CHAT_MODEL_TR != CHAT_MODEL
+        else None
     )
 
     metadata = {
         "Date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "Dataset": f"{args.dataset.name} ({len(samples)} questions)",
         "Chat model": f"{LLM_PROVIDER}/{CHAT_MODEL}",
+        "Chat model (Turkish questions)": f"{LLM_PROVIDER}/{CHAT_MODEL_TR}",
+        "Reranker (Turkish questions)": args.rerank_model_tr,
         "Judge model": f"{args.judge_provider}/{judge_model}",
         "Judge embeddings": f"{RAGAS_EMBED_PROVIDER}/{RAGAS_EMBED_MODEL}",
         "Retrieval embeddings": f"{EMBED_PROVIDER}/{EMBED_MODEL}",
@@ -414,6 +435,7 @@ def _run(args, samples, configs, judge_model, concurrency, metrics, judge) -> No
             strategy=strategies[CONFIGS[config]],
             embedder=components.embedder,
             generator=generator,
+            language_generators=language_generators,
             top_k=args.top_k,
             on_progress=lambda done, total, config=config: logger.info(
                 "[%s] answered %d/%d", config, done, total

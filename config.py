@@ -18,6 +18,8 @@ _DEFAULT_CHAT_MODELS = {"ollama": "llama3", "openai": "gpt-6-luna"}
 _DEFAULT_EMBED_MODELS = {"ollama": "nomic-embed-text", "openai": "text-embedding-3-small"}
 
 CHAT_MODEL = os.getenv("CHAT_MODEL") or _DEFAULT_CHAT_MODELS.get(LLM_PROVIDER, "")
+# Chat model for Turkish questions, on the same provider; empty uses CHAT_MODEL.
+CHAT_MODEL_TR = os.getenv("CHAT_MODEL_TR") or CHAT_MODEL
 EMBED_MODEL = os.getenv("EMBED_MODEL") or _DEFAULT_EMBED_MODELS.get(EMBED_PROVIDER, "")
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
@@ -46,6 +48,12 @@ RAGAS_EMBED_MODEL = os.getenv("RAGAS_EMBED_MODEL") or (
 )
 
 RERANK_MODEL = os.getenv("RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
+# Turkish questions use their own reranker: the default one is English-only
+# and pushes the right Turkish passage down. Set it to the same value as
+# RERANK_MODEL to use one reranker for both languages.
+RERANK_MODEL_TR = os.getenv(
+    "RERANK_MODEL_TR", "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
+)
 
 CHROMA_PATH = os.getenv("CHROMA_PATH", "./data/chroma")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "documents")

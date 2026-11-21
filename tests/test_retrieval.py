@@ -1,6 +1,8 @@
 
 from unittest.mock import Mock
 
+import pytest
+
 import retrieval.reranker as reranker_module
 from models import ChunkMetadata, RetrievedChunk
 from retrieval.fusion import ReciprocalRankFusion
@@ -250,3 +252,38 @@ def test_reranker_load_loads_the_model_once(monkeypatch):
 
     assert loaded == ["test-model"]
     assert isinstance(reranker.model, FakeCrossEncoder)
+
+
+def make_routed_retriever():
+    default, turkish = Mock(), Mock()
+    default.rerank.return_value = ["default"]
+    turkish.rerank.return_value = ["turkish"]
+    fusion = Mock()
+    fusion.fuse.return_value = [make_chunk()]
+
+    retriever = Retriever(
+        vector_search=Mock(),
+        keyword_search=Mock(),
+        fusion=fusion,
+        reranker=default,
+        retrieval_top_k=10,
+        final_top_k=3,
+        language_rerankers={"tr": turkish},
+    )
+
+    return retriever, default, turkish
+
+
+def test_retriever_reranks_turkish_questions_with_the_turkish_reranker():
+    retriever, default, turkish = make_routed_retriever()
+
+    assert retriever.search(query="Q", embedding=[0.1], language="tr") == ["turkish"]
+    default.rerank.assert_not_called()
+
+
+@pytest.mark.parametrize("language", ["en", "de"])
+def test_retriever_uses_the_default_reranker_for_other_languages(language):
+    retriever, default, turkish = make_routed_retriever()
+
+    assert retriever.search(query="Q", embedding=[0.1], language=language) == ["default"]
+    turkish.rerank.assert_not_called()

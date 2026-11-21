@@ -7,7 +7,7 @@ import os
 
 import streamlit as st
 
-from client import ApiClient, ApiError
+from client import ApiClient, ApiError, turkish_route
 
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 
@@ -93,6 +93,9 @@ def render_sidebar() -> None:
         f"- **Chunking:** `{info['chunking']}`\n"
         f"- **Reranker:** `{info['reranker']}`"
     )
+
+    if turkish := turkish_route(info):
+        st.markdown("**Turkish questions**\n" + turkish)
 
     st.subheader("Documents")
 

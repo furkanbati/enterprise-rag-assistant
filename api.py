@@ -14,6 +14,7 @@ from retrieval.reranker import CrossEncoderReranker
 
 from config import (
     CHAT_MODEL,
+    CHAT_MODEL_TR,
     CHROMA_PATH,
     CHUNK_CONTEXT,
     CHUNKING_STRATEGY,
@@ -27,6 +28,7 @@ from config import (
     SEMANTIC_PERCENTILE,
     SEMANTIC_WINDOW,
     RERANK_MODEL,
+    RERANK_MODEL_TR,
     RETRIEVAL_TOP_K,
     FINAL_TOP_K
 )
@@ -91,6 +93,12 @@ retriever = Retriever(
     reranker=reranker,
     retrieval_top_k=RETRIEVAL_TOP_K,
     final_top_k=FINAL_TOP_K,
+    # Turkish questions get their own reranker only when it differs.
+    language_rerankers=(
+        {"tr": CrossEncoderReranker(RERANK_MODEL_TR)}
+        if RERANK_MODEL_TR != RERANK_MODEL
+        else None
+    ),
 )
 
 generator = Generator(
@@ -104,6 +112,11 @@ pipeline = Pipeline(
     embedder=embedder,
     retriever=retriever,
     generator=generator,
+    language_generators=(
+        {"tr": Generator(client=build_chat_client(provider=LLM_PROVIDER, model=CHAT_MODEL_TR))}
+        if CHAT_MODEL_TR != CHAT_MODEL
+        else None
+    ),
 )
 
 chunker = build_chunker(
@@ -139,6 +152,11 @@ def info() -> dict:
             CHUNK_CONTEXT,
         ),
         "reranker": RERANK_MODEL,
+        # What Turkish questions use; the same as above unless set apart.
+        "turkish": {
+            "chat_model": f"{LLM_PROVIDER}/{CHAT_MODEL_TR}",
+            "reranker": RERANK_MODEL_TR,
+        },
         "documents": _documents(),
     }
 

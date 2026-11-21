@@ -616,3 +616,22 @@ def test_close_when_done_passes_events_through_and_closes_at_the_end():
 
     assert asyncio.run(collect()) == ["a", "b"]
     assert closed == [True]
+
+
+def test_info_reports_what_turkish_questions_use():
+    data = client.get("/info").json()
+
+    assert data["turkish"] == {
+        "chat_model": f"{api.LLM_PROVIDER}/{api.CHAT_MODEL_TR}",
+        "reranker": api.RERANK_MODEL_TR,
+    }
+
+
+def test_api_routes_turkish_questions_to_their_own_reranker():
+    # The defaults: a multilingual reranker for Turkish, the same chat model.
+    assert api.RERANK_MODEL_TR != api.RERANK_MODEL
+    assert api.retriever.reranker_for("tr").model_name == api.RERANK_MODEL_TR
+    assert api.retriever.reranker_for("en") is api.reranker
+
+    if api.CHAT_MODEL_TR == api.CHAT_MODEL:
+        assert api.pipeline.generator_for("tr") is api.generator

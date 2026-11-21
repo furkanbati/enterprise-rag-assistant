@@ -25,6 +25,7 @@ class Retriever:
         reranker: CrossEncoderReranker,
         retrieval_top_k: int,
         final_top_k: int,
+        language_rerankers: dict[str, CrossEncoderReranker] | None = None,
     ):
         self.vector_search = vector_search
         self.keyword_search = keyword_search
@@ -32,11 +33,18 @@ class Retriever:
         self.reranker = reranker
         self.retrieval_top_k = retrieval_top_k
         self.final_top_k = final_top_k
+        # Language -> reranker for questions in that language; others use
+        # the default reranker.
+        self.language_rerankers = language_rerankers or {}
+
+    def reranker_for(self, language: str) -> CrossEncoderReranker:
+        return self.language_rerankers.get(language, self.reranker)
 
     def search(
         self,
         query: str,
         embedding: list[float],
+        language: str = "en",
     ) -> list[RetrievedChunk]:
 
         vector_chunks = self.vector_search.search(
@@ -59,7 +67,7 @@ class Retriever:
             return []
 
 
-        chunks = self.reranker.rerank(
+        chunks = self.reranker_for(language).rerank(
             question=query,
             chunks=chunks,
             top_k=self.final_top_k,

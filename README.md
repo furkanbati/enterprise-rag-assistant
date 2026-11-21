@@ -27,11 +27,12 @@ It demonstrates an end-to-end Retrieval-Augmented Generation (RAG) workflow, fro
 - Streamlit chat interface with streamed answers, source previews and timings
 - Docker Compose-based application setup
 - Built-in evaluation harness comparing retrieval strategies and scoring generated answers, with an optional LLM judge for correctness, grounding and citation support
+- RAGAS evaluation (faithfulness, answer relevancy, context precision, context recall) of the retrieval configurations on an English and Turkish test set
 
 ## Architecture
 
 ```text
-                     PDF Document
+         Document (PDF, DOCX, HTML, MD, TXT)
                           |
                           v
                   Document Ingestion
@@ -85,7 +86,7 @@ Query Embedding           |
 
 ### 1. Document ingestion
 
-A PDF is submitted through the API. Docling parses the document into sections, and the chunking component packs the whole sentences of each section into chunks of roughly 300 to 1000 characters, prefixed with the document title and the section heading. Each chunk retains metadata such as its source document, page, heading, and chunk identifier. See [Chunking](#chunking) for the semantic alternative and how the two compare.
+A document is submitted through the API or the web interface. Docling parses the document into sections, and the chunking component packs the whole sentences of each section into chunks of roughly 300 to 1000 characters, prefixed with the document title and the section heading. Each chunk retains metadata such as its source document, page, heading, and chunk identifier. See [Chunking](#chunking) for the semantic alternative and how the two compare.
 
 ### 2. Embedding and storage
 
@@ -112,7 +113,7 @@ The highest-ranked chunks are passed to the configured chat model (Ollama by def
 | Python | Application logic |
 | FastAPI | REST API |
 | Streamlit | Web chat interface |
-| Docling | PDF parsing |
+| Docling | Document parsing (PDF, DOCX, HTML, Markdown) and OCR |
 | Ollama | Local model inference and embeddings |
 | OpenAI API | Optional cloud chat and embedding models |
 | Llama 3 | Answer generation |
@@ -121,6 +122,7 @@ The highest-ranked chunks are passed to the configured chat model (Ollama by def
 | rank-bm25 | Lexical retrieval |
 | Sentence Transformers | Cross-encoder reranking |
 | Docker Compose | Container orchestration |
+| RAGAS | Answer and retrieval evaluation with a judge model |
 | pytest | Automated testing |
 
 ## Getting Started
@@ -321,6 +323,8 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `SEMANTIC_PERCENTILE` | Semantic chunking: split at boundaries above this percentile of embedding distances in the document |
 | `SEMANTIC_WINDOW` | Semantic chunking: sentences on each side embedded with each sentence |
 | `OCR_ENGINE` | OCR for PDFs without a text layer: `rapidocr` (default), `easyocr` or `off`. On two scanned pages RapidOCR took about 9 s per page and EasyOCR about 27 s |
+| `JUDGE_PROVIDER` / `JUDGE_MODEL` | Evaluation only: judge model for `--judge` and RAGAS (default `openai` / `gpt-6.1-sol`) |
+| `RAGAS_EMBED_PROVIDER` / `RAGAS_EMBED_MODEL` | Evaluation only: embedding model RAGAS uses for answer relevancy; defaults to the application's embedding model |
 
 The default configuration uses the Ollama service provided by Docker Compose.
 
@@ -475,6 +479,52 @@ The judge reverses the keyword ranking: Llama 3 quotes more of the document but 
 
 Caveats: the judge is a model and can be wrong, 13 checked cases is a small sample, and the judge and the cloud generator come from the same provider, which may favour the cloud answers. Read the per-answer decisions in the reports rather than the rates alone.
 
+### RAGAS
+
+The `evaluation.ragas_eval` package compares three retrieval configurations with [RAGAS](https://docs.ragas.io) metrics, scored by a judge model:
+
+| Configuration | Retrieval |
+|---|---|
+| `vector` | Vector search only |
+| `hybrid` | Vector + BM25, Reciprocal Rank Fusion |
+| `hybrid_rerank` | Hybrid followed by cross-encoder reranking (the production setup) |
+
+- **Faithfulness:** share of the answer's statements supported by the retrieved passages
+- **Answer relevancy:** how directly the answer addresses the question
+- **Context precision:** whether the passages that support the reference answer are ranked first
+- **Context recall:** share of the reference answer covered by the retrieved passages
+
+The test set, [`ragas_testset.jsonl`](evaluation/datasets/ragas_testset.jsonl), has 29 questions with a reference answer each: 21 in English about the NIST AI RMF, NIST CSF 2.0 and the FOMC transcript, and 8 in Turkish about the Turkish Personal Data Protection Law (KVKK, Law No. 6698). See the [dataset README](evaluation/datasets/README.md) for where to download the documents.
+
+RAGAS runs in its own image, kept out of the API image:
+
+```bash
+# All three configurations; --ingest indexes dataset documents that are not indexed yet
+docker compose run --rm eval python -m evaluation.ragas_eval --config all --ingest
+
+# A quick check on the Turkish questions only
+docker compose run --rm eval python -m evaluation.ragas_eval --config hybrid_rerank --language tr
+
+# Fill in scores missing after an interrupted run, reusing the saved answers
+docker compose run --rm eval python -m evaluation.ragas_eval --config all --rescore
+```
+
+The judge scores in the background while the next configuration is answered, and if it cannot be reached, answering goes on and scoring waits for the connection. Results are written per configuration as JSON and CSV, with a `summary.md`, under `evaluation/results/ragas/`.
+
+Measured on 2026-11-14 with `nomic-embed-text` embeddings, sentence chunking with document titles, three passages per answer and `gpt-6.1-sol` as judge ([cloud](evaluation/results/ragas/openai/summary.md), [local](evaluation/results/ragas/ollama/summary.md)):
+
+| Configuration | Faithfulness (`gpt-6-luna` / `llama3`) | Answer relevancy (`gpt-6-luna` / `llama3`) | Context precision | Context recall |
+|---|---|---|---|---|
+| `vector` | 0.948 / 0.831 | 0.704 / 0.706 | 0.727 | 0.745 |
+| `hybrid` | 0.954 / **0.931** | 0.783 / 0.761 | 0.776 | **0.900** |
+| `hybrid_rerank` | **0.966** / 0.887 | **0.789** / **0.836** | **0.828** | 0.848 |
+
+Context precision and recall grade retrieval only, which is the same for both chat models, so the `llama3` run skipped them.
+
+- Hybrid retrieval improves every metric over vector search alone. Reranking puts the supporting passages first (the best context precision) and gives the most relevant answers, while RRF without reranking covers slightly more of the reference.
+- The Turkish questions score well below the English ones in every configuration; with reranking, answer relevancy is 0.571 vs 0.872 for `gpt-6-luna` and 0.565 vs 0.939 for `llama3`. Retrieval is weaker for them too (context recall 0.575 vs 0.952), and `llama3` answered most Turkish questions in English, because the prompt does not ask for an answer language.
+- With 29 questions, 8 of them in Turkish, differences of a few hundredths are within noise.
+
 ## Chunking
 
 The original chunker started a new chunk when the cosine similarity between consecutive sentences fell below 0.88. Measuring it on the NIST AI RMF showed that 97% of sentence boundaries were below that threshold, so chunks were in fact cut at the first sentence boundary after 300 characters. The project now offers two explicit strategies:
@@ -521,7 +571,7 @@ Run the test suite with:
 docker compose run --rm test
 ```
 
-**Verified locally:** 185 tests passed. The same suite runs on GitHub Actions for every pull request and every push to `main`.
+The same suite runs on GitHub Actions for every pull request and every push to `main`.
 
 The suite includes unit tests that isolate application components from external model calls. The real-service integration and end-to-end checks were also run separately against Ollama and a temporary ChromaDB collection.
 
@@ -537,6 +587,7 @@ enterprise-rag-assistant/
 ├── ingestion.py
 ├── models.py
 ├── pipeline.py
+├── utils.py
 ├── vector_store.py
 ├── providers/
 │   ├── base.py
@@ -553,13 +604,28 @@ enterprise-rag-assistant/
 │   ├── datasets/
 │   │   ├── README.md
 │   │   ├── nist_ai_rmf.jsonl
-│   │   └── chunking_benchmark.jsonl
+│   │   ├── chunking_benchmark.jsonl
+│   │   ├── judge_cases.jsonl
+│   │   └── ragas_testset.jsonl
+│   ├── ragas_eval/
+│   │   ├── dataset.py
+│   │   ├── metrics.py
+│   │   ├── runner.py
+│   │   ├── report.py
+│   │   └── __main__.py
 │   ├── results/
-│   │   └── chunking_benchmark/
+│   │   ├── chunking_benchmark/
+│   │   ├── citations/
+│   │   ├── judge/
+│   │   ├── providers/
+│   │   └── ragas/
+│   ├── components.py
 │   ├── dataset.py
 │   ├── metrics.py
 │   ├── strategies.py
 │   ├── evaluator.py
+│   ├── judge.py
+│   ├── judge_check.py
 │   ├── report.py
 │   └── __main__.py
 ├── ui/
@@ -572,12 +638,15 @@ enterprise-rag-assistant/
 │   └── workflows/
 │       └── ci.yml
 ├── Dockerfile
+├── Dockerfile.eval
 ├── Dockerfile.test
 ├── Dockerfile.ui
 ├── docker-compose.yml
 ├── .env.example
 ├── requirements.txt
 ├── requirements-dev.txt
+├── requirements-eval.txt
+├── requirements-eval-overrides.txt
 ├── requirements-ui.txt
 └── README.md
 ```
@@ -592,7 +661,7 @@ enterprise-rag-assistant/
 
 **Local or cloud inference:** Ollama keeps documents on the machine; OpenAI answers about ten times faster. Both use the same retrieval pipeline, so the choice is a configuration change.
 
-**Containerized setup:** Docker Compose provides a repeatable way to run the API and Ollama services.
+**Containerized setup:** Docker Compose provides a repeatable way to run the API, the web interface and Ollama, with the tests and the RAGAS evaluation in their own images.
 
 ## Scope and Limitations
 
@@ -608,7 +677,9 @@ Answers depend on document quality, retrieval relevance, and model behavior. Sou
 
 Potential extensions include a larger multi-document evaluation set, authentication, and monitoring.
 
-For chunking, the measurements point to three next steps: using the semantic chunker only for documents without headings, splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk), and prefixing chunks with document context so that similar frameworks such as the AI RMF and CSF are told apart more reliably.
+For Turkish questions, the RAGAS results point to asking the model to answer in the language of the question, and to checking retrieval for Turkish text.
+
+For chunking, the measurements point to two next steps: using the semantic chunker only for documents without headings, and splitting long lists that lack sentence punctuation (one CSF appendix list currently becomes a single 5,819-character chunk).
 
 ## License
 

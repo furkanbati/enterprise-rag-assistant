@@ -153,7 +153,7 @@ docker compose exec ollama ollama pull nomic-embed-text
 docker compose exec ollama ollama pull llama3
 ```
 
-The cross-encoder model is configured as `cross-encoder/ms-marco-MiniLM-L-6-v2` and is loaded when reranking is first needed. Its initial use may require downloading the model.
+The cross-encoder model is configured as `cross-encoder/ms-marco-MiniLM-L-6-v2` and is loaded when reranking is first needed; Turkish questions use `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` (`RERANK_MODEL_TR`). Their first use may require downloading the models.
 
 ### 4. Open the web interface
 
@@ -164,6 +164,60 @@ Once the services are running, open:
 Upload a document from the sidebar, then ask questions in the chat. The sources appear as soon as retrieval is done, the answer streams in token by token, and each answer lists its sources and the retrieval and generation times.
 
 The interactive API documentation is available at **http://localhost:8000/docs**. Both services are published on `localhost` only, so they are not reachable from other devices on the network.
+
+### Optional: faster answers on a GPU
+
+The default setup runs every model on the CPU inside Docker. It works on any machine, but an answer from `llama3` takes about a minute and a half. A GPU is optional and set up by hand; nothing in the default setup depends on it.
+
+Docker Desktop passes only NVIDIA GPUs to containers. For other GPUs (Intel Arc, AMD), run Ollama on the host instead of in Docker and point the containers to it.
+
+**Ollama on the host (tested with an Intel Arc 130T on Windows).** Ollama for Windows uses Intel and AMD GPUs through Vulkan and NVIDIA GPUs through CUDA.
+
+1. Install Ollama on the host and pull the models there:
+
+   ```bash
+   ollama pull nomic-embed-text
+   ollama pull llama3
+   ```
+
+   Also pull `CHAT_MODEL_TR` if you set one.
+
+2. Point the containers to it in `.env`:
+
+   ```bash
+   OLLAMA_HOST=http://host.docker.internal:11434
+   ```
+
+3. Recreate the API so it reads the setting, then check that the models run on the GPU (the `PROCESSOR` column shows `100% GPU` once a model is loaded):
+
+   ```bash
+   docker compose up -d api
+   ollama ps
+   ```
+
+On a Core Ultra 5 225H, an answer from `llama3` to the Turkish evaluation questions took about 90 seconds on the CPU in Docker and about 8 seconds on the Arc 130T. The `ollama` container is no longer used and can be stopped.
+
+**NVIDIA GPU with the Ollama container (not tested on this project's hardware).** With a current NVIDIA driver on Windows (Docker Desktop with WSL 2), or the NVIDIA Container Toolkit on Linux, create `docker-compose.gpu.yml`:
+
+```yaml
+services:
+  ollama:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+```
+
+and start the services with it:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+```
+
+`docker compose exec ollama ollama ps` then shows `100% GPU`. `llama3` needs about 6 GB of GPU memory; with less, Ollama splits the model between GPU and CPU and the answers are slower. The rerankers run in the API container on the CPU in both setups (about 2 seconds per question).
 
 ## API Usage
 

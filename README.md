@@ -590,7 +590,50 @@ Context precision and recall grade retrieval only, which is the same for both ch
 
 - Hybrid retrieval improves every metric over vector search alone. Reranking puts the supporting passages first (the best context precision) and gives the most relevant answers, while RRF without reranking covers slightly more of the reference.
 - The Turkish questions score well below the English ones in every configuration; with reranking, answer relevancy is 0.571 vs 0.872 for `gpt-6-luna` and 0.565 vs 0.939 for `llama3`. Retrieval is weaker for them too (context recall 0.575 vs 0.952), and `llama3` answered most Turkish questions in English, because the prompt does not ask for an answer language.
-- With 29 questions, 8 of them in Turkish, differences of a few hundredths are within noise.
+- With 29 questions, 8 of them in Turkish, differences of a few hundredths are within noise. The next section measures the Turkish questions on a larger set.
+
+### Turkish questions
+
+The Turkish questions now have their own set of 32 questions about the KVKK: [`kvkk_tr_dev.jsonl`](evaluation/datasets/kvkk_tr_dev.jsonl) (20, used while improving the system) and [`kvkk_tr_test.jsonl`](evaluation/datasets/kvkk_tr_test.jsonl) (12, kept for one final run). They cover definitions, article numbers, deadlines and amounts, questions in everyday language, questions that need several articles and 3 that the law does not answer. Each question has a reference answer, the pages of the answer and evidence sentences, so the same file serves the retrieval metrics and RAGAS.
+
+Turkish questions are routed to components that handle Turkish (see `RERANK_MODEL_TR` and `CHAT_MODEL_TR` under [Configuration](#configuration)): the multilingual reranker `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` and the chat model `qwen3.5:4b`. English questions are unchanged.
+
+Retrieval on the development set (19 answerable questions, page-level relevance; evidence recall counts the labelled sentences in the 3 passages given to the model):
+
+| Turkish reranker | Hit@1 | Hit@3 | MRR | Evidence recall@3 |
+|---|---|---|---|---|
+| `ms-marco-MiniLM-L-6-v2` (English, before) | 0.737 | 0.789 | 0.778 | 0.658 |
+| `mmarco-mMiniLMv2-L12-H384-v1` | **1.000** | **1.000** | **1.000** | **0.921** |
+
+Answers on the development set (20 questions, `hybrid_rerank`, judge `gpt-6.1-sol`, measured on 2026-11-21). Answer relevancy is shown with two judge embeddings: `nomic-embed-text` is mostly English and scores Turkish answers lower, `bge-m3` is multilingual. The change of judge embedding changes only the measurement, not the system:
+
+| Chat model + Turkish reranker | Evidence reached the model | Faithfulness | Answer relevancy (`nomic` / `bge-m3`) | Answers in Turkish |
+|---|---|---|---|---|
+| `llama3` + MiniLM (before) | 14/19 | 0.844 | 0.567 / 0.758 | 2/20 |
+| `llama3` + mmarco | 19/19 | 0.863 | 0.584 / 0.757 | 4/20 |
+| `qwen3.5:4b` + mmarco (now) | 19/19 | **0.923** | **0.864** / **0.882** | **19/20** |
+
+- The reranker fixes retrieval: the right article reaches the model for every question. With `llama3`, the answers barely improve, because it still answers in English; the chat model is what makes the Turkish answers good.
+- `bge-m3` does not penalize an answer in the wrong language (`llama3`'s English answers score 0.757), so the share of answers in the question's language is reported on its own.
+- On a CPU, `qwen3.5:4b` takes about 220 s per answer in Docker (about 8 s on an Arc 130T GPU); see [Optional: faster answers on a GPU](#optional-faster-answers-on-a-gpu).
+
+**Tried and not adopted: an answer-language rule in the prompt.** Adding "Answer in the language of the question, even when the context is in another language; this includes saying that you don't know" to the system prompt was measured on 2026-11-22 on the GPU, with the same settings otherwise:
+
+| Set (chat model) | Prompt | Faithfulness | Answer relevancy (`nomic`) | Answers in Turkish | Time per answer |
+|---|---|---|---|---|---|
+| Turkish dev, 20 (`qwen3.5:4b`) | without the rule | 0.923 | 0.864 | 19/20 | 7.8 s |
+| | with the rule | 0.893 | 0.902 | 18/20 | 8.8 s |
+| English, 21 (`llama3`) | without the rule | 0.977 | 0.953 | – | 6.7 s |
+| | with the rule | 0.971 | 0.933 | – | 10.8 s |
+
+The rule brought no measurable gain: the "not in the context" answer it targeted (t16) came out in English instead of Turkish, per-question changes went both ways, and the English scores dipped slightly. Run-to-run variation was not measured, so differences of a few hundredths may be noise. The prompt was left unchanged.
+
+To reproduce the Turkish measurements:
+
+```bash
+docker compose run --rm eval python -m evaluation --dataset evaluation/datasets/kvkk_tr_dev.jsonl
+docker compose run --rm eval python -m evaluation.ragas_eval --config hybrid_rerank --dataset evaluation/datasets/kvkk_tr_dev.jsonl --metrics faithfulness answer_relevancy
+```
 
 ## Chunking
 

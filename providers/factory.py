@@ -27,12 +27,19 @@ def build_embedder(provider: str, model: str) -> Embedder:
     raise ValueError(_unknown_provider("embedding", provider))
 
 
-def build_chat_client(provider: str, model: str) -> ChatClient:
+def build_chat_client(
+    provider: str,
+    model: str,
+    think: str | None = None,
+) -> ChatClient:
+    """A chat client for the provider. ``think`` is an OLLAMA_THINK-style
+    value for Ollama models; None uses OLLAMA_THINK."""
+
     if provider == "ollama":
         return OllamaChatClient(
             model=model,
             host=OLLAMA_HOST,
-            think=parse_think(OLLAMA_THINK),
+            think=parse_think(OLLAMA_THINK if think is None else think),
         )
 
     if provider == "openai":

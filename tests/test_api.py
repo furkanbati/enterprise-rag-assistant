@@ -628,10 +628,24 @@ def test_info_reports_what_turkish_questions_use():
 
 
 def test_api_routes_turkish_questions_to_their_own_reranker():
-    # The defaults: a multilingual reranker for Turkish, the same chat model.
+    # The defaults: a multilingual reranker for Turkish.
     assert api.RERANK_MODEL_TR != api.RERANK_MODEL
     assert api.retriever.reranker_for("tr").model_name == api.RERANK_MODEL_TR
     assert api.retriever.reranker_for("en") is api.reranker
 
+
+def test_api_answers_turkish_questions_with_the_turkish_chat_model():
+    turkish = api.pipeline.generator_for("tr")
+
+    assert api.pipeline.generator_for("en") is api.generator
+
     if api.CHAT_MODEL_TR == api.CHAT_MODEL:
-        assert api.pipeline.generator_for("tr") is api.generator
+        assert turkish is api.generator
+    else:
+        assert turkish.client.model == api.CHAT_MODEL_TR
+
+        if api.LLM_PROVIDER == "ollama":
+            # Thinking stays off for the Turkish model unless set otherwise.
+            from providers.ollama import parse_think
+
+            assert turkish.client.think == parse_think(api.OLLAMA_THINK_TR)

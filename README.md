@@ -151,9 +151,12 @@ docker compose up --build -d
 ```bash
 docker compose exec ollama ollama pull nomic-embed-text
 docker compose exec ollama ollama pull llama3
+docker compose exec ollama ollama pull qwen3.5:4b
 ```
 
 The cross-encoder model is configured as `cross-encoder/ms-marco-MiniLM-L-6-v2` and is loaded when reranking is first needed; Turkish questions use `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` (`RERANK_MODEL_TR`). Their first use may require downloading the models.
+
+`llama3` answers English questions; `qwen3.5:4b` (`CHAT_MODEL_TR`) answers Turkish ones, because `llama3` answers most Turkish questions in English.
 
 ### 4. Open the web interface
 
@@ -167,7 +170,7 @@ The interactive API documentation is available at **http://localhost:8000/docs**
 
 ### Optional: faster answers on a GPU
 
-The default setup runs every model on the CPU inside Docker. It works on any machine, but an answer from `llama3` takes about a minute and a half. A GPU is optional and set up by hand; nothing in the default setup depends on it.
+The default setup runs every model on the CPU inside Docker. It works on any machine, but it is slow: an answer from `llama3` takes about a minute and a half, and a Turkish answer from `qwen3.5:4b` three to four minutes, since that model generates text more slowly on a CPU. A GPU is optional and set up by hand; nothing in the default setup depends on it.
 
 Docker Desktop passes only NVIDIA GPUs to containers. For other GPUs (Intel Arc, AMD), run Ollama on the host instead of in Docker and point the containers to it.
 
@@ -178,9 +181,8 @@ Docker Desktop passes only NVIDIA GPUs to containers. For other GPUs (Intel Arc,
    ```bash
    ollama pull nomic-embed-text
    ollama pull llama3
+   ollama pull qwen3.5:4b
    ```
-
-   Also pull `CHAT_MODEL_TR` if you set one.
 
 2. Point the containers to it in `.env`:
 
@@ -195,7 +197,14 @@ Docker Desktop passes only NVIDIA GPUs to containers. For other GPUs (Intel Arc,
    ollama ps
    ```
 
-On a Core Ultra 5 225H, an answer from `llama3` to the Turkish evaluation questions took about 90 seconds on the CPU in Docker and about 8 seconds on the Arc 130T. The `ollama` container is no longer used and can be stopped.
+On a Core Ultra 5 225H, an answer to the Turkish evaluation questions took, on the CPU in Docker and on the Arc 130T:
+
+| Model | CPU (Docker) | Arc 130T |
+|---|---|---|
+| `llama3` | about 90 s | about 8 s |
+| `qwen3.5:4b` | about 220 s | about 8 s |
+
+The `ollama` container is no longer used and can be stopped.
 
 **NVIDIA GPU with the Ollama container (not tested on this project's hardware).** With a current NVIDIA driver on Windows (Docker Desktop with WSL 2), or the NVIDIA Container Toolkit on Linux, create `docker-compose.gpu.yml`:
 
@@ -360,7 +369,8 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `LLM_PROVIDER` | `ollama` (default) or `openai` |
 | `EMBED_PROVIDER` | `ollama` (default) or `openai` |
 | `CHAT_MODEL` | Answer-generation model; defaults to `llama3` for Ollama and `gpt-6-luna` for OpenAI |
-| `CHAT_MODEL_TR` | Chat model for Turkish questions, on the same provider; empty uses `CHAT_MODEL` |
+| `CHAT_MODEL_TR` | Chat model for Turkish questions, on the same provider; defaults to `qwen3.5:4b` for Ollama and to `CHAT_MODEL` for OpenAI |
+| `OLLAMA_THINK_TR` | Like `OLLAMA_THINK`, for the Turkish chat model; default `false` |
 | `EMBED_MODEL` | Embedding model; defaults to `nomic-embed-text` for Ollama and `text-embedding-3-small` for OpenAI |
 | `OLLAMA_HOST` | Ollama service URL |
 | `OLLAMA_THINK` | Reasoning of thinking Ollama models such as `qwen3.5`: `false` turns it off, `true` or `low`/`medium`/`high` turns it on; empty keeps the model's default |

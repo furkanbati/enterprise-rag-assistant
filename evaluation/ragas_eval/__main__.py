@@ -31,6 +31,7 @@ from config import (
     JUDGE_MODEL,
     JUDGE_PROVIDER,
     LLM_PROVIDER,
+    OLLAMA_THINK_TR,
     RAGAS_EMBED_MODEL,
     RAGAS_EMBED_PROVIDER,
     RERANK_MODEL,
@@ -407,7 +408,11 @@ def _run(args, samples, configs, judge_model, concurrency, metrics, judge) -> No
     )
     # As in the API, Turkish questions get their own chat model when set.
     language_generators = (
-        {"tr": Generator(client=build_chat_client(provider=LLM_PROVIDER, model=CHAT_MODEL_TR))}
+        {"tr": Generator(client=build_chat_client(
+            provider=LLM_PROVIDER,
+            model=CHAT_MODEL_TR,
+            think=OLLAMA_THINK_TR,
+        ))}
         if CHAT_MODEL_TR != CHAT_MODEL
         else None
     )

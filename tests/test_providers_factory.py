@@ -73,3 +73,12 @@ def test_ollama_chat_client_keeps_the_model_default_without_think_setting(monkey
     monkeypatch.setattr(factory, "OLLAMA_THINK", "")
 
     assert factory.build_chat_client(provider="ollama", model="llama3").think is None
+
+
+def test_think_argument_overrides_the_global_setting(monkeypatch):
+    monkeypatch.setattr(factory, "OLLAMA_THINK", "")
+
+    chat = factory.build_chat_client(provider="ollama", model="qwen3.5:4b", think="false")
+
+    assert chat.think is False
+    assert factory.build_chat_client(provider="ollama", model="m").think is None

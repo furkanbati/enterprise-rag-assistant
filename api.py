@@ -24,6 +24,7 @@ from config import (
     EMBED_PROVIDER,
     LLM_PROVIDER,
     MIN_CHUNK_SIZE,
+    OLLAMA_THINK_TR,
     OCR_ENGINE,
     SEMANTIC_PERCENTILE,
     SEMANTIC_WINDOW,
@@ -113,7 +114,11 @@ pipeline = Pipeline(
     retriever=retriever,
     generator=generator,
     language_generators=(
-        {"tr": Generator(client=build_chat_client(provider=LLM_PROVIDER, model=CHAT_MODEL_TR))}
+        {"tr": Generator(client=build_chat_client(
+            provider=LLM_PROVIDER,
+            model=CHAT_MODEL_TR,
+            think=OLLAMA_THINK_TR,
+        ))}
         if CHAT_MODEL_TR != CHAT_MODEL
         else None
     ),

@@ -617,6 +617,17 @@ Answers on the development set (20 questions, `hybrid_rerank`, judge `gpt-6.1-so
 - `bge-m3` does not penalize an answer in the wrong language (`llama3`'s English answers score 0.757), so the share of answers in the question's language is reported on its own.
 - On a CPU, `qwen3.5:4b` takes about 220 s per answer in Docker (about 8 s on an Arc 130T GPU); see [Optional: faster answers on a GPU](#optional-faster-answers-on-a-gpu).
 
+The test set was run once, on 2026-11-23, with the configuration frozen at commit `ae428a6` (10 answerable questions, 2 unanswerable):
+
+| | Before: `llama3` + MiniLM | After: `qwen3.5:4b` + mmarco |
+|---|---|---|
+| Retrieval Hit@3 / MRR | 0.700 / 0.675 | **0.900 / 0.900** |
+| Faithfulness | 0.674 | **0.805** |
+| Answer relevancy (`nomic` / `bge-m3`) | 0.528 / 0.572 | **0.740 / 0.733** |
+| Answers in Turkish | 4/12 | **11/12** |
+
+The scores are lower than on the development set, as expected when every choice was made on it, but the improvement holds. The remaining errors are questions in everyday language that retrieval misses and reasoning slips of the 4B model; the [full report](evaluation/results/turkish/report.md) has examples, the contribution of each change and the commands to reproduce it.
+
 **Tried and not adopted: an answer-language rule in the prompt.** Adding "Answer in the language of the question, even when the context is in another language; this includes saying that you don't know" to the system prompt was measured on 2026-11-22 on the GPU, with the same settings otherwise:
 
 | Set (chat model) | Prompt | Faithfulness | Answer relevancy (`nomic`) | Answers in Turkish | Time per answer |

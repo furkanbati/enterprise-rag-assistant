@@ -1,0 +1,543 @@
+{
+  "metadata": {
+    "Date": "2026-11-22 14:08 UTC",
+    "Dataset": "ragas_testset.jsonl (21 questions)",
+    "Chat model": "ollama/llama3",
+    "Chat model (Turkish questions)": "ollama/qwen3.5:4b",
+    "Reranker (Turkish questions)": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+    "Judge model": "openai/gpt-6.1-sol",
+    "Judge embeddings": "ollama/nomic-embed-text",
+    "Retrieval embeddings": "ollama/nomic-embed-text",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Passages per answer": 3,
+    "Candidates per retriever": 12
+  },
+  "summary": {
+    "config": "hybrid_rerank",
+    "strategy": "hybrid_rrf_rerank",
+    "questions": 21,
+    "scores": {
+      "faithfulness": 0.9773242630385488,
+      "answer_relevancy": 0.9530810083060596
+    },
+    "scores_by_language": {
+      "en": {
+        "faithfulness": 0.9773242630385488,
+        "answer_relevancy": 0.9530810083060596
+      }
+    },
+    "unscored": {
+      "faithfulness": 0,
+      "answer_relevancy": 0
+    },
+    "mean_retrieval_ms": 1107.811333047591,
+    "mean_generation_ms": 6725.854403904729
+  },
+  "records": [
+    {
+      "sample_id": "r01",
+      "language": "en",
+      "question": "What are the four core functions of the NIST AI Risk Management Framework?",
+      "reference": "The AI RMF Core has four functions: GOVERN, MAP, MEASURE and MANAGE. They are broken down further into categories and subcategories.",
+      "answer": "The four core functions of the NIST AI Risk Management Framework (AI RMF) are GOVERN, MAP, MEASURE, and MANAGE.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5. AI RMF Core\n\nThe AI RMF Core provides outcomes and actions that enable dialogue, understanding, and activities to manage AI risks and responsibly develop trustworthy AI systems. As illustrated in Figure 5, the Core is composed of four functions: GOVERN, MAP, MEASURE, and MANAGE . Each of these high-level functions is broken down into categories and subcategories.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nExecutive Summary\n\nIt describes four specific functions to help organizations address the risks of AI systems in practice. These functions GOVERN , MAP , MEASURE , and MANAGE - are broken down further into categories and subcategories. While GOVERN applies to all stages of organizations' AI risk management processes and procedures, the MAP , MEASURE , and MANAGE functions can be applied in AI system-specific contexts and at specific stages of the AI lifecycle.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n5.2. Improving Integration with Other Risk Management Programs\n\nThe AI RMF Core uses Functions, Categories, and Subcategories to describe AI outcomes and help manage risks related to AI."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.25",
+        "nist.ai.100-1.pdf p.6",
+        "NIST.CSWP.29.pdf p.16"
+      ],
+      "retrieval_ms": 2272.351850999712,
+      "generation_ms": 11971.389343000283,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9570105439308841
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r02",
+      "language": "en",
+      "question": "How does the AI RMF define risk?",
+      "reference": "In the AI RMF, risk is the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event.",
+      "answer": "According to the AI RMF, risk refers to the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event. [1]\n\nAdditionally, risk is a function of the negative impact, or magnitude of harm, that would arise if the circumstance or event occurs, and the likelihood of occurrence. [2]\n\nIn other words, risk is a combination of the probability and impact of an event.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.1 Understanding and Addressing Risks, Impacts, and Harms\n\nIn the context of the AI RMF, risk refers to the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event. The impacts, or consequences, of AI systems can be positive, negative, or both and can result in opportunities or threats (Adapted from: ISO 31000:2018).",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.1 Understanding and Addressing Risks, Impacts, and Harms\n\nWhen considering the negative impact of a potential event, risk is a function of 1) the negative impact, or magnitude of harm, that would arise if the circumstance or event occurs and 2) the likelihood of occurrence (Adapted from: OMB Circular A-130:2016). Negative impact or harm can be experienced by individuals, groups, communities, organizations, society, the environment, and the planet.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.2.2 Risk Tolerance\n\nWithin sectors, risk management may depend on existing guidelines for specific applications and use case settings. Where established guidelines do not exist, organizations should define reasonable risk tolerance. Once tolerance is defined, this AI RMF can be used to manage risks and to document risk management processes."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.9",
+        "nist.ai.100-1.pdf p.9",
+        "nist.ai.100-1.pdf p.12"
+      ],
+      "retrieval_ms": 1321.3514669996584,
+      "generation_ms": 9111.06840399998,
+      "scores": {
+        "answer_relevancy": 0.9999999999999991,
+        "faithfulness": 1.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r03",
+      "language": "en",
+      "question": "What are the characteristics of trustworthy AI systems?",
+      "reference": "Trustworthy AI systems are valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with their harmful biases managed.",
+      "answer": "The characteristics of trustworthy AI systems include: valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with harmful bias managed.\n\n[1][2]",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3. AI Risks and Trustworthiness\n\nCharacteristics of trustworthy AI systems include: valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with harmful bias managed. Creating trustworthy AI requires balancing each of these characteristics based on the AI system's context of use.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nExecutive Summary\n\nNext, AI risks and trustworthiness are analyzed, outlining the characteristics of trustworthy AI systems, which include valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy enhanced, and fair with their harmful biases managed. Part 2 comprises the 'Core' of the Framework.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nList of Figures\n\n- Fig. 4 Characteristics of trustworthy AI systems. Valid & Reliable is a necessary condition of trustworthiness and is shown as the base for other trustworthiness characteristics. Accountable & Transparent is shown as a vertical box because it relates to all other characteristics. - Fig. 5 Functions organize AI risk management activities at their highest level to govern, map, measure, and manage AI risks."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.17",
+        "nist.ai.100-1.pdf p.6",
+        "nist.ai.100-1.pdf p.5"
+      ],
+      "retrieval_ms": 1145.2386580003804,
+      "generation_ms": 5119.72944199988,
+      "scores": {
+        "answer_relevancy": 0.9999999999999991,
+        "faithfulness": 1.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r04",
+      "language": "en",
+      "question": "What are common security concerns for AI systems?",
+      "reference": "Common security concerns are adversarial examples, data poisoning, and the exfiltration of models, training data or other intellectual property through AI system endpoints.",
+      "answer": "Common security concerns for AI systems relate to adversarial examples, data poisoning, and the exfiltration of models, training data, or other intellectual property through AI system endpoints.",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.3 Secure and Resilient\n\nCommon security concerns relate to adversarial examples, data poisoning, and the exfiltration of models, training data, or other intellectual property through AI system endpoints. AI systems that can maintain confidentiality, integrity, and availability through protection mechanisms that prevent unauthorized access and use may be said to be secure .",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.2.4 Organizational Integration and Management of Risk\n\nExamples of overlapping risks include: privacy concerns related to the use of underlying data to train AI systems; the energy and environmental implications associated with resource-heavy computing demands; security concerns related to the confidentiality, integrity, and availability of the system and its training and output data; and general security of the underlying software and hardware for AI systems.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nAppendix B: How AI Risks Differ from Traditional Software Risks\n\nAt the same time, guidance available before publication of this AI RMF does not comprehensively address many AI system risks. For example, existing frameworks and guidance are unable to:\n- adequately manage the problem of harmful bias in AI systems;\n- confront the challenging risks related to generative AI;\n- comprehensively address security concerns related to evasion, model extraction, membership inference, availability, or other machine learning attacks;\n- account for the complex attack surface of AI systems or other security abuses enabled by AI systems; and\n- consider risks associated with third-party AI technologies, transfer learning, and offlabel use where AI systems may be trained for decision-making outside an organization's security controls or trained in one domain and then 'fine-tuned' for another."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.20",
+        "nist.ai.100-1.pdf p.13",
+        "nist.ai.100-1.pdf p.43"
+      ],
+      "retrieval_ms": 1190.1659710001695,
+      "generation_ms": 4548.207685000307,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999994
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r05",
+      "language": "en",
+      "question": "What is the difference between explainability and interpretability?",
+      "reference": "Explainability is a representation of the mechanisms underlying how an AI system operates, while interpretability is the meaning of the AI system's output in the context of its designed functional purposes.",
+      "answer": "According to the provided context, explainability refers to the representation of the mechanisms underlying AI systems' operation, whereas interpretability refers to the meaning of AI systems' output in the context of their designed functional purposes.\n\nIn other words, explainability answers the question of \"how\" a decision was made in the system, whereas interpretability answers the question of \"why\" a decision was made by the system and its meaning or context to the user.\n\n[2]",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.5 Explainable and Interpretable\n\nExplainability refers to a representation of the mechanisms underlying AI systems' operation, whereas interpretability refers to the meaning of AI systems' output in the context of their designed functional purposes. Together, explainability and interpretability assist those operating or overseeing an AI system, as well as users of an AI system, to gain deeper insights into the functionality and trustworthiness of the system, including its outputs.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.5 Explainable and Interpretable\n\nTransparency can answer the question of 'what happened' in the system. Explainability can answer the question of 'how' a decision was made in the system. Interpretability can answer the question of 'why' a decision was made by the system and its meaning or context to the user.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.5 Explainable and Interpretable\n\nRisks to interpretability often can be addressed by communicating a description of why an AI system made a particular prediction or recommendation. (See 'Four Principles of Explainable Artificial Intelligence' and 'Psychological Foundations of Explainability and Interpretability in Artificial Intelligence' found here.)\nTransparency, explainability, and interpretability are distinct characteristics that support each other."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.21",
+        "nist.ai.100-1.pdf p.21",
+        "nist.ai.100-1.pdf p.21"
+      ],
+      "retrieval_ms": 1160.8939890002148,
+      "generation_ms": 9569.126920999679,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9143967785668236
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r06",
+      "language": "en",
+      "question": "What are the three major categories of AI bias identified by NIST?",
+      "reference": "NIST identifies three major categories of AI bias: systemic, computational and statistical, and human-cognitive.",
+      "answer": "According to the context, the three major categories of AI bias identified by NIST are:\n\n* Systemic bias\n* Computational and statistical bias\n* Human-cognitive bias\n\n[Citing [1], page 22]",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.7 Fair - with Harmful Bias Managed\n\nBias is broader than demographic balance and data representativeness. NIST has identified three major categories of AI bias to be considered and managed: systemic, computational and statistical, and human-cognitive. Each of these can occur in the absence of prejudice, partiality, or discriminatory intent.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.7 Fair - with Harmful Bias Managed\n\nBias is tightly associated with the concepts of transparency as well as fairness in society. (For more information about bias, including the three categories, see NIST Special Publication 1270, Towards a Standard for Identifying and Managing Bias in Artificial Intelligence.)",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.7 Fair - with Harmful Bias Managed\n\nSystemic bias can be present in AI datasets, the organizational norms, practices, and processes across the AI lifecycle, and the broader society that uses AI systems. Computational and statistical biases can be present in AI datasets and algorithmic processes, and often stem from systematic errors due to non-representative samples."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.22",
+        "nist.ai.100-1.pdf p.22",
+        "nist.ai.100-1.pdf p.22"
+      ],
+      "retrieval_ms": 1156.8049439997594,
+      "generation_ms": 5209.9636419998205,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.999999999999999
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r07",
+      "language": "en",
+      "question": "What should happen when an AI system presents unacceptable negative risk levels?",
+      "reference": "When an AI system presents unacceptable negative risk levels, for example when significant negative impacts are imminent, severe harms are occurring or catastrophic risks are present, development and deployment should cease in a safe manner until the risks can be sufficiently managed.",
+      "answer": "According to the context, when an AI system presents unacceptable negative risk levels, development and deployment should cease in a safe manner until risks can be sufficiently managed. [1]",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n1.2.3 Risk Prioritization\n\nIn cases where an AI system presents unacceptable negative risk levels - such as where significant negative impacts are imminent, severe harms are actually occurring, or catastrophic risks are present - development and deployment should cease in a safe manner until risks can be sufficiently managed.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.5 Explainable and Interpretable\n\nThe underlying assumption is that perceptions of negative risk stem from a lack of ability to make sense of, or contextualize, system output appropriately. Explainable and interpretable AI systems offer information that will help end users understand the purposes and potential impact of an AI system.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n3.4 Accountable and Transparent\n\nTransparency is often necessary for actionable redress related to AI system outputs that are incorrect or otherwise lead to negative impacts. Transparency should consider human-AI interaction: for exam- ple, how a human operator or user is notified when a potential or actual adverse outcome caused by an AI system is detected."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.12",
+        "nist.ai.100-1.pdf p.21",
+        "nist.ai.100-1.pdf p.20"
+      ],
+      "retrieval_ms": 1205.3925919999529,
+      "generation_ms": 4072.1118450001086,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.997258255138518
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r08",
+      "language": "en",
+      "question": "Which AI RMF function is described as cross-cutting, and why?",
+      "reference": "GOVERN is the cross-cutting function: it is infused throughout AI risk management and enables the other functions of the process.",
+      "answer": "The AI RMF function described as cross-cutting is GOVERN [2]. This function is designed to be infused throughout the other three functions and enables the other functions of the process. It is a continual and intrinsic requirement for effective AI risk management, and aspects of it should be integrated into each of the other functions [2].",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\nList of Figures\n\nGovernance is designed to be a cross-cutting function to inform and be infused throughout the other three functions. 5\n10\n11\n12\n20",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5.1 Govern\n\nGOVERN is a cross-cutting function that is infused throughout AI risk management and enables the other functions of the process. Aspects of GOVERN , especially those related to compliance or evaluation, should be integrated into each of the other functions. Attention to governance is a continual and intrinsic requirement for effective AI risk management over an AI system's lifespan and the organization's hierarchy.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n2. Audience\n\nSuccessful risk management depends upon a sense of collective responsibility among AI actors shown in Figure 3. The AI RMF functions, described in Section 5, require diverse perspectives, disciplines, professions, and experiences. Diverse teams contribute to more open sharing of ideas and assumptions about the purposes and functions of technology making these implicit aspects more explicit."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.5",
+        "nist.ai.100-1.pdf p.26",
+        "nist.ai.100-1.pdf p.14"
+      ],
+      "retrieval_ms": 1197.8104699996948,
+      "generation_ms": 7112.018129999797,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9783371441118976
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r09",
+      "language": "en",
+      "question": "What does the MEASURE function do?",
+      "reference": "The MEASURE function uses quantitative, qualitative or mixed-method tools, techniques and methodologies to analyze, assess, benchmark and monitor AI risk and related impacts.",
+      "answer": "The MEASURE function employs quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk and related impacts. [1][2][3]\n\n(Note: The answer is supported by the text in [1], [2], and [3], which all describe the MEASURE function's purpose and activities.)",
+      "contexts": [
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5.3 Measure\n\nThe MEASURE function employs quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk and related impacts. It uses knowledge relevant to AI risks identified in the MAP function and informs the MANAGE function. AI systems should be tested before their deployment and regularly while in operation.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5.3 Measure\n\nMeasurement outcomes will be utilized in the MANAGE function to assist risk monitoring and response efforts. It is incumbent on Framework users to continue applying the MEASURE function to AI systems as knowledge, methodologies, risks, and impacts evolve over time. Practices related to measuring AI risks are described in the NIST AI RMF Playbook.",
+        "Artificial Intelligence Risk Management Framework (AI RMF 1.0)\n5.3 Measure\n\nAI risk measurements include documenting aspects of systems' functionality and trustworthiness. Measuring AI risks includes tracking metrics for trustworthy characteristics, social impact, and human-AI configurations. Processes developed or adopted in the MEASURE function should include rigorous software testing and performance assessment methodologies with associated measures of uncertainty, comparisons to performance benchmarks, and formalized reporting and documentation of results."
+      ],
+      "sources": [
+        "nist.ai.100-1.pdf p.33",
+        "nist.ai.100-1.pdf p.33",
+        "nist.ai.100-1.pdf p.33"
+      ],
+      "retrieval_ms": 1152.9953550002574,
+      "generation_ms": 7706.529573999887,
+      "scores": {
+        "faithfulness": 0.6666666666666666,
+        "answer_relevancy": 0.8862635346362507
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r10",
+      "language": "en",
+      "question": "What are the six Functions of the NIST Cybersecurity Framework 2.0 Core?",
+      "reference": "The six CSF 2.0 Core Functions are GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND and RECOVER. They organize cybersecurity outcomes at their highest level.",
+      "answer": "According to the provided context, the six Functions of the NIST Cybersecurity Framework 2.0 Core are:\n\n1. Govern\n2. Identify\n3. Protect\n4. Detect\n5. Respond\n6. Recover\n\n[Citations: [2], [3]]",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nThis Function also includes the identification of\n- improvement opportunities for the organization's policies, plans, processes, procedures, and practices that support cybersecurity risk management to inform efforts under all six Functions. - PROTECT (PR) -Safeguards to manage the organization's cybersecurity risks are used.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nCSF Function\n\nThe highest level of organization for cybersecurity outcomes. There are six CSF Functions: Govern, Identify, Protect, Detect, Respond, and Recover.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nGOVERN is in the center of the wheel because it informs how an organization will implement the other five Functions. The Functions should be addressed concurrently. Actions that support GOVERN, IDENTIFY, PROTECT, and DETECT should all happen continuously, and actions that support RESPOND and RECOVER should be ready at all times and happen when cybersecurity incidents occur."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.31",
+        "NIST.CSWP.29.pdf p.8"
+      ],
+      "retrieval_ms": 663.1694719999359,
+      "generation_ms": 6297.624853999878,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999994
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r11",
+      "language": "en",
+      "question": "Why is GOVERN shown at the center of the CSF Functions wheel?",
+      "reference": "GOVERN is in the center of the wheel because it informs how an organization will implement the other five Functions.",
+      "answer": "GOVERN is shown at the center of the CSF Functions wheel because it informs how an organization will implement the other five Functions. [1]\n\nThis answer is supported by the text in [1] and [3], which state that GOVERN establishes the organization's cybersecurity risk management strategy, expectations, and policy, and provides outcomes to inform what an organization may do to achieve and prioritize the outcomes of the other five Functions.",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nGOVERN is in the center of the wheel because it informs how an organization will implement the other five Functions. The Functions should be addressed concurrently. Actions that support GOVERN, IDENTIFY, PROTECT, and DETECT should all happen continuously, and actions that support RESPOND and RECOVER should be ready at all times and happen when cybersecurity incidents occur.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nFigure 2 shows the CSF Functions as a wheel because all of the Functions relate to one another. For example, an organization will categorize assets under IDENTIFY and take steps to secure those assets under PROTECT. Investments in planning and testing in the GOVERN and IDENTIFY Functions will support timely detection of unexpected events in the DETECT Function, as well as enabling incident response and recovery actions for cybersecurity incidents in the RESPOND and RECOVER Functions.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\n- GOVERN (GV) -The organization's cybersecurity risk management strategy, expectations, and policy are established, communicated, and monitored. The GOVERN Function provides outcomes to inform what an organization may do to achieve and prioritize the outcomes of the other five Functions in the context of its mission and stakeholder expectations."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.8"
+      ],
+      "retrieval_ms": 1073.876062999716,
+      "generation_ms": 8948.79023700014,
+      "scores": {
+        "answer_relevancy": 0.9999999999999994,
+        "faithfulness": 0.8571428571428571
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r12",
+      "language": "en",
+      "question": "What are the four CSF Tiers?",
+      "reference": "The four CSF Tiers describe an organization's cybersecurity risk management practices as Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3) and Adaptive (Tier 4).",
+      "answer": "The four CSF Tiers are: Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4) [1][2][3].",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\nCSF Tier\n\nA characterization of the rigor of an organization's cybersecurity risk governance and management practices. There are four Tiers: Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4). Certain commercial equipment, instruments, software, or materials, commercial or non-commercial, are identified in this paper in order to specify the experimental procedure adequately.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3.2. CSF Tiers\n\nThe Tiers, as shown in Fig. 4 and notionally illustrated in Appendix B, reflect an organization's practices for managing cybersecurity risk as Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4). The Tiers describe a progression from informal, ad hoc responses to approaches that are agile, risk-informed, and continuously improving.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nAppendix B. CSF Tiers\n\nTable 2 contains a notional illustration of the CSF Tiers discussed in Sec. 3. The Tiers characterize the rigor of an organization's cybersecurity risk governance practices (GOVERN) and cybersecurity risk management practices (IDENTIFY, PROTECT, DETECT, RESPOND, and RECOVER)."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.31",
+        "NIST.CSWP.29.pdf p.12",
+        "NIST.CSWP.29.pdf p.29"
+      ],
+      "retrieval_ms": 639.7092410002188,
+      "generation_ms": 5122.139301000061,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999994
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r13",
+      "language": "en",
+      "question": "What is a CSF Community Profile and how can an organization use one?",
+      "reference": "A Community Profile is a baseline of CSF outcomes created and published to address shared interests and goals among a number of organizations, typically for a sector, subsector, technology, threat type or other use case. An organization can use a Community Profile as the basis for its own Target Profile.",
+      "answer": "A CSF Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. It is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.\n\n[1][2]\n\nAn organization can use a Community Profile as the basis for its own Target Profile.",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3.1. CSF Profiles\n\nA Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. A Community Profile is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nCSF Community Profile\n\nA baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. A Community Profile is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n3.1. CSF Profiles\n\nExamples of Community Profiles can be found on the NIST CSF website. The steps shown in Fig. 3 and summarized below illustrate one way that an organization could use an Organizational Profile to help inform continuous improvement of its cybersecurity. - Scope the Organizational Profile. Document the high-level facts and assumptions on which the Profile will be based to define its scope."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.11",
+        "NIST.CSWP.29.pdf p.31",
+        "NIST.CSWP.29.pdf p.11"
+      ],
+      "retrieval_ms": 759.5616210001026,
+      "generation_ms": 9185.646893000012,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.994451655614745
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r14",
+      "language": "en",
+      "question": "In which ways can an organization handle risk according to the CSF?",
+      "reference": "Depending on the potential impacts and likelihoods, an organization can handle negative risks by mitigating, transferring, avoiding or accepting them, and positive risks by realizing, sharing, enhancing or accepting them.",
+      "answer": "According to the provided context, an organization may handle risk in the following ways: mitigating, transferring, avoiding, or accepting negative risks, and realizing, sharing, enhancing, or accepting positive risks. [1]\n\nThis is because the CSF allows an organization to \"handle risk in one or more ways\" depending on the potential impacts and likelihoods, which implies that the organization has the flexibility to choose from these various approaches. [1]\n\nNo other ways to handle risk are mentioned in the provided context.",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n5. Improving Cybersecurity Risk Communication and Integration\n\nAn organization may choose to handle risk in one or more ways - including mitigating, transferring, avoiding, or accepting negative risks and realizing, sharing, enhancing, or accepting positive risks - depending on the potential impacts and likelihoods. Importantly, an organization can use the CSF both internally to manage its cybersecurity capabilities and externally to oversee or communicate with third parties.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nActions to reduce cybersecurity risk might benefit an organization in other ways, like increasing revenue (e.g., first offering excess facility space to a commercial hosting provider for hosting their own and other organizations' data centers, then moving a major financial system from the organization's in-house data center to the hosting provider to reduce cybersecurity risks).",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nPreface\n\nNevertheless, the CSF does not embrace a one-size-fitsall approach. Each organization has both common and unique risks, as well as varying risk appetites and tolerances, specific missions, and objectives to achieve those missions. By necessity, the way organizations implement the CSF will vary. Ideally, the CSF will be used to address cybersecurity risks alongside other risks of the enterprise, including those that are financial, privacy, supply chain, reputational, technological, or physical in nature."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.15",
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.5"
+      ],
+      "retrieval_ms": 1247.8499849999025,
+      "generation_ms": 10471.19646200008,
+      "scores": {
+        "answer_relevancy": 0.8879844507186773,
+        "faithfulness": 1.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r15",
+      "language": "en",
+      "question": "What was the Cybersecurity Framework called before version 2.0?",
+      "reference": "Before version 2.0, the Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity'.",
+      "answer": "The Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity' before version 2.0. [1]",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\nNote to Readers\n\nUnless otherwise noted, documents cited, referenced, or excerpted in this publication are not wholly incorporated into this publication. Before version 2.0, the Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity.' This title is not used for CSF 2.0.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n1. Cybersecurity Framework (CSF) Overview\n\nThis document is version 2.0 of the NIST Cybersecurity Framework ( Framework or CSF ). It includes the following components:\n- CSF Core , the nucleus of the CSF, which is a taxonomy of high-level cybersecurity outcomes that can help any organization manage its cybersecurity risks. The CSF Core components are a hierarchy of Functions, Categories, and Subcategories that detail each outcome.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nPreface\n\nThe Cybersecurity Framework (CSF) 2.0 is designed to help organizations of all sizes and sectors - including industry, government, academia, and nonprofit - to manage and reduce their cybersecurity risks. It is useful regardless of the maturity level and technical sophistication of an organization's cybersecurity programs."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.2",
+        "NIST.CSWP.29.pdf p.6",
+        "NIST.CSWP.29.pdf p.5"
+      ],
+      "retrieval_ms": 1145.425341000191,
+      "generation_ms": 3753.7303479998627,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9999999999999994
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r16",
+      "language": "en",
+      "question": "What does the DETECT Function enable?",
+      "reference": "DETECT enables the timely discovery and analysis of anomalies, indicators of compromise and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring.",
+      "answer": "The DETECT Function enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring. [1]\n\nThis enables successful incident response and recovery activities. [1]",
+      "contexts": [
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\n- DETECT (DE) -Possible cybersecurity attacks and compromises are found and analyzed. DETECT enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring. This Function supports successful incident response and recovery activities.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\n2. Introduction to the CSF Core\n\nFigure 2 shows the CSF Functions as a wheel because all of the Functions relate to one another. For example, an organization will categorize assets under IDENTIFY and take steps to secure those assets under PROTECT. Investments in planning and testing in the GOVERN and IDENTIFY Functions will support timely detection of unexpected events in the DETECT Function, as well as enabling incident response and recovery actions for cybersecurity incidents in the RESPOND and RECOVER Functions.",
+        "The NIST Cybersecurity Framework (CSF) 2.0\nCSF Function\n\nThe highest level of organization for cybersecurity outcomes. There are six CSF Functions: Govern, Identify, Protect, Detect, Respond, and Recover."
+      ],
+      "sources": [
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.8",
+        "NIST.CSWP.29.pdf p.31"
+      ],
+      "retrieval_ms": 1261.9358339998143,
+      "generation_ms": 5475.821128999996,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8224719570183847
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r17",
+      "language": "en",
+      "question": "By how much did the FOMC lower the federal funds rate in September 2024, and to what target range?",
+      "reference": "The Committee lowered the target range for the federal funds rate by half a percentage point, to 4¾ to 5 percent.",
+      "answer": "The FOMC lowered the federal funds rate by ½ percentage point to a target range of 4¾ percent to 5 percent. [1]",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWe now see the risks to achieving our employment and inflation goals as roughly in balance, and we are attentive to the risks to both sides of our dual mandate. In light of the progress on inflation and the balance of risks, at today's meeting, the Committee decided to lower the target range for the federal funds rate by ½ percentage point to 4¾ percent to 5 percent.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nIn our SEP, FOMC participants wrote down their individual assessments of an appropriate path for the federal funds rate, based on what each participant judges to be the most likely scenario going forward. If the economy evolves as expected, the median participant projects that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year and 3.4 percent at the end of 2025.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nInflation has eased substantially from a peak of 7 percent to an estimated 2.2 percent as of August. We're committed to maintaining our economy's strength by supporting maximum employment and returning inflation to our 2 percent goal. Today, the Federal Open Market Committee decided to reduce the degree of policy restraint by lowering our policy interest rate by ½ percentage point."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 723.6263290001261,
+      "generation_ms": 3996.0246480000023,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9369737512079093
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r18",
+      "language": "en",
+      "question": "What was the peak of inflation and where did it stand as of August 2024?",
+      "reference": "Inflation eased from a peak of 7 percent to an estimated 2.2 percent as of August 2024.",
+      "answer": "The peak of inflation was 7 percent, and as of August 2024, it stood at an estimated 2.2 percent. [1]",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nInflation has eased substantially from a peak of 7 percent to an estimated 2.2 percent as of August. We're committed to maintaining our economy's strength by supporting maximum employment and returning inflation to our 2 percent goal. Today, the Federal Open Market Committee decided to reduce the degree of policy restraint by lowering our policy interest rate by ½ percentage point.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nInflation has eased notably over the past two years but remains above our longer-run goal of 2 percent. Estimates based on the consumer price index and other data indicate that total PCE prices rose 2.2 percent over the 12 months ending in August and that, excluding the volatile food and energy categories, core PCE prices rose 2.7 percent.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWe know-if you go back, we know that the policy stance we adopted in July of 2023 came at a time when unemployment was 3½ percent and inflation was 4.2 percent. Today, unemployment is up to 4.2 percent; inflation's down to a few tenths above 2. So we know that it is time to recalibrate our policy to something that is more appropriate given the progress on inflation and on employment moving to a more sustainable level."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 1077.6711919997979,
+      "generation_ms": 4043.2261299997663,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9492564046573692
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r19",
+      "language": "en",
+      "question": "What federal funds rate did the median participant project for the end of 2024 and the end of 2025?",
+      "reference": "The median participant projected a federal funds rate of 4.4 percent at the end of 2024 and 3.4 percent at the end of 2025.",
+      "answer": "According to the context, the median participant projected that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year (2024) and 3.4 percent at the end of 2025 [1].",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nIn our SEP, FOMC participants wrote down their individual assessments of an appropriate path for the federal funds rate, based on what each participant judges to be the most likely scenario going forward. If the economy evolves as expected, the median participant projects that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year and 3.4 percent at the end of 2025.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nThere's basically an entire generation that has experienced zero or nearzero federal funds rate, and some think we're heading in that direction again. What's the likelihood that cheap money is now the norm? CHAIR POWELL. So this is a question-and you mean after we get through all of this? It's just-great question that we just, we can only speculate about.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWe now see the risks to achieving our employment and inflation goals as roughly in balance, and we are attentive to the risks to both sides of our dual mandate. In light of the progress on inflation and the balance of risks, at today's meeting, the Committee decided to lower the target range for the federal funds rate by ½ percentage point to 4¾ percent to 5 percent."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 1072.8203559997382,
+      "generation_ms": 5782.417599999917,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9800511207269418
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r20",
+      "language": "en",
+      "question": "Why is the housing market partly frozen?",
+      "reference": "The housing market is partly frozen because of lock-in with low rates: people with very low mortgages do not want to sell their homes, because it would be expensive to refinance.",
+      "answer": "The housing market is partly frozen because of lock-in with low rates. People don't want to sell their homes because they have a very low mortgage, and it would be quite expensive to refinance. [1]",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWhat's the likelihood of that, and how would you react to that? CHAIR POWELL. The housing market, it's hard to-it's a game that-the housing market is in part frozen because of lock-in with low rates. People don't want to sell their homes. So, because they have a very low mortgage, it would be quite expensive to refinance.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nYeah. CHAIR POWELL. So housing inflation is the-is the one piece that is kind of dragging a bit, if I can say. We know that market rents are doing what we would want them to do, which is to be moving up at relatively low levels, but they're not rolling over-the leases that are rolling over are not coming down as much and OER is coming in high.",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nAnd so it's going to be challenging. It's hard to find-to zone lots that are in places where people want to live. It's-all of the aspects of housing are more and more difficult, and, you know, where are we going to get the supply? And this is not something that the Fed can, can really fix. But I think, as we normalize rates, you'll see the housing market normalize."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 633.6781489999339,
+      "generation_ms": 5149.324056999831,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8540658310634143
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "r21",
+      "language": "en",
+      "question": "Does the Fed think it has fallen behind on rate cuts?",
+      "reference": "No. Powell said the Fed does not think it is behind; it sees the cut as timely and as a sign of its commitment not to get behind.",
+      "answer": "According to Chair Powell, the Fed has been \"very patient\" about reducing the policy rate, suggesting that it hasn't fallen behind on rate cuts. [3]\n\nThis is supported by the statement \"We've waited. Other central banks around the world have cut, many of them several times. We've waited...\" which implies that the Fed hasn't felt pressured to cut rates as quickly as others.",
+      "contexts": [
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nEDWARD LAWRENCE. And one more, how do you respond to the criticism that will likely come that a deeper rate cut now, before the election, has some political motivations? CHAIR POWELL. Yeah, so, you know, this is my fourth presidential election at the Fed, and, you know, it's always the same. We're always-we're always going into this meeting, in particular, and asking, what's the right thing to do for the people we serve?",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nI would sort of argue that when we had those two last speeches by Governor Waller and New York Fed President John Williams, that they were sort of saying that maybe a gradual approach was going to win the day. I mean, I sort of want to ask a seven-part question about this. But, I mean, could you talk- would you have cut rates by 50 basis points if the market had been pricing in, like, low odds of a 50 point move like they were last Wednesday, you know, after the CPI number came out?",
+        "Transcript of Chair Powell's Press Conference September 18, 2024\n\nWe've been very patient about, about reducing the policy rate. We've waited. Other central banks around the world have cut, many of them several times. We've waited, and I think that that patience has really paid dividends in the form of our confidence that inflation is moving sustainably under 2 percent."
+      ],
+      "sources": [
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1",
+        "FOMCpresconf20240918.pdf p.1"
+      ],
+      "retrieval_ms": 1161.709114000132,
+      "generation_ms": 8596.855837000021,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8561797470354421
+      },
+      "errors": {}
+    }
+  ]
+}

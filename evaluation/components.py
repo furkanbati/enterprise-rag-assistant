@@ -88,11 +88,20 @@ def build_strategies(
     components: RetrievalComponents,
     rerank_model: str,
     names: list[str] | None = None,
+    rerank_model_tr: str | None = None,
 ) -> dict[str, RetrievalStrategy]:
     """The retrieval strategies to compare, by name.
 
     The cross-encoder is only loaded when the reranking strategy is requested.
+    Turkish questions are reranked with ``rerank_model_tr`` when it is set
+    and differs from ``rerank_model``, as in the API.
     """
+
+    def language_rerankers() -> dict[str, CrossEncoderReranker] | None:
+        if rerank_model_tr and rerank_model_tr != rerank_model:
+            return {"tr": CrossEncoderReranker(rerank_model_tr)}
+
+        return None
 
     builders = {
         "vector": lambda: VectorOnlyStrategy(components.vector_search),
@@ -109,6 +118,7 @@ def build_strategies(
             fusion=components.fusion,
             reranker=CrossEncoderReranker(rerank_model),
             candidate_top_k=RETRIEVAL_TOP_K,
+            language_rerankers=language_rerankers(),
         ),
     }
 

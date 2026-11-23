@@ -1,0 +1,63 @@
+id,language,question,faithfulness,answer_relevancy,sources,answer,errors
+r01,en,What are the four core functions of the NIST AI Risk Management Framework?,1.0000,1.0000,nist.ai.100-1.pdf p.25; nist.ai.100-1.pdf p.6; NIST.CSWP.29.pdf p.16,"The four core functions of the NIST AI Risk Management Framework are GOVERN, MAP, MEASURE, and MANAGE.
+
+[1] [5. AI RMF Core], [2] [Executive Summary]",
+r02,en,How does the AI RMF define risk?,1.0000,1.0000,nist.ai.100-1.pdf p.9; nist.ai.100-1.pdf p.9; nist.ai.100-1.pdf p.12,"According to the context, the AI RMF defines risk as the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event [1]. This definition also considers the negative impact or harm that would arise if the circumstance or event occurs, and the likelihood of occurrence [2].",
+r03,en,What are the characteristics of trustworthy AI systems?,0.9231,1.0000,nist.ai.100-1.pdf p.17; nist.ai.100-1.pdf p.6; nist.ai.100-1.pdf p.5,"The characteristics of trustworthy AI systems include:
+
+* Valid and reliable
+* Safe
+* Secure and resilient
+* Accountable and transparent
+* Explainable and interpretable
+* Privacy-enhanced
+* Fair with harmful bias managed
+
+These characteristics are mentioned in the context as outlined in [1], [2], and [3].",
+r04,en,What are common security concerns for AI systems?,1.0000,1.0000,nist.ai.100-1.pdf p.20; nist.ai.100-1.pdf p.13; nist.ai.100-1.pdf p.43,"Common security concerns for AI systems relate to adversarial examples, data poisoning, and the exfiltration of models, training data, or other intellectual property through AI system endpoints. Additionally, security concerns include confidentiality, integrity, and availability of the system and its training and output data.",
+r05,en,What is the difference between explainability and interpretability?,1.0000,0.9144,nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.21,"Explainability refers to a representation of the mechanisms underlying AI systems' operation, whereas interpretability refers to the meaning of AI systems' output in the context of their designed functional purposes. [1]
+
+In other words, explainability answers the question of ""how"" a decision was made in the system, while interpretability answers the question of ""why"" a decision was made by the system and its meaning or context to the user. [2]
+
+Note that these two concepts are distinct but support each other, with explainability providing insights into the ""how"" and interpretability providing insights into the ""why"" and meaning of the system's output. [3]",
+r06,en,What are the three major categories of AI bias identified by NIST?,1.0000,1.0000,nist.ai.100-1.pdf p.22; nist.ai.100-1.pdf p.22; nist.ai.100-1.pdf p.22,"According to the provided context, the three major categories of AI bias identified by NIST are:
+
+1. Systemic bias
+2. Computational and statistical bias
+3. Human-cognitive bias
+
+These categories can occur in the absence of prejudice, partiality, or discriminatory intent [1].",
+r07,en,What should happen when an AI system presents unacceptable negative risk levels?,1.0000,0.6676,nist.ai.100-1.pdf p.12; nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.20,"Development and deployment should cease in a safe manner until risks can be sufficiently managed.
+
+[1]",
+r08,en,"Which AI RMF function is described as cross-cutting, and why?",1.0000,1.0000,nist.ai.100-1.pdf p.5; nist.ai.100-1.pdf p.26; nist.ai.100-1.pdf p.14,"According to the context, the AI RMF function that is described as cross-cutting is ""GOVERN"" [2]. This is because it is designed to be infused throughout the other three functions, informing and being infused throughout the entire AI risk management process [1]. GOVERN enables the other functions of the process and is a continual and intrinsic requirement for effective AI risk management [2].",
+r09,en,What does the MEASURE function do?,0.8333,0.6803,nist.ai.100-1.pdf p.33; nist.ai.100-1.pdf p.33; nist.ai.100-1.pdf p.33,"The MEASURE function employs quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk and related impacts. [1][2][3]
+
+(Note: The answer is based only on the provided context, which consists of three passages from the Artificial Intelligence Risk Management Framework (AI RMF 1.0).)",
+r10,en,What are the six Functions of the NIST Cybersecurity Framework 2.0 Core?,1.0000,1.0000,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.8,"The six Functions of the NIST Cybersecurity Framework 2.0 Core are: Govern, Identify, Protect, Detect, Respond, and Recover.
+
+[2]",
+r11,en,Why is GOVERN shown at the center of the CSF Functions wheel?,1.0000,1.0000,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8,GOVERN is shown at the center of the CSF Functions wheel because it informs how an organization will implement the other five Functions.,
+r12,en,What are the four CSF Tiers?,1.0000,1.0000,NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.12; NIST.CSWP.29.pdf p.29,"The four CSF Tiers are: Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4). [1][2][3]",
+r13,en,What is a CSF Community Profile and how can an organization use one?,0.8889,0.9521,NIST.CSWP.29.pdf p.11; NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.11,"A CSF Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. It is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.
+
+This is supported by the following passages:
+
+[1] ""A Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations."" [1]
+
+[2] ""A Community Profile is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile."" [2]
+
+Therefore, an organization can use a Community Profile as a starting point for developing its own Target Profile, which can help guide its cybersecurity efforts and continuous improvement.",
+r14,en,In which ways can an organization handle risk according to the CSF?,1.0000,0.9126,NIST.CSWP.29.pdf p.15; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.5,"According to the CSF, an organization may handle risk in the following ways:
+
+* Mitigating, transferring, avoiding, or accepting negative risks
+* Realizing, sharing, enhancing, or accepting positive risks
+
+[1]",
+r15,en,What was the Cybersecurity Framework called before version 2.0?,1.0000,1.0000,NIST.CSWP.29.pdf p.2; NIST.CSWP.29.pdf p.6; NIST.CSWP.29.pdf p.5,"Before version 2.0, the Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity.' [1]",
+r16,en,What does the DETECT Function enable?,1.0000,0.8741,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.31,"The DETECT Function enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring.",
+r17,en,"By how much did the FOMC lower the federal funds rate in September 2024, and to what target range?",1.0000,0.9361,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,The FOMC lowered the federal funds rate by ½ percentage point to a target range of 4¾ percent to 5 percent.,
+r18,en,What was the peak of inflation and where did it stand as of August 2024?,1.0000,0.9423,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"The peak of inflation was 7 percent, and as of August 2024, it stood at an estimated 2.2 percent. [1]",
+r19,en,What federal funds rate did the median participant project for the end of 2024 and the end of 2025?,1.0000,0.9598,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"According to the context, the median participant projected that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year [1] and 3.4 percent at the end of 2025 [1].",
+r20,en,Why is the housing market partly frozen?,1.0000,0.8972,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"According to Chair Powell, the housing market is partly frozen because of lock-in with low rates. People don't want to sell their homes because it would be quite expensive to refinance with high mortgage rates [1].",
+r21,en,Does the Fed think it has fallen behind on rate cuts?,0.7500,0.8506,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"According to Chair Powell, the Fed has been very patient about reducing the policy rate, waiting for the right time to make a move. This suggests that the Fed hasn't fallen behind on rate cuts, but rather has been deliberate in its approach. [3]",

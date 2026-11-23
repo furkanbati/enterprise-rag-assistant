@@ -25,8 +25,14 @@ class EvalSample:
     evidence: list[str] = field(default_factory=list)
 
 
+# Fields of the RAGAS format (see evaluation/ragas_eval/dataset.py) and
+# descriptive labels, so one file can serve both evaluations.
+IGNORED_FIELDS = frozenset({"reference", "language", "type"})
+
+
 def load_dataset(path: str | Path) -> list[EvalSample]:
-    """Load evaluation samples from a JSON Lines file."""
+    """Load evaluation samples from a JSON Lines file. Fields that only the
+    RAGAS evaluation uses are ignored."""
 
     samples: list[EvalSample] = []
 
@@ -38,7 +44,12 @@ def load_dataset(path: str | Path) -> list[EvalSample]:
                 continue
 
             try:
-                sample = EvalSample(**json.loads(line))
+                row = json.loads(line)
+                sample = EvalSample(**{
+                    key: value
+                    for key, value in row.items()
+                    if key not in IGNORED_FIELDS
+                })
             except (json.JSONDecodeError, TypeError) as e:
                 raise ValueError(
                     f"Invalid evaluation sample on line {line_number}: {e}"

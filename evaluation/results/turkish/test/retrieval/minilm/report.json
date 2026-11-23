@@ -1,0 +1,1707 @@
+{
+  "metadata": {
+    "Date": "2026-11-22 14:45 UTC",
+    "Dataset": "kvkk_tr_test.jsonl",
+    "Embedding model": "ollama/nomic-embed-text",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Reranker (Turkish questions)": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Chat model": "not evaluated",
+    "Judge model": "not used",
+    "Candidates per retriever": 12
+  },
+  "ks": [
+    1,
+    3,
+    5
+  ],
+  "num_samples": 12,
+  "num_answerable": 10,
+  "strategies": [
+    {
+      "strategy": "vector",
+      "hit": {
+        "1": 0.5,
+        "3": 0.7,
+        "5": 0.7
+      },
+      "recall": {
+        "1": 0.45,
+        "3": 0.65,
+        "5": 0.7
+      },
+      "precision": {
+        "1": 0.5,
+        "3": 0.3333333333333333,
+        "5": 0.24000000000000002
+      },
+      "mrr": 0.5833333333333334,
+      "evidence_recall": {
+        "1": 0.25,
+        "3": 0.4,
+        "5": 0.5
+      },
+      "mean_context_chars": {
+        "1": 365.3,
+        "3": 1004.6,
+        "5": 1812.6
+      },
+      "mean_latency_ms": 22.045285999865882
+    },
+    {
+      "strategy": "bm25",
+      "hit": {
+        "1": 0.7,
+        "3": 0.9,
+        "5": 0.9
+      },
+      "recall": {
+        "1": 0.65,
+        "3": 0.9,
+        "5": 0.9
+      },
+      "precision": {
+        "1": 0.7,
+        "3": 0.5,
+        "5": 0.38
+      },
+      "mrr": 0.7833333333333333,
+      "evidence_recall": {
+        "1": 0.6,
+        "3": 0.9,
+        "5": 0.9
+      },
+      "mean_context_chars": {
+        "1": 416.1,
+        "3": 1600.2,
+        "5": 2440.0
+      },
+      "mean_latency_ms": 1.0449060998325876
+    },
+    {
+      "strategy": "hybrid_rrf",
+      "hit": {
+        "1": 0.6,
+        "3": 0.6,
+        "5": 0.9
+      },
+      "recall": {
+        "1": 0.55,
+        "3": 0.55,
+        "5": 0.85
+      },
+      "precision": {
+        "1": 0.6,
+        "3": 0.26666666666666666,
+        "5": 0.30000000000000004
+      },
+      "mrr": 0.665,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.75
+      },
+      "mean_context_chars": {
+        "1": 375.3,
+        "3": 1139.1,
+        "5": 1937.9
+      },
+      "mean_latency_ms": 25.00489300027766
+    },
+    {
+      "strategy": "hybrid_rrf_rerank",
+      "hit": {
+        "1": 0.6,
+        "3": 0.7,
+        "5": 0.8
+      },
+      "recall": {
+        "1": 0.55,
+        "3": 0.7,
+        "5": 0.8
+      },
+      "precision": {
+        "1": 0.6,
+        "3": 0.43333333333333335,
+        "5": 0.38
+      },
+      "mrr": 0.675,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 0.7,
+        "5": 0.8
+      },
+      "mean_context_chars": {
+        "1": 395.4,
+        "3": 1586.2,
+        "5": 2487.5
+      },
+      "mean_latency_ms": 2221.0056048000297
+    }
+  ],
+  "retrieval_results": [
+    {
+      "sample_id": "t21",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        16,
+        2,
+        16,
+        12,
+        2
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 370,
+        "3": 799,
+        "5": 1501
+      },
+      "latency_ms": 47.62150999977166
+    },
+    {
+      "sample_id": "t21",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        6,
+        1,
+        1,
+        8,
+        6
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 446,
+        "3": 2043,
+        "5": 2756
+      },
+      "latency_ms": 0.7759070003885427
+    },
+    {
+      "sample_id": "t21",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        16,
+        6,
+        2,
+        1,
+        16
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.25,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 370,
+        "3": 1086,
+        "5": 1520
+      },
+      "latency_ms": 17.202136000378232
+    },
+    {
+      "sample_id": "t21",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        6,
+        4,
+        8,
+        1,
+        9
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.25,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 446,
+        "3": 1540,
+        "5": 3263
+      },
+      "latency_ms": 1931.5265050008747
+    },
+    {
+      "sample_id": "t22",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        3,
+        3,
+        17,
+        10,
+        17
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 206,
+        "3": 747,
+        "5": 1197
+      },
+      "latency_ms": 17.189827999573026
+    },
+    {
+      "sample_id": "t22",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        3,
+        3,
+        1,
+        8,
+        16
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 206,
+        "3": 2017,
+        "5": 2800
+      },
+      "latency_ms": 0.912931999664579
+    },
+    {
+      "sample_id": "t22",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        3,
+        3,
+        18,
+        17,
+        1
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.2,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 206,
+        "3": 1119,
+        "5": 2493
+      },
+      "latency_ms": 34.833463000722986
+    },
+    {
+      "sample_id": "t22",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        3,
+        1,
+        3,
+        16,
+        8
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 206,
+        "3": 2017,
+        "5": 2800
+      },
+      "latency_ms": 1671.8659439993644
+    },
+    {
+      "sample_id": "t23",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        10,
+        7,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 370,
+        "3": 1123,
+        "5": 2152
+      },
+      "latency_ms": 14.333434000036505
+    },
+    {
+      "sample_id": "t23",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        7,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 370,
+        "3": 1618,
+        "5": 2442
+      },
+      "latency_ms": 1.0299249997842708
+    },
+    {
+      "sample_id": "t23",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        10,
+        7,
+        7,
+        7
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 370,
+        "3": 1108,
+        "5": 1923
+      },
+      "latency_ms": 21.042310000666475
+    },
+    {
+      "sample_id": "t23",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        7,
+        7,
+        7,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 370,
+        "3": 1137,
+        "5": 1923
+      },
+      "latency_ms": 4570.6314769995515
+    },
+    {
+      "sample_id": "t24",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        8,
+        8,
+        8,
+        8,
+        10
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 337,
+        "3": 824,
+        "5": 1887
+      },
+      "latency_ms": 19.410335999964445
+    },
+    {
+      "sample_id": "t24",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        9,
+        9,
+        8,
+        8,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 863,
+        "3": 1817,
+        "5": 2268
+      },
+      "latency_ms": 1.0719149995566113
+    },
+    {
+      "sample_id": "t24",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        8,
+        8,
+        8,
+        1,
+        9
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.2,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 337,
+        "3": 1004,
+        "5": 2102
+      },
+      "latency_ms": 28.740420000758604
+    },
+    {
+      "sample_id": "t24",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        8,
+        8,
+        6,
+        6,
+        6
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 553,
+        "3": 1336,
+        "5": 2110
+      },
+      "latency_ms": 1645.2974510002605
+    },
+    {
+      "sample_id": "t25",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        2,
+        2,
+        3,
+        8,
+        2
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 270,
+        "3": 821,
+        "5": 1688
+      },
+      "latency_ms": 5.706089999875985
+    },
+    {
+      "sample_id": "t25",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        6,
+        6,
+        1,
+        15,
+        4
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 160,
+        "3": 1900,
+        "5": 2705
+      },
+      "latency_ms": 1.0962280002786429
+    },
+    {
+      "sample_id": "t25",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        15,
+        2,
+        2,
+        6,
+        6
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 354,
+        "3": 969,
+        "5": 1547
+      },
+      "latency_ms": 8.42205000026297
+    },
+    {
+      "sample_id": "t25",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        10,
+        10,
+        15,
+        6,
+        10
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 439,
+        "3": 1258,
+        "5": 2038
+      },
+      "latency_ms": 1856.6676210002697
+    },
+    {
+      "sample_id": "t26",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        7,
+        8,
+        8,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 369,
+        "3": 1140,
+        "5": 2139
+      },
+      "latency_ms": 26.54693899967242
+    },
+    {
+      "sample_id": "t26",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        2,
+        6,
+        6,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 434,
+        "3": 1709,
+        "5": 2542
+      },
+      "latency_ms": 1.3717550000365009
+    },
+    {
+      "sample_id": "t26",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        8,
+        16,
+        7,
+        2
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 434,
+        "3": 1141,
+        "5": 1780
+      },
+      "latency_ms": 42.996504999791796
+    },
+    {
+      "sample_id": "t26",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        7,
+        7,
+        6,
+        4,
+        8
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 434,
+        "3": 1808,
+        "5": 2532
+      },
+      "latency_ms": 1575.280944000042
+    },
+    {
+      "sample_id": "t27",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        9,
+        13,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 401,
+        "3": 1225,
+        "5": 2026
+      },
+      "latency_ms": 29.987969999638153
+    },
+    {
+      "sample_id": "t27",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        9,
+        13,
+        12,
+        9,
+        16
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 401,
+        "3": 1220,
+        "5": 2453
+      },
+      "latency_ms": 0.9153579994745087
+    },
+    {
+      "sample_id": "t27",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        9,
+        13,
+        16,
+        10,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 401,
+        "3": 1130,
+        "5": 2055
+      },
+      "latency_ms": 55.8723430003738
+    },
+    {
+      "sample_id": "t27",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        9,
+        13,
+        12,
+        13,
+        9
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 401,
+        "3": 1220,
+        "5": 2105
+      },
+      "latency_ms": 1540.545849999944
+    },
+    {
+      "sample_id": "t28",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        4,
+        16,
+        12,
+        12,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "context_chars": {
+        "1": 589,
+        "3": 1045,
+        "5": 1917
+      },
+      "latency_ms": 24.45335399988835
+    },
+    {
+      "sample_id": "t28",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        4,
+        4,
+        7,
+        4,
+        4
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 589,
+        "3": 1253,
+        "5": 2016
+      },
+      "latency_ms": 1.1747949993150542
+    },
+    {
+      "sample_id": "t28",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        4,
+        7,
+        16,
+        4,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 589,
+        "3": 1383,
+        "5": 1882
+      },
+      "latency_ms": 21.062595999865152
+    },
+    {
+      "sample_id": "t28",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 413,
+        "3": 1796,
+        "5": 3019
+      },
+      "latency_ms": 4487.417119999918
+    },
+    {
+      "sample_id": "t29",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        8,
+        8,
+        2,
+        2,
+        1
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 373,
+        "3": 1051,
+        "5": 1659
+      },
+      "latency_ms": 11.10715800041362
+    },
+    {
+      "sample_id": "t29",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        8,
+        6,
+        8,
+        19,
+        16
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 333,
+        "3": 1166,
+        "5": 1983
+      },
+      "latency_ms": 1.1416819997975836
+    },
+    {
+      "sample_id": "t29",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        8,
+        6,
+        15,
+        1,
+        3
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 333,
+        "3": 1183,
+        "5": 1575
+      },
+      "latency_ms": 7.718732000284945
+    },
+    {
+      "sample_id": "t29",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        8,
+        6,
+        1,
+        3,
+        2
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 333,
+        "3": 2151,
+        "5": 2615
+      },
+      "latency_ms": 1348.5140920001868
+    },
+    {
+      "sample_id": "t32",
+      "strategy": "vector",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        14,
+        13,
+        10,
+        13,
+        10
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 368,
+        "3": 1271,
+        "5": 1960
+      },
+      "latency_ms": 24.09624099982466
+    },
+    {
+      "sample_id": "t32",
+      "strategy": "bm25",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        13,
+        3,
+        8,
+        2,
+        4
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 359,
+        "3": 1259,
+        "5": 2435
+      },
+      "latency_ms": 0.9585640000295825
+    },
+    {
+      "sample_id": "t32",
+      "strategy": "hybrid_rrf",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        13,
+        14,
+        13,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 359,
+        "3": 1268,
+        "5": 2502
+      },
+      "latency_ms": 12.15837499967165
+    },
+    {
+      "sample_id": "t32",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "kvkk_6698.pdf",
+      "retrieved_pages": [
+        13,
+        14,
+        10,
+        13,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 359,
+        "3": 1599,
+        "5": 2470
+      },
+      "latency_ms": 1582.309043999885
+    }
+  ],
+  "generation": null,
+  "answer_results": [],
+  "missing_evidence": []
+}

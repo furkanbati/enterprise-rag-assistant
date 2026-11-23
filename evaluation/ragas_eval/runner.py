@@ -15,6 +15,7 @@ from typing import Any, Protocol
 from evaluation.ragas_eval.dataset import RagasSample
 from evaluation.strategies import RetrievalStrategy
 from generator import Generator
+from language import detect_language
 from providers.base import Embedder
 
 logger = logging.getLogger(__name__)
@@ -118,9 +119,13 @@ def collect_records(
     generator: Generator,
     top_k: int,
     on_progress: Callable[[int, int], None] | None = None,
+    language_generators: dict[str, Generator] | None = None,
 ) -> list[RagRecord]:
     """Retrieve and answer every question; the passages the generator saw
-    become the RAGAS contexts."""
+    become the RAGAS contexts. A question whose language has an entry in
+    ``language_generators`` is answered by that generator."""
+
+    language_generators = language_generators or {}
 
     records: list[RagRecord] = []
 
@@ -151,7 +156,11 @@ def collect_records(
         started = time.perf_counter()
 
         try:
-            record.answer = generator.generate(
+            # The detected language, not the label, as in the API.
+            answerer = language_generators.get(
+                detect_language(sample.question), generator
+            )
+            record.answer = answerer.generate(
                 question=sample.question,
                 chunks=chunks,
             )

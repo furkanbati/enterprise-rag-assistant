@@ -1058,3 +1058,108 @@ def test_run_loads_the_reranker_before_answering(tmp_path, monkeypatch):
     ])
 
     assert events == ["reranker loaded", "answered vector"]
+
+
+def test_build_strategies_adds_the_turkish_reranker_only_when_it_differs(monkeypatch):
+    built = []
+    monkeypatch.setattr(
+        components_module,
+        "CrossEncoderReranker",
+        lambda name: built.append(name) or SimpleNamespace(model_name=name, model=None),
+    )
+    components = SimpleNamespace(vector_search=Mock(), keyword_search=Mock(), fusion=Mock())
+
+    routed = components_module.build_strategies(
+        components, rerank_model="en-model", names=["hybrid_rrf_rerank"],
+        rerank_model_tr="tr-model",
+    )["hybrid_rrf_rerank"]
+    same = components_module.build_strategies(
+        components, rerank_model="en-model", names=["hybrid_rrf_rerank"],
+        rerank_model_tr="en-model",
+    )["hybrid_rrf_rerank"]
+
+    assert routed.language_rerankers["tr"].model_name == "tr-model"
+    assert same.language_rerankers == {}
+    assert built == ["en-model", "tr-model", "en-model"]
+
+
+def test_load_local_models_loads_the_turkish_reranker_too():
+    loaded = []
+
+    def reranker(name):
+        return SimpleNamespace(model=None, model_name=name, load=lambda: loaded.append(name))
+
+    strategy = SimpleNamespace(
+        rerankers=lambda: [reranker("en-model"), reranker("tr-model")],
+    )
+
+    cli.load_local_models({"hybrid_rrf_rerank": strategy})
+
+    assert loaded == ["en-model", "tr-model"]
+
+
+def test_collect_records_answers_turkish_questions_with_the_turkish_generator():
+    strategy = Mock()
+    strategy.retrieve.return_value = [make_chunk()]
+    embedder = Mock()
+    embedder.embed.return_value = [0.1]
+    default, turkish = Mock(), Mock()
+    default.generate.return_value = "default"
+    turkish.generate.return_value = "turkish"
+
+    records = collect_records(
+        [
+            make_sample(id="q1", question="What is Python?"),
+            make_sample(id="t1", question="Veri sorumlusu kimdir?", language="tr"),
+        ],
+        strategy=strategy,
+        embedder=embedder,
+        generator=default,
+        top_k=3,
+        language_generators={"tr": turkish},
+    )
+
+    assert [record.answer for record in records] == ["default", "turkish"]
+
+
+def test_load_ragas_dataset_ignores_retrieval_fields(tmp_path):
+    path = tmp_path / "set.jsonl"
+    write_jsonl(path, [{
+        "id": "t1", "question": "Q?", "reference": "A.", "source": "kvkk.pdf",
+        "language": "tr", "relevant_pages": [2], "evidence": ["A."],
+        "answerable": True, "type": "tanım",
+    }])
+
+    (sample,) = load_ragas_dataset(path)
+
+    assert (sample.id, sample.language) == ("t1", "tr")
+
+
+TURKISH_SETS = {
+    name: BUNDLED_DATASET.parent / name
+    for name in ("kvkk_tr_dev.jsonl", "kvkk_tr_test.jsonl")
+}
+
+
+def test_turkish_sets_load_in_both_evaluations():
+    from evaluation.dataset import load_dataset
+
+    dev, test = (TURKISH_SETS[name] for name in TURKISH_SETS)
+    dev_ids = [s.id for s in load_ragas_dataset(dev)]
+    test_ids = [s.id for s in load_ragas_dataset(test)]
+
+    assert len(dev_ids) == 20 and len(test_ids) == 12
+    assert not set(dev_ids) & set(test_ids)
+    assert [s.id for s in load_dataset(dev)] == dev_ids
+    assert all(s.language == "tr" for s in load_ragas_dataset(test))
+
+
+def test_turkish_dev_set_keeps_the_original_questions():
+    original = {
+        s.id: s for s in load_ragas_dataset(BUNDLED_DATASET) if s.language == "tr"
+    }
+    dev = {s.id: s for s in load_ragas_dataset(TURKISH_SETS["kvkk_tr_dev.jsonl"])}
+
+    for sample_id, sample in original.items():
+        assert dev[sample_id].question == sample.question
+        assert dev[sample_id].reference == sample.reference

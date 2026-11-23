@@ -1,0 +1,38 @@
+id,language,question,faithfulness,answer_relevancy,sources,answer,errors
+t21,tr,KVKK'da veri işleyen kime denir?,0.0000,0.9470,kvkk_6698.pdf p.6; kvkk_6698.pdf p.4; kvkk_6698.pdf p.8,"Veri işleyen kişi, KVKK'da veri sorumluları ile veri işleyen kişiler olarak tanımlanmıştır. [1](4) [1](5)
+
+(KVKK'da veri işleyen kişi, veri sorumluları ile veri işleyen kişiler olarak tanımlanmıştır.)",
+t22,tr,Anonim hâle getirme ne anlama gelir?,1.0000,0.7828,kvkk_6698.pdf p.3; kvkk_6698.pdf p.1; kvkk_6698.pdf p.3,"Anonim hâle getirme, kişisel verilerin başka verilerle eşleştirilerek dahi hiçbir surette kimliği belirli veya belirlenebilir bir gerçek kişiyle ilişkilendirilemeyecek hâle getirilmesini [1] anlamına gelir.",
+t23,tr,Kurul bir şikâyete kaç gün içinde cevap vermezse talep reddedilmiş sayılır?,1.0000,0.7762,kvkk_6698.pdf p.7; kvkk_6698.pdf p.7; kvkk_6698.pdf p.7,"According to the context, Kurul bir şikâyete altmış gün içinde cevap vermezse talep reddedilmiş sayılır. [1]
+
+This means that if the Kurul does not respond to a complaint within 60 days, the request will be considered rejected.",
+t24,tr,Veri Sorumluları Siciline kayıt yükümlülüğüne uymayanlara ne kadar idari para cezası verilir?,0.5000,0.0000,kvkk_6698.pdf p.8; kvkk_6698.pdf p.8; kvkk_6698.pdf p.6,I don't know. The provided context does not mention the specific administrative fine for not complying with the registration obligation to the Data Controllers' Registry.,
+t25,tr,Bir şirket kişisel verilerimi benim iznim olmadan başka bir şirkete verebilir mi?,0.3333,0.0000,kvkk_6698.pdf p.10; kvkk_6698.pdf p.10; kvkk_6698.pdf p.15,"I don't know. The provided context only discusses the Personal Data Protection Board and its procedures, but it does not address the scenario you've described.",
+t26,tr,İlgili kişi veri sorumlusundan neler talep edebilir ve başvurusunu nasıl iletir?,0.9231,0.9393,kvkk_6698.pdf p.7; kvkk_6698.pdf p.7; kvkk_6698.pdf p.6,"İlgili kişi, veri sorumlusuna yazılı olarak veya Kurulun belirleyeceği diğer yöntemlerle başvuru yapılır. [1]
+
+İlgili kişi, veri sorumlusuna aşağıdaki talepleri yapılabilir:
+- Kişisel veri işlenip işlenmediğini öğrenme,
+- Kişisel verileri işlenmişse buna ilişkin bilgi talep etme,
+- Kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme,
+- ç) Yurt içinde veya yurt dışında kişisel verilerin aktarıldığı üçüncü kişileri bilme,
+- Kişisel verilerin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme,
+- 7 nci maddede öngörülen şartlar çerçevesinde kişisel verilerin silinmesini veya yok edilmesini isteme,
+- (d) ve (e) bentleri uyarınca yapılan işlemlerin, kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme,
+- İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme,
+- ğ) Kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması hâlinde zararın giderilmesini talep etme. [3]
+
+Note: The passage [2] is not relevant to the question, as it only describes the procedure for the data controller to accept or reject the request.",
+t27,tr,Kurulun verdiği idari para cezalarına karşı nerede dava açılabilir?,1.0000,0.9226,kvkk_6698.pdf p.9; kvkk_6698.pdf p.13; kvkk_6698.pdf p.12,"According to the context, Kurulca verilen idari para cezalarına karşı, idare mahkemelerinde dava açılabilir. [1]",
+t28,tr,Yurt dışına aktarımda yeterlilik kararını kim verir ve bu karar ne sıklıkla değerlendirilir?,1.0000,0.7392,kvkk_6698.pdf p.4; kvkk_6698.pdf p.4; kvkk_6698.pdf p.4,"Yeterlilik kararını Kurul verir. [1] [2]
+
+Kurul, yeterlilik kararını en geç dört yılda bir değerlendirir. [2]",
+t29,tr,Kişisel verilere ilişkin suçlarda hangi kanunun hangi maddeleri uygulanır?,1.0000,0.8095,kvkk_6698.pdf p.8; kvkk_6698.pdf p.6; kvkk_6698.pdf p.1,"According to the context, in cases of crimes related to personal data, the provisions of Article 135 to 140 of the Turkish Penal Code numbered 5237 dated 26/9/2004 apply. [1]
+
+This is supported by the text in [1]: ""MADDE 17(1) Kişisel verilere ilişkin suçlar bakımından 26/9/2004 tarihli ve 5237 sayılı Türk Ceza Kanununun 135 ila 140 ıncı madde hükümleri uygulanır.""",
+t30,tr,Web sitelerinde çerez kullanımı için KVKK'ya göre ayrıca onay almak gerekir mi?,0.5000,0.0000,kvkk_6698.pdf p.10; kvkk_6698.pdf p.12; kvkk_6698.pdf p.7,"According to the provided context, there is no mention of cookies or their usage on websites. Therefore, I don't know.
+
+Passages that support my answer: None [1][2][3]",
+t31,tr,KVKK ile Avrupa Birliği'nin GDPR düzenlemesi arasındaki farklar nelerdir?,0.3333,0.0000,kvkk_6698.pdf p.15; kvkk_6698.pdf p.9; kvkk_6698.pdf p.12,"I don't know. The provided context only includes the Turkish law ""KVKK"" and does not mention the European Union's General Data Protection Regulation (GDPR).",
+t32,tr,Kurul toplantılarındaki görüşmeler herkese açık mıdır?,0.5000,0.9490,kvkk_6698.pdf p.13; kvkk_6698.pdf p.14; kvkk_6698.pdf p.10,"Aksine (no), Kurul toplantılarındaki görüşmeler gizlidir. [7]
+
+Note: The translation of ""Aksine"" is ""no"" or ""otherwise"", indicating that the answer is negative.",

@@ -1,5 +1,6 @@
 from typing import Protocol
 
+from language import detect_language
 from models import RetrievedChunk
 from retrieval.fusion import ReciprocalRankFusion
 from retrieval.keyword_search import KeywordSearch
@@ -95,7 +96,10 @@ class HybridStrategy:
 
 
 class HybridRerankStrategy(HybridStrategy):
-    """Hybrid retrieval followed by cross-encoder reranking (production setup)."""
+    """Hybrid retrieval followed by cross-encoder reranking (production setup).
+
+    Like the API, a question in a language listed in ``language_rerankers``
+    is reranked by that language's reranker."""
 
     def __init__(
         self,
@@ -104,6 +108,7 @@ class HybridRerankStrategy(HybridStrategy):
         fusion: ReciprocalRankFusion,
         reranker: CrossEncoderReranker,
         candidate_top_k: int,
+        language_rerankers: dict[str, CrossEncoderReranker] | None = None,
     ) -> None:
         super().__init__(
             vector_search=vector_search,
@@ -112,6 +117,10 @@ class HybridRerankStrategy(HybridStrategy):
             candidate_top_k=candidate_top_k,
         )
         self.reranker = reranker
+        self.language_rerankers = language_rerankers or {}
+
+    def rerankers(self) -> list[CrossEncoderReranker]:
+        return [self.reranker, *self.language_rerankers.values()]
 
     def retrieve(
         self,
@@ -120,8 +129,12 @@ class HybridRerankStrategy(HybridStrategy):
         top_k: int,
     ) -> list[RetrievedChunk]:
         candidates = self._fused_candidates(question, embedding)
+        reranker = self.language_rerankers.get(
+            detect_language(question),
+            self.reranker,
+        )
 
-        return self.reranker.rerank(
+        return reranker.rerank(
             question=question,
             chunks=candidates,
             top_k=top_k,

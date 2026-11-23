@@ -2,6 +2,8 @@
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+import pytest
+
 import providers.ollama as ollama_module
 from providers.ollama import OllamaChatClient, OllamaEmbedder
 
@@ -124,3 +126,49 @@ def test_chat_client_closes_the_stream_when_it_ends(monkeypatch):
 
     assert list(chat.stream(system="S.", user="Q?")) == ["Hi"]
     assert parts.closed
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        (None, None),
+        ("", None),
+        ("  ", None),
+        ("false", False),
+        ("False", False),
+        ("true", True),
+        ("low", "low"),
+        ("HIGH", "high"),
+    ],
+)
+def test_parse_think(value, expected):
+    assert ollama_module.parse_think(value) == expected
+
+
+def test_parse_think_rejects_unknown_values():
+    with pytest.raises(ValueError, match="Invalid OLLAMA_THINK 'maybe'"):
+        ollama_module.parse_think("maybe")
+
+
+def test_chat_client_sends_think_only_when_set(monkeypatch):
+    client = Mock()
+    client.chat.return_value = SimpleNamespace(message=SimpleNamespace(content="A."))
+    patch_client(monkeypatch, client)
+
+    OllamaChatClient(model="m").complete(system="S.", user="Q?")
+    OllamaChatClient(model="m", think=False).complete(system="S.", user="Q?")
+
+    assert "think" not in client.chat.call_args_list[0].kwargs
+    assert client.chat.call_args_list[1].kwargs["think"] is False
+
+
+def test_chat_client_streams_with_think(monkeypatch):
+    client = Mock()
+    client.chat.return_value = iter([SimpleNamespace(message=SimpleNamespace(content="A."))])
+    patch_client(monkeypatch, client)
+
+    chat = OllamaChatClient(model="m", think="low")
+
+    assert list(chat.stream(system="S.", user="Q?")) == ["A."]
+    assert client.chat.call_args.kwargs["think"] == "low"
+    assert client.chat.call_args.kwargs["stream"] is True

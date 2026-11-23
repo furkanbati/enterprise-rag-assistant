@@ -21,6 +21,7 @@ from config import (
     JUDGE_PROVIDER,
     LLM_PROVIDER,
     RERANK_MODEL,
+    RERANK_MODEL_TR,
     RETRIEVAL_TOP_K,
 )
 from evaluation import metrics
@@ -62,6 +63,11 @@ def parse_args() -> argparse.Namespace:
         default=RERANK_MODEL,
         help="Cross-encoder used by the reranking strategy.",
     )
+    parser.add_argument(
+        "--rerank-model-tr",
+        default=RERANK_MODEL_TR,
+        help="Cross-encoder for Turkish questions (default RERANK_MODEL_TR).",
+    )
     parser.add_argument("--verbose", action="store_true")
 
     return parser.parse_args()
@@ -91,7 +97,11 @@ def main() -> None:
             "through POST /upload before running the evaluation."
         )
 
-    strategies = build_strategies(components, rerank_model=args.rerank_model)
+    strategies = build_strategies(
+        components,
+        rerank_model=args.rerank_model,
+        rerank_model_tr=args.rerank_model_tr,
+    )
 
     evaluator = Evaluator(
         embedder=components.embedder,
@@ -133,6 +143,7 @@ def main() -> None:
         "Embedding model": f"{EMBED_PROVIDER}/{EMBED_MODEL}",
         "Chunking": chunking,
         "Reranker": args.rerank_model,
+        "Reranker (Turkish questions)": args.rerank_model_tr,
         "Chat model": (
             f"{LLM_PROVIDER}/{CHAT_MODEL}" if args.generate else "not evaluated"
         ),

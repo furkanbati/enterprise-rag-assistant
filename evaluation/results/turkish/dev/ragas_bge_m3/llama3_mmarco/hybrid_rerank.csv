@@ -1,0 +1,85 @@
+id,language,question,faithfulness,answer_relevancy,sources,answer,errors
+t01,tr,Kişisel Verilerin Korunması Kanunu'nun amacı nedir?,0.5714,0.9910,kvkk_6698.pdf p.1; kvkk_6698.pdf p.9; kvkk_6698.pdf p.2,"Kişisel Verilerin Korunması Kanunu'nun amacı, kişisel verilerin işlenmesinde başta özel hayatın gizliliği olmak üzere kişilerin temel hak ve özgürlüklerini korumak ve kişisel verileri işleyen gerçek ve tüzel kişilerin yükümlülükleri ile uyacakları usul ve esasları düzenlemektir. [1]
+
+This answer is supported by the text on page 1 of the document, which states the purpose of the law as protecting individuals' fundamental rights and freedoms, particularly privacy, and regulating the responsibilities and procedures of individuals and entities processing personal data.",
+t02,tr,KVKK'ya göre veri sorumlusu kimdir?,1.0000,0.8104,kvkk_6698.pdf p.1; kvkk_6698.pdf p.6; kvkk_6698.pdf p.6,"The veri sorumlusu is defined as the real or legal person who determines the purposes and means of processing personal data, and is responsible for the establishment and management of the data recording system. [1]
+
+This person is responsible for ensuring that personal data is not processed illegally, and that unauthorized access to such data is prevented. They must also take necessary measures to ensure the security of personal data. [2][3]
+
+In summary, the veri sorumlusu is the individual or organization that is responsible for processing personal data in accordance with the laws and regulations of the KVKK.",
+t03,tr,Kişisel verilerin işlenmesinde uyulması zorunlu genel ilkeler nelerdir?,1.0000,0.8656,kvkk_6698.pdf p.2; kvkk_6698.pdf p.2; kvkk_6698.pdf p.2,"According to the provided context [1], the necessary general principles that must be followed in processing personal data are:
+
+* Hukuka ve dürüstlük kurallarına uygun olma (compliance with the law and honesty rules)
+* Doğru ve gerektiğinde güncel olma (correctness and updating when necessary)
+* Belirli, açık ve meşru amaçlar için işlenme (processing for specific, transparent, and legitimate purposes)
+
+These principles must be followed in processing personal data in accordance with the law and other laws [1].",
+t04,tr,Hangi veriler özel nitelikli kişisel veri sayılır?,1.0000,0.6384,kvkk_6698.pdf p.2; kvkk_6698.pdf p.2; kvkk_6698.pdf p.2,"According to the context, special categories of personal data include:
+
+* ırkı (race)
+* etnik kökeni (ethnic origin)
+* siyasi düşüncesi (political thought)
+* felsefi inancı (philosophical beliefs)
+* dini (religion)
+* mezhebi (sect) or other beliefs
+* kılık ve kıyafeti (clothing and appearance)
+* dernek, vakıf ya da sendika üyeliği (membership in associations, foundations, or labor unions)
+* sağlığı (health)
+* cinsel hayatı (sexual life)
+* ceza mahkûmiyeti ve güvenlik tedbirleriyle ilgili verileri (data related to criminal conviction and security measures)
+* biyometrik ve genetik verileri (biometric and genetic data)
+
+These are specified in MADDE 6(1) [1].",
+t05,tr,Veri sorumlusu ilgili kişinin başvurusunu en geç ne kadar sürede sonuçlandırmalıdır?,1.0000,0.8288,kvkk_6698.pdf p.7; kvkk_6698.pdf p.4; kvkk_6698.pdf p.6,"According to the context, veri sorumlusu (data controller) must result the related person's application in the shortest possible time and no later than 30 days. [1]",
+t06,tr,Başvurusu reddedilen ilgili kişi Kurula ne zamana kadar şikâyette bulunabilir?,0.8333,0.7552,kvkk_6698.pdf p.7; kvkk_6698.pdf p.7; kvkk_6698.pdf p.7,"The relevant person can file a complaint with the Kurul within 30 days from the date of the application, and in any case, within 60 days from the date of the application. [1][1]
+
+In addition, if the response is deemed insufficient or no response is given within the specified time, the relevant person can file a complaint with the Kurul within 30 days from the date of learning of the response, and in any case, within 60 days from the date of the application. [1][1]
+
+In case the response is not given within 60 days from the date of the complaint, the complaint is considered rejected.",
+t07,tr,Kişisel Verileri Koruma Kurulu kaç üyeden oluşur ve üyeler kim tarafından seçilir?,1.0000,0.7935,kvkk_6698.pdf p.10; kvkk_6698.pdf p.10; kvkk_6698.pdf p.10,"The Kişisel Verileri Koruma Kurulu (Personal Data Protection Board) consists of 9 members [3].
+
+The members are chosen by the Turkish Grand National Assembly (Türkiye Büyük Millet Meclisi) and the President of the Republic (Cumhurbaşkanı) [1].",
+t08,tr,Veri güvenliğine ilişkin yükümlülükleri yerine getirmeyenlere ne kadar idari para cezası verilir?,1.0000,0.4954,kvkk_6698.pdf p.9; kvkk_6698.pdf p.10; kvkk_6698.pdf p.6,15.000 Türk lirasından 1.000.000 Türk lirasına kadar. [1],
+t09,tr,Açık rıza nedir?,1.0000,1.0000,kvkk_6698.pdf p.1; kvkk_6698.pdf p.4; kvkk_6698.pdf p.2,"Açık rıza: Belirli bir konuya ilişkin, bilgilendirilmeye dayanan ve özgür iradeyle açıklanan rızayı.
+
+[1] Maddede 3(1) [1]",
+t10,tr,Kişisel verilerin yurt dışına aktarılması Kanunun hangi maddesinde düzenlenir?,0.5000,0.7879,kvkk_6698.pdf p.4; kvkk_6698.pdf p.4; kvkk_6698.pdf p.4,"According to the provided context, the personal data export is regulated in MADDE 9 of the Kanunun. Specifically, it is mentioned in [1] and [2].
+
+Answer: MADDE 9",
+t11,tr,Bir hastane ya da şirket sağlık bilgilerimi hangi durumlarda işleyebilir?,0.1818,0.9182,kvkk_6698.pdf p.2; kvkk_6698.pdf p.2; kvkk_6698.pdf p.2,"According to the context, a hospital or a company can process your health information in the following situations:
+
+* For the preservation of your life or physical well-being, if you are unable to express your consent due to impossibility or if your consent is not recognized by law [2][5].
+* For the protection of public health, for the purposes of preventive healthcare, diagnosis, treatment, and care, as well as for planning, management, and financing of healthcare services [1].
+
+Note: These answers are based on the provided context, specifically [1] and [2].",
+t12,tr,Bir şirketten verilerimin silinmesini isteyebilir miyim?,1.0000,0.9851,kvkk_6698.pdf p.3; kvkk_6698.pdf p.6; kvkk_6698.pdf p.16,"Evet, bir şirketten verilerimin silinmesini isteyebilir miyim.
+
+[2] Maddede 11.1. bentine göre, herkes veri sorumlusuna başvurarak kendisiyle ilgili kişisel verilerin işlenip işlenmediğini öğrenme, kişisel verileri işlenmişse buna ilişkin bilgi talep etme ve kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme haklarına sahiptir. 
+
+[1] Maddede 7.1. göre, işlenmesini gerektiren sebeplerin ortadan kalkması hâlinde kişisel veriler resen veya ilgili kişinin talebi üzerine veri sorumlusu tarafından silinir, yok edilir veya anonim hâle getirilir. 
+
+Note: The answer is supported by [2] Maddede 11.1. and [1] Maddede 7.1.",
+t13,tr,İşlenen kişisel veriler kanuni olmayan yollarla başkalarının eline geçerse veri sorumlusu ne yapmalıdır?,1.0000,0.7745,kvkk_6698.pdf p.6; kvkk_6698.pdf p.6; kvkk_6698.pdf p.6,"The veri sorumlusu (data controller) should notify the relevant people and the Council (Kurula) about the situation as soon as possible. [1] (4)
+
+The veri sorumlusu should also report the situation to the relevant people and the Council if personal data is obtained by unauthorized means. [1] (5)",
+t14,tr,Kurul en az kaç üyeyle toplanır ve kararlarını nasıl alır?,1.0000,0.9153,kvkk_6698.pdf p.13; kvkk_6698.pdf p.10; kvkk_6698.pdf p.10,"Kurul, başkan dâhil en az altı üye ile toplanır ve üye tam sayısının salt çoğunluğuyla karar alır. [1]",
+t15,tr,Kurul üyelerinin görev süresi ne kadardır?,1.0000,0.5533,kvkk_6698.pdf p.10; kvkk_6698.pdf p.10; kvkk_6698.pdf p.10,"According to the context, the answer is: Dört yıldır. [1]",
+t16,tr,KVKK'ya göre şirketlerin veri koruma görevlisi ataması zorunlu mudur?,0.6667,0.0000,kvkk_6698.pdf p.10; kvkk_6698.pdf p.10; kvkk_6698.pdf p.6,"No, according to the provided context, it is not mentioned that companies (or any other private entities) are required to appoint a data protection officer (veri koruma görevlisi) by the KVKK (Kişisel Verileri Koruma Kurulu). The context only mentions the requirements and procedures for the appointment of data protection officers by public institutions and agencies. Therefore, I don't know the answer to this question.",
+t17,tr,Aydınlatma yükümlülüğü neleri kapsar ve bu yükümlülüğü yerine getirmeyenlere ne kadar idari para cezası verilir?,1.0000,0.8320,kvkk_6698.pdf p.9; kvkk_6698.pdf p.9; kvkk_6698.pdf p.6,"Aydınlatma yükümlülüğü kişisel verilerin elde edilmesi sırasında veri sorumlusu veya yetkilendirdiği kişiye ilişkin kişilere;
+- Veri sorumlusunun ve varsa temsilcisinin kimliği,
+- Kişisel verilerin hangi amaçla işleneceği,
+- İşlenen kişisel verilerin kimlere ve hangi amaçla aktarılabileceği,
+- ç) Kişisel veri toplamanın yöntemi ve hukuki sebebi,
+- 11 inci maddede sayılan diğer hakları,
+konusunda bilgi vermekle yükümlüdür. [3][10]
+
+According to Maddi 18 (1), those who do not fulfill this obligation will be punished with an administrative fine ranging from 5,000 to 100,000 Turkish liras. [1]",
+t18,tr,Kurula üye olabilmek için hangi eğitim şartı aranır?,1.0000,0.6433,kvkk_6698.pdf p.10; kvkk_6698.pdf p.10; kvkk_6698.pdf p.10,"En az dört yıllık lisans düzeyinde yükseköğrenim görmüş olmak.
+
+[2]",
+t19,tr,Kişisel verilerin resmi istatistik amacıyla işlenmesine bu Kanun uygulanır mı?,0.5000,0.7201,kvkk_6698.pdf p.16; kvkk_6698.pdf p.2; kvkk_6698.pdf p.1,"Yes, according to [1], the exception for this case is mentioned: ""Kişisel verilerin resmi istatistik ile anonim hâle getirilmek suretiyle araştırma, planlama ve istatistik gibi amaçlarla işlenmesi.""",
+t20,tr,Kişisel Verileri Koruma Kurumunun merkezi neresidir ve Kurum hangi birimlerden oluşur?,1.0000,0.8343,kvkk_6698.pdf p.9; kvkk_6698.pdf p.10; kvkk_6698.pdf p.9,"According to the context, the answer is:
+
+Kişisel Verileri Koruma Kurumunun merkezi Ankara'dadır. (The central office of the Personal Data Protection Institution is in Ankara.)
+
+The institution consists of Kurul and Başkanlıktan (The institution consists of the Council and the Presidency).",

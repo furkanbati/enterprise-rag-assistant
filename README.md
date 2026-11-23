@@ -151,9 +151,12 @@ docker compose up --build -d
 ```bash
 docker compose exec ollama ollama pull nomic-embed-text
 docker compose exec ollama ollama pull llama3
+docker compose exec ollama ollama pull qwen3.5:4b
 ```
 
-The cross-encoder model is configured as `cross-encoder/ms-marco-MiniLM-L-6-v2` and is loaded when reranking is first needed. Its initial use may require downloading the model.
+The cross-encoder model is configured as `cross-encoder/ms-marco-MiniLM-L-6-v2` and is loaded when reranking is first needed; Turkish questions use `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` (`RERANK_MODEL_TR`). Their first use may require downloading the models.
+
+`llama3` answers English questions; `qwen3.5:4b` (`CHAT_MODEL_TR`) answers Turkish ones, because `llama3` answers most Turkish questions in English.
 
 ### 4. Open the web interface
 
@@ -164,6 +167,66 @@ Once the services are running, open:
 Upload a document from the sidebar, then ask questions in the chat. The sources appear as soon as retrieval is done, the answer streams in token by token, and each answer lists its sources and the retrieval and generation times.
 
 The interactive API documentation is available at **http://localhost:8000/docs**. Both services are published on `localhost` only, so they are not reachable from other devices on the network.
+
+### Optional: faster answers on a GPU
+
+The default setup runs every model on the CPU inside Docker. It works on any machine, but it is slow: an answer from `llama3` takes about a minute and a half, and a Turkish answer from `qwen3.5:4b` three to four minutes, since that model generates text more slowly on a CPU. A GPU is optional and set up by hand; nothing in the default setup depends on it.
+
+Docker Desktop passes only NVIDIA GPUs to containers. For other GPUs (Intel Arc, AMD), run Ollama on the host instead of in Docker and point the containers to it.
+
+**Ollama on the host (tested with an Intel Arc 130T on Windows).** Ollama for Windows uses Intel and AMD GPUs through Vulkan and NVIDIA GPUs through CUDA.
+
+1. Install Ollama on the host and pull the models there:
+
+   ```bash
+   ollama pull nomic-embed-text
+   ollama pull llama3
+   ollama pull qwen3.5:4b
+   ```
+
+2. Point the containers to it in `.env`:
+
+   ```bash
+   OLLAMA_HOST=http://host.docker.internal:11434
+   ```
+
+3. Recreate the API so it reads the setting, then check that the models run on the GPU (the `PROCESSOR` column shows `100% GPU` once a model is loaded):
+
+   ```bash
+   docker compose up -d api
+   ollama ps
+   ```
+
+On a Core Ultra 5 225H, an answer to the Turkish evaluation questions took, on the CPU in Docker and on the Arc 130T:
+
+| Model | CPU (Docker) | Arc 130T |
+|---|---|---|
+| `llama3` | about 90 s | about 8 s |
+| `qwen3.5:4b` | about 220 s | about 8 s |
+
+The `ollama` container is no longer used and can be stopped.
+
+**NVIDIA GPU with the Ollama container (not tested on this project's hardware).** With a current NVIDIA driver on Windows (Docker Desktop with WSL 2), or the NVIDIA Container Toolkit on Linux, create `docker-compose.gpu.yml`:
+
+```yaml
+services:
+  ollama:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+```
+
+and start the services with it:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+```
+
+`docker compose exec ollama ollama ps` then shows `100% GPU`. `llama3` needs about 6 GB of GPU memory; with less, Ollama splits the model between GPU and CPU and the answers are slower. The rerankers run in the API container on the CPU in both setups (about 2 seconds per question).
 
 ## API Usage
 
@@ -306,12 +369,16 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `LLM_PROVIDER` | `ollama` (default) or `openai` |
 | `EMBED_PROVIDER` | `ollama` (default) or `openai` |
 | `CHAT_MODEL` | Answer-generation model; defaults to `llama3` for Ollama and `gpt-6-luna` for OpenAI |
+| `CHAT_MODEL_TR` | Chat model for Turkish questions, on the same provider; defaults to `qwen3.5:4b` for Ollama and to `CHAT_MODEL` for OpenAI |
+| `OLLAMA_THINK_TR` | Like `OLLAMA_THINK`, for the Turkish chat model; default `false` |
 | `EMBED_MODEL` | Embedding model; defaults to `nomic-embed-text` for Ollama and `text-embedding-3-small` for OpenAI |
 | `OLLAMA_HOST` | Ollama service URL |
+| `OLLAMA_THINK` | Reasoning of thinking Ollama models such as `qwen3.5`: `false` turns it off, `true` or `low`/`medium`/`high` turns it on; empty keeps the model's default |
 | `OPENAI_API_KEY` | Required when a provider is `openai` |
 | `OPENAI_BASE_URL` | Optional: any OpenAI-compatible API |
 | `OPENAI_REASONING_EFFORT` | Reasoning effort for OpenAI reasoning models (default `low`; empty to omit) |
 | `RERANK_MODEL` | Cross-encoder reranking model |
+| `RERANK_MODEL_TR` | Reranker for Turkish questions (default `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`, multilingual); set it to `RERANK_MODEL` to use one reranker for both |
 | `CHROMA_PATH` | Persistent vector database path |
 | `COLLECTION_NAME` | Base name of the ChromaDB collection; the embedding model and chunking configuration are appended, so each combination has its own collection |
 | `RETRIEVAL_TOP_K` | Number of candidates retrieved |
@@ -523,7 +590,61 @@ Context precision and recall grade retrieval only, which is the same for both ch
 
 - Hybrid retrieval improves every metric over vector search alone. Reranking puts the supporting passages first (the best context precision) and gives the most relevant answers, while RRF without reranking covers slightly more of the reference.
 - The Turkish questions score well below the English ones in every configuration; with reranking, answer relevancy is 0.571 vs 0.872 for `gpt-6-luna` and 0.565 vs 0.939 for `llama3`. Retrieval is weaker for them too (context recall 0.575 vs 0.952), and `llama3` answered most Turkish questions in English, because the prompt does not ask for an answer language.
-- With 29 questions, 8 of them in Turkish, differences of a few hundredths are within noise.
+- With 29 questions, 8 of them in Turkish, differences of a few hundredths are within noise. The next section measures the Turkish questions on a larger set.
+
+### Turkish questions
+
+The Turkish questions now have their own set of 32 questions about the KVKK: [`kvkk_tr_dev.jsonl`](evaluation/datasets/kvkk_tr_dev.jsonl) (20, used while improving the system) and [`kvkk_tr_test.jsonl`](evaluation/datasets/kvkk_tr_test.jsonl) (12, kept for one final run). They cover definitions, article numbers, deadlines and amounts, questions in everyday language, questions that need several articles and 3 that the law does not answer. Each question has a reference answer, the pages of the answer and evidence sentences, so the same file serves the retrieval metrics and RAGAS.
+
+Turkish questions are routed to components that handle Turkish (see `RERANK_MODEL_TR` and `CHAT_MODEL_TR` under [Configuration](#configuration)): the multilingual reranker `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` and the chat model `qwen3.5:4b`. English questions are unchanged.
+
+Retrieval on the development set (19 answerable questions, page-level relevance; evidence recall counts the labelled sentences in the 3 passages given to the model):
+
+| Turkish reranker | Hit@1 | Hit@3 | MRR | Evidence recall@3 |
+|---|---|---|---|---|
+| `ms-marco-MiniLM-L-6-v2` (English, before) | 0.737 | 0.789 | 0.778 | 0.658 |
+| `mmarco-mMiniLMv2-L12-H384-v1` | **1.000** | **1.000** | **1.000** | **0.921** |
+
+Answers on the development set (20 questions, `hybrid_rerank`, judge `gpt-6.1-sol`, measured on 2026-11-21). Answer relevancy is shown with two judge embeddings: `nomic-embed-text` is mostly English and scores Turkish answers lower, `bge-m3` is multilingual. The change of judge embedding changes only the measurement, not the system:
+
+| Chat model + Turkish reranker | Evidence reached the model | Faithfulness | Answer relevancy (`nomic` / `bge-m3`) | Answers in Turkish |
+|---|---|---|---|---|
+| `llama3` + MiniLM (before) | 14/19 | 0.844 | 0.567 / 0.758 | 2/20 |
+| `llama3` + mmarco | 19/19 | 0.863 | 0.584 / 0.757 | 4/20 |
+| `qwen3.5:4b` + mmarco (now) | 19/19 | **0.923** | **0.864** / **0.882** | **19/20** |
+
+- The reranker fixes retrieval: the right article reaches the model for every question. With `llama3`, the answers barely improve, because it still answers in English; the chat model is what makes the Turkish answers good.
+- `bge-m3` does not penalize an answer in the wrong language (`llama3`'s English answers score 0.757), so the share of answers in the question's language is reported on its own.
+- On a CPU, `qwen3.5:4b` takes about 220 s per answer in Docker (about 8 s on an Arc 130T GPU); see [Optional: faster answers on a GPU](#optional-faster-answers-on-a-gpu).
+
+The test set was run once, on 2026-11-23, with the configuration frozen at commit `ae428a6` (10 answerable questions, 2 unanswerable):
+
+| | Before: `llama3` + MiniLM | After: `qwen3.5:4b` + mmarco |
+|---|---|---|
+| Retrieval Hit@3 / MRR | 0.700 / 0.675 | **0.900 / 0.900** |
+| Faithfulness | 0.674 | **0.805** |
+| Answer relevancy (`nomic` / `bge-m3`) | 0.528 / 0.572 | **0.740 / 0.733** |
+| Answers in Turkish | 4/12 | **11/12** |
+
+The scores are lower than on the development set, as expected when every choice was made on it, but the improvement holds. The remaining errors are questions in everyday language that retrieval misses and reasoning slips of the 4B model; the [full report](evaluation/results/turkish/report.md) has examples, the contribution of each change and the commands to reproduce it.
+
+**Tried and not adopted: an answer-language rule in the prompt.** Adding "Answer in the language of the question, even when the context is in another language; this includes saying that you don't know" to the system prompt was measured on 2026-11-22 on the GPU, with the same settings otherwise:
+
+| Set (chat model) | Prompt | Faithfulness | Answer relevancy (`nomic`) | Answers in Turkish | Time per answer |
+|---|---|---|---|---|---|
+| Turkish dev, 20 (`qwen3.5:4b`) | without the rule | 0.923 | 0.864 | 19/20 | 7.8 s |
+| | with the rule | 0.893 | 0.902 | 18/20 | 8.8 s |
+| English, 21 (`llama3`) | without the rule | 0.977 | 0.953 | – | 6.7 s |
+| | with the rule | 0.971 | 0.933 | – | 10.8 s |
+
+The rule brought no measurable gain: the "not in the context" answer it targeted (t16) came out in English instead of Turkish, per-question changes went both ways, and the English scores dipped slightly. Run-to-run variation was not measured, so differences of a few hundredths may be noise. The prompt was left unchanged.
+
+To reproduce the Turkish measurements:
+
+```bash
+docker compose run --rm eval python -m evaluation --dataset evaluation/datasets/kvkk_tr_dev.jsonl
+docker compose run --rm eval python -m evaluation.ragas_eval --config hybrid_rerank --dataset evaluation/datasets/kvkk_tr_dev.jsonl --metrics faithfulness answer_relevancy
+```
 
 ## Chunking
 

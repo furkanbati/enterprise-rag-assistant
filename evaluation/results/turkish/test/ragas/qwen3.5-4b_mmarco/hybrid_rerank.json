@@ -1,0 +1,327 @@
+{
+  "metadata": {
+    "Date": "2026-11-23 17:54 UTC",
+    "Dataset": "kvkk_tr_test.jsonl (12 questions)",
+    "Chat model": "ollama/llama3",
+    "Chat model (Turkish questions)": "ollama/qwen3.5:4b",
+    "Reranker (Turkish questions)": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+    "Judge model": "openai/gpt-6.1-sol",
+    "Judge embeddings": "ollama/nomic-embed-text",
+    "Retrieval embeddings": "ollama/nomic-embed-text",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Passages per answer": 3,
+    "Candidates per retriever": 12
+  },
+  "summary": {
+    "config": "hybrid_rerank",
+    "strategy": "hybrid_rrf_rerank",
+    "questions": 12,
+    "scores": {
+      "faithfulness": 0.8052248677248677,
+      "answer_relevancy": 0.7401234431801011
+    },
+    "scores_by_language": {
+      "tr": {
+        "faithfulness": 0.8052248677248677,
+        "answer_relevancy": 0.7401234431801011
+      }
+    },
+    "unscored": {
+      "faithfulness": 0,
+      "answer_relevancy": 0
+    },
+    "mean_retrieval_ms": 3323.8608641666665,
+    "mean_generation_ms": 9887.995049833326
+  },
+  "records": [
+    {
+      "sample_id": "t21",
+      "language": "tr",
+      "question": "KVKK'da veri işleyen kime denir?",
+      "reference": "Veri işleyen, veri sorumlusunun verdiği yetkiye dayanarak onun adına kişisel verileri işleyen gerçek veya tüzel kişidir.",
+      "answer": "KVKK'da, veri sorumlusunun verdiği yetkiye dayanarak onun adına kişisel verileri işleyen gerçek veya tüzel kişiye **veri işleyen** denir [1].",
+      "contexts": [
+        "Amaç\nTanımlar\n\nMADDE 3(1) Bu Kanunun uygulanmasında;\n- Açık rıza: Belirli bir konuya ilişkin, bilgilendirilmeye dayanan ve özgür iradeyle açıklanan rızayı,\n- Anonim hâle getirme: Kişisel verilerin, başka verilerle eşleştirilerek dahi hiçbir surette kimliği belirli veya belirlenebilir bir gerçek kişiyle ilişkilendirilemeyecek hâle getirilmesini,\n- Başkan: Kişisel Verileri Koruma Kurumu Başkanını,\n- ç) İlgili kişi: Kişisel verisi işlenen gerçek kişiyi,\n- Kişisel veri: Kimliği belirli veya belirlenebilir gerçek kişiye ilişkin her türlü bilgiyi,\n- Kişisel verilerin işlenmesi: Kişisel verilerin tamamen veya kısmen otomatik olan ya da herhangi bir veri kayıt sisteminin parçası olmak kaydıyla otomatik olmayan yollarla elde edilmesi, kaydedilmesi, depolanması, muhafaza edilmesi, değiştirilmesi, yeniden düzenlenmesi, açıklanması, aktarılması, devralınması, elde edilebilir hâle getirilmesi, sınıflandırılması ya da kullanılmasının engellenmesi gibi veriler üzerinde gerçekleştirilen her türlü işlemi,\n- Kurul: Kişisel Verileri Koruma Kurulunu,\n- Kurum: Kişisel Verileri Koruma Kurumunu,\n- ğ) Veri işleyen: Veri sorumlusunun verdiği yetkiye dayanarak onun adına kişisel verileri işleyen gerçek veya tüzel kişiyi,\n- Veri kayıt sistemi: Kişisel verilerin belirli kriterlere göre yapılandırılarak işlendiği kayıt sistemini,",
+        "Amaç\nKişisel Verileri Koruma Kurulu\n\nAncak, siyasi parti gruplarında, Türkiye Büyük Millet Meclisinde yapılacak seçimlerde kime oy kullanılacağına dair görüşme yapılamaz ve karar alınamaz. b) Kurul üyelerinin seçimi, adayların belirlenerek ilanından sonra on gün içinde yapılır. Siyasi parti grupları tarafından gösterilen adaylar için ayrı ayrı listeler hâlinde birleşik oy pusulası düzenlenir.",
+        "Amaç\nKapsam\n\nMADDE 2(1) Bu Kanun hükümleri, kişisel verileri işlenen gerçek kişiler ile bu verileri tamamen veya kısmen otomatik olan ya da herhangi bir veri kayıt sisteminin parçası olmak kaydıyla otomatik olmayan yollarla işleyen gerçek ve tüzel kişiler hakkında uygulanır."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.1",
+        "kvkk_6698.pdf p.10",
+        "kvkk_6698.pdf p.1"
+      ],
+      "retrieval_ms": 4331.096164000001,
+      "generation_ms": 11714.865961000001,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8032942095831309
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t22",
+      "language": "tr",
+      "question": "Anonim hâle getirme ne anlama gelir?",
+      "reference": "Anonim hâle getirme, kişisel verilerin başka verilerle eşleştirilerek dahi hiçbir surette kimliği belirli veya belirlenebilir bir gerçek kişiyle ilişkilendirilemeyecek hâle getirilmesidir.",
+      "answer": "Kişisel verilerin, başka verilerle eşleştirilerek dahi hiçbir surette kimliği belirli veya belirlenebilir bir gerçek kişiyle ilişkilendirilemeyecek hâle getirilmesidir [1].",
+      "contexts": [
+        "Amaç\nTanımlar\n\nMADDE 3(1) Bu Kanunun uygulanmasında;\n- Açık rıza: Belirli bir konuya ilişkin, bilgilendirilmeye dayanan ve özgür iradeyle açıklanan rızayı,\n- Anonim hâle getirme: Kişisel verilerin, başka verilerle eşleştirilerek dahi hiçbir surette kimliği belirli veya belirlenebilir bir gerçek kişiyle ilişkilendirilemeyecek hâle getirilmesini,\n- Başkan: Kişisel Verileri Koruma Kurumu Başkanını,\n- ç) İlgili kişi: Kişisel verisi işlenen gerçek kişiyi,\n- Kişisel veri: Kimliği belirli veya belirlenebilir gerçek kişiye ilişkin her türlü bilgiyi,\n- Kişisel verilerin işlenmesi: Kişisel verilerin tamamen veya kısmen otomatik olan ya da herhangi bir veri kayıt sisteminin parçası olmak kaydıyla otomatik olmayan yollarla elde edilmesi, kaydedilmesi, depolanması, muhafaza edilmesi, değiştirilmesi, yeniden düzenlenmesi, açıklanması, aktarılması, devralınması, elde edilebilir hâle getirilmesi, sınıflandırılması ya da kullanılmasının engellenmesi gibi veriler üzerinde gerçekleştirilen her türlü işlemi,\n- Kurul: Kişisel Verileri Koruma Kurulunu,\n- Kurum: Kişisel Verileri Koruma Kurumunu,\n- ğ) Veri işleyen: Veri sorumlusunun verdiği yetkiye dayanarak onun adına kişisel verileri işleyen gerçek veya tüzel kişiyi,\n- Veri kayıt sistemi: Kişisel verilerin belirli kriterlere göre yapılandırılarak işlendiği kayıt sistemini,",
+        "Amaç\nKişisel verilerin silinmesi, yok edilmesi veya anonim hâle getirilmesi\n\nMADDE 7(1) Bu Kanun ve ilgili diğer kanun hükümlerine uygun olarak işlenmiş olmasına rağmen, işlenmesini gerektiren sebeplerin ortadan kalkması hâlinde kişisel veriler resen veya ilgili kişinin talebi üzerine veri sorumlusu tarafından silinir, yok edilir veya anonim hâle getirilir. (2) Kişisel verilerin silinmesi, yok edilmesi veya anonim hâle getirilmesine ilişkin diğer kanunlarda yer alan hükümler saklıdır.",
+        "Amaç\nKişisel verilerin silinmesi, yok edilmesi veya anonim hâle getirilmesi\n\n(3) Kişisel verilerin silinmesine, yok edilmesine veya anonim hâle getirilmesine ilişkin usul ve esaslar yönetmelikle düzenlenir."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.1",
+        "kvkk_6698.pdf p.3",
+        "kvkk_6698.pdf p.3"
+      ],
+      "retrieval_ms": 4141.653117999994,
+      "generation_ms": 4865.826335999984,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8066415261942871
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t23",
+      "language": "tr",
+      "question": "Kurul bir şikâyete kaç gün içinde cevap vermezse talep reddedilmiş sayılır?",
+      "reference": "Şikâyet tarihinden itibaren altmış gün içinde cevap verilmezse talep reddedilmiş sayılır.",
+      "answer": "Kuralların tam tersidir: Kurul bir şikâyet üzerine **60 günden fazla** cevap vermezse, o talep reddedilmiş sayılır. Bu durum, başvuru için de geçerli olup aynı esaslara dayanır.\n\n[1] Şikâyet tarihinden itibaren altmış gün içinde cevap verilmezse talep reddedilmiş sayılır.  \n[2] ilgili kişi... otuz ve her hâlde başvuru tarihinden itibaren altmış gün içinde Kurula şikâyette bulunabilir.",
+      "contexts": [
+        "Amaç\nŞikâyet üzerine veya resen incelemenin usul ve esasları\n\nŞikâyet tarihinden itibaren altmış gün içinde cevap verilmezse talep reddedilmiş sayılır. (5) Şikâyet üzerine veya resen yapılan inceleme sonucunda, ihlalin varlığının anlaşılması hâlinde Kurul, tespit ettiği hukuka aykırılıkların veri sorumlusu tarafından giderilmesine karar vererek ilgililere tebliğ eder.",
+        "Amaç\nKurula şikâyet\n\nMADDE 14(1) Başvurunun reddedilmesi, verilen cevabın yetersiz bulunması veya süresinde başvuruya cevap verilmemesi hâllerinde; ilgili kişi, veri sorumlusunun cevabını öğrendiği tarihten itibaren otuz ve her hâlde başvuru tarihinden itibaren altmış gün içinde Kurula şikâyette bulunabilir. (2) 13 üncü madde uyarınca başvuru yolu tüketilmeden şikâyet yoluna başvurulamaz.",
+        "Amaç\nŞikâyet üzerine veya resen incelemenin usul ve esasları\n\n(3) Devlet sırrı niteliğindeki bilgi ve belgeler hariç; veri sorumlusu, Kurulun, inceleme konusuyla ilgili istemiş olduğu bilgi ve belgeleri on beş gün içinde göndermek ve gerektiğinde yerinde inceleme yapılmasına imkân sağlamak zorundadır. (4) Şikâyet üzerine Kurul, talebi inceleyerek ilgililere bir cevap verir."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.7"
+      ],
+      "retrieval_ms": 2872.222932999989,
+      "generation_ms": 9510.763785999985,
+      "scores": {
+        "answer_relevancy": 0.8921233983865218,
+        "faithfulness": 0.5
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t24",
+      "language": "tr",
+      "question": "Veri Sorumluları Siciline kayıt yükümlülüğüne uymayanlara ne kadar idari para cezası verilir?",
+      "reference": "16. maddede öngörülen Veri Sorumluları Siciline kayıt ve bildirim yükümlülüğüne aykırı hareket edenlere 20.000 Türk lirasından 1.000.000 Türk lirasına kadar idari para cezası verilir.",
+      "answer": "Veri Sorumluları Siciline kayıt ve bildirim yükümlülüğünü yerine getirmeyenler hakkında **20.000 Türk lirasından 1.000.000 Türk lirasına kadar** idari para cezası verilir [1].",
+      "contexts": [
+        "Amaç\nKabahatler 1\n\nMADDE 18(1) Bu Kanunun;\n- 10 uncu maddesinde öngörülen aydınlatma yükümlülüğünü yerine getirmeyenler hakkında 5.000 Türk lirasından 100.000 Türk lirasına kadar,\n- 12 nci maddesinde öngörülen veri güvenliğine ilişkin yükümlülükleri yerine getirmeyenler hakkında 15.000 Türk lirasından 1.000.000 Türk lirasına kadar,\n- 15 inci maddesi uyarınca Kurul tarafından verilen kararları yerine getirmeyenler hakkında 25.000 Türk lirasından 1.000.000 Türk lirasına kadar,\n- ç) 16 ncı maddesinde öngörülen Veri Sorumluları Siciline kayıt ve bildirim yükümlülüğüne aykırı hareket edenler hakkında 20.000 Türk lirasından 1.000.000 Türk lirasına kadar,\n- (Ek:2/3/2024-7499/35 md.) 9 uncu maddenin beşinci fıkrasında öngörülen bildirim yükümlülüğünü yerine getirmeyenler hakkında 50.000 Türk lirasından 1.000.000 Türk lirasına kadar,\nidari para cezası verilir.",
+        "Amaç\nKabahatler 1\n\n(2) (Değişik:2/3/2024-7499/35 md.) Birinci fıkranın (a), (b), (c) ve (ç) bentlerinde öngörülen idari para cezaları veri sorumlusu, (d) bendinde öngörülen idari para cezası veri sorumlusu veya veri işleyen gerçek kişiler ile özel hukuk tüzel kişileri hakkında uygulanır. (3) (Ek:2/3/2024-7499/35 md.) Kurulca verilen idari para cezalarına karşı, idare mahkemelerinde dava açılabilir.",
+        "Amaç\nİstisnalar\n\n- Kişisel verilerin soruşturma, kovuşturma, yargılama veya infaz işlemlerine ilişkin olarak yargı makamları veya infaz mercileri tarafından işlenmesi. (2) Bu Kanunun amacına ve temel ilkelerine uygun ve orantılı olmak kaydıyla veri sorumlusunun aydınlatma yükümlülüğünü düzenleyen 10 uncu, zararın giderilmesini talep etme hakkı hariç, ilgili kişinin haklarını düzenleyen 11 inci ve Veri Sorumluları Siciline kayıt yükümlülüğünü düzenleyen 16 ncı maddeleri aşağıdaki hâllerde uygulanmaz:\n- Kişisel veri işlemenin suç işlenmesinin önlenmesi veya suç soruşturması için gerekli olması."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.9",
+        "kvkk_6698.pdf p.9",
+        "kvkk_6698.pdf p.16"
+      ],
+      "retrieval_ms": 2932.9421900000057,
+      "generation_ms": 6841.484934999982,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9583134286059508
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t25",
+      "language": "tr",
+      "question": "Bir şirket kişisel verilerimi benim iznim olmadan başka bir şirkete verebilir mi?",
+      "reference": "Kural olarak hayır: kişisel veriler ilgili kişinin açık rızası olmaksızın aktarılamaz. Ancak 5. maddenin ikinci fıkrasındaki şartlardan birinin veya yeterli önlemler alınmak kaydıyla 6. maddenin üçüncü fıkrasındaki şartlardan birinin bulunması hâlinde açık rıza aranmaksızın aktarılabilir.",
+      "answer": "Hayır, bir şirket sizin açık rızanız olmaksızın size ait kişisel verileri başka bir şirkete (gerçek veya tüzel kişiye) veremez. Genişletilmiş işleme için kanunda belirtilen özel şartların birinin söz konusu olması gerekir [1][3]. Bu şartlar arasında, veri başka bir gerçek veya tüzel kişi tarafından işleneceği durumdaki sorumlulukları belirleyen bir hüküm de vardır [2], ancak bunların dışında açık rızanın bulunmaması durumunda bu işlem yasaktır.",
+      "contexts": [
+        "Amaç\nKişisel verilerin işlenme şartları\n\nMADDE 5(1) Kişisel veriler ilgili kişinin açık rızası olmaksızın işlenemez. - Aşağıdaki şartlardan birinin varlığı hâlinde, ilgili kişinin açık rızası aranmaksızın kişisel verilerinin işlenmesi mümkündür:\n- Kanunlarda açıkça öngörülmesi. - Fiili imkânsızlık nedeniyle rızasını açıklayamayacak durumda bulunan veya rızasına hukuki geçerlilik tanınmayan kişinin kendisinin ya da bir başkasının hayatı veya beden bütünlüğünün korunması için zorunlu olması.",
+        "Amaç\nVeri güvenliğine ilişkin yükümlülükler\n\n(2) Veri sorumlusu, kişisel verilerin kendi adına başka bir gerçek veya tüzel kişi tarafından işlenmesi hâlinde, birinci fıkrada belirtilen tedbirlerin alınması hususunda bu kişilerle birlikte müştereken sorumludur. (3) Veri sorumlusu, kendi kurum veya kuruluşunda, bu Kanun hükümlerinin uygulanmasını sağlamak amacıyla gerekli denetimleri yapmak veya yaptırmak zorundadır.",
+        "Amaç\nÖzel nitelikli kişisel verilerin işlenme şartları\n\nAncak bu verilerin işlenmesi;\n- İlgili kişinin açık rızasının olması,\n- Kanunlarda açıkça öngörülmesi,\n- Fiili imkânsızlık nedeniyle rızasını açıklayamayacak durumda bulunan veya rızasına hukuki geçerlilik tanınmayan kişinin, kendisinin ya da bir başkasının hayatı veya beden bütünlüğünün korunması için zorunlu olması,\n- ç) İlgili kişinin alenileştirdiği kişisel verilere ilişkin ve alenileştirme iradesine uygun olması,\n- Bir hakkın tesisi, kullanılması veya korunması için zorunlu olması,\n- Sır saklama yükümlülüğü altında bulunan kişiler veya yetkili kurum ve kuruluşlarca, kamu sağlığının korunması, koruyucu hekimlik, tıbbi teşhis, tedavi ve bakım hizmetlerinin yürütülmesi ile sağlık hizmetlerinin planlanması, yönetimi ve finansmanı amacıyla gerekli olması,\n- İstihdam, iş sağlığı ve güvenliği, sosyal güvenlik, sosyal hizmetler ve sosyal yardım alanlarındaki hukuki yükümlülüklerin yerine getirilmesi için zorunlu olması,\n- Siyasi, felsefi, dini veya sendikal amaçlarla kurulan vakıf, dernek ve diğer kâr amacı gütmeyen kuruluş ya da oluşumların, tâbi oldukları mevzuata ve amaçlarına uygun olmak, faaliyet alanlarıyla sınırlı olmak ve üçüncü kişilere açıklanmamak kaydıyla; mevcut veya eski üyelerine ve mensuplarına veyahut bu kuruluş ve oluşumlarla düzenli olarak temasta olan kişilere yönelik olması,\nhalinde mümkündür."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.2",
+        "kvkk_6698.pdf p.6",
+        "kvkk_6698.pdf p.2"
+      ],
+      "retrieval_ms": 2539.549023999996,
+      "generation_ms": 9283.864908999987,
+      "scores": {
+        "answer_relevancy": 0.9049024460396468,
+        "faithfulness": 0.25
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t26",
+      "language": "tr",
+      "question": "İlgili kişi veri sorumlusundan neler talep edebilir ve başvurusunu nasıl iletir?",
+      "reference": "İlgili kişi; kişisel verisinin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, verilerin aktarıldığı üçüncü kişileri bilme, eksik veya yanlış işlenmiş verilerin düzeltilmesini ve 7. madde çerçevesinde silinmesini veya yok edilmesini isteme, bu işlemlerin üçüncü kişilere bildirilmesini isteme, yalnızca otomatik sistemlerle yapılan analiz sonucu aleyhine çıkan sonuca itiraz etme ve kanuna aykırı işleme nedeniyle uğradığı zararın giderilmesini talep etme haklarına sahiptir. Taleplerini yazılı olarak veya Kurulun belirleyeceği diğer yöntemlerle veri sorumlusuna iletir.",
+      "answer": "İlgili kişi, veri sorumlusuna başvurarak kendisiyle ilgili çeşitli hakları talep edebilir. Bu başvurular yazılı olarak veya Kurulun belirleyeceği diğer yöntemlerle yapılabilir [1]. Talep edilen haklar şunlardır:\n\n- Kişisel verinin işlenip işlenmediğini öğrenme;\n- İşlenmiş kişisel verilerle ilgili bilgiye erişim;\n- Verilerin işlenme amacını ve kullanım durumunu öğrenme;\n- Yurt içinde veya dışında kişisel verilerin aktarıldığı üçüncü şahısları bilme (c bendi);\n- Kişisel verilerin eksik veya yanlış işlenmesi durumunda düzeltme isteği;\n- Madde 7'deki şartlara uygun olarak silinmesini veya yok edilmesini isteme;\n- Üçüncü şahıslara bildirilmiş işlemlere dair bilgiye erişim isteği (d ve e bentleri);\n- Otomatik analiz sistemlerinin kişisel sonuca varmasıyla itiraz etme;\n- Kanuna aykırı işleme sebebiyle zararın giderilmesini talep etme [3].\n\nVeri sorumlusu, talepleri niteliğine göre en kısa sürede ve en geç otuz gün içinde sonuçlandırır. İşlem maliyeti gerektirmiyorsa ücretsizdir, ancak özel bir ücret alınması durumunda Kurulca belirlenen tarifeye uygun olarak ücret kesilebilir [1]. Veri sorumlusu kabul eder veya reddeder; reddedildiğinde gerekçe sunulur ve cevap ilgili kişiye yazılı veya elektronik ortamda iletilir [2].",
+      "contexts": [
+        "Amaç\nVeri sorumlusuna başvuru\n\nMADDE 13(1) İlgili kişi, bu Kanunun uygulanmasıyla ilgili taleplerini yazılı olarak veya Kurulun belirleyeceği diğer yöntemlerle veri sorumlusuna iletir. (2) Veri sorumlusu başvuruda yer alan talepleri, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde ücretsiz olarak sonuçlandırır. Ancak, işlemin ayrıca bir maliyeti gerektirmesi hâlinde, Kurulca belirlenen tarifedeki ücret alınabilir.",
+        "Amaç\nVeri sorumlusuna başvuru\n\n(3) Veri sorumlusu talebi kabul eder veya gerekçesini açıklayarak reddeder ve cevabını ilgili kişiye yazılı olarak veya elektronik ortamda bildirir. Başvuruda yer alan talebin kabul edilmesi hâlinde veri sorumlusunca gereği yerine getirilir. Başvurunun veri sorumlusunun hatasından kaynaklanması hâlinde alınan ücret ilgiliye iade edilir.",
+        "Amaç\nİlgili kişinin hakları\n\nMADDE 11(1) Herkes, veri sorumlusuna başvurarak kendisiyle ilgili;\n- Kişisel veri işlenip işlenmediğini öğrenme,\n- Kişisel verileri işlenmişse buna ilişkin bilgi talep etme,\n- Kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme,\n- ç) Yurt içinde veya yurt dışında kişisel verilerin aktarıldığı üçüncü kişileri bilme,\n- Kişisel verilerin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme,\n- 7 nci maddede öngörülen şartlar çerçevesinde kişisel verilerin silinmesini veya yok edilmesini isteme,\n- (d) ve (e) bentleri uyarınca yapılan işlemlerin, kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme,\n- İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme,\n- ğ) Kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması hâlinde zararın giderilmesini talep etme,\nhaklarına sahiptir."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.7",
+        "kvkk_6698.pdf p.6"
+      ],
+      "retrieval_ms": 3025.5305249999938,
+      "generation_ms": 20568.63537000001,
+      "scores": {
+        "answer_relevancy": 0.8398103508542957,
+        "faithfulness": 0.8571428571428571
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t27",
+      "language": "tr",
+      "question": "Kurulun verdiği idari para cezalarına karşı nerede dava açılabilir?",
+      "reference": "Kurulca verilen idari para cezalarına karşı idare mahkemelerinde dava açılabilir.",
+      "answer": "Kurulca verilen idari para cezalarına karşı, **idare mahkemelerinde** dava açılabilir [1].",
+      "contexts": [
+        "Amaç\nKabahatler 1\n\n(2) (Değişik:2/3/2024-7499/35 md.) Birinci fıkranın (a), (b), (c) ve (ç) bentlerinde öngörülen idari para cezaları veri sorumlusu, (d) bendinde öngörülen idari para cezası veri sorumlusu veya veri işleyen gerçek kişiler ile özel hukuk tüzel kişileri hakkında uygulanır. (3) (Ek:2/3/2024-7499/35 md.) Kurulca verilen idari para cezalarına karşı, idare mahkemelerinde dava açılabilir.",
+        "Amaç\nKişisel Verileri Koruma Kurumu\n\nMADDE 19(1) Bu Kanunla verilen görevleri yerine getirmek üzere, idari ve mali özerkliğe sahip ve kamu tüzel kişiliğini haiz Kişisel Verileri Koruma Kurumu kurulmuştur. (2) Kurum Cumhurbaşkanının görevlendireceği bakan ile ilişkilidir. 2\n- Kurumun merkezi Ankara'dadır. - Kurum, Kurul ve Başkanlıktan oluşur.",
+        "Amaç\nKişisel Verileri Koruma Kurulu\n\nGörev süresi dolmadan herhangi bir sebeple görevi sona eren üyenin yerine seçilen kişi, yerine seçildiği üyenin kalan süresini tamamlar. (9) Seçilen üyeler Yargıtay Birinci Başkanlık Kurulu huzurunda 'Görevimi Anayasaya ve kanunlara uygun olarak, tam bir tarafsızlık, dürüstlük, hakkaniyet ve adalet anlayışı içinde yerine getireceğime, namusum ve şerefim üzerine yemin ederim.' şeklinde yemin ederler."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.9",
+        "kvkk_6698.pdf p.9",
+        "kvkk_6698.pdf p.10"
+      ],
+      "retrieval_ms": 2817.412573000013,
+      "generation_ms": 4970.009245,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9004472554053832
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t28",
+      "language": "tr",
+      "question": "Yurt dışına aktarımda yeterlilik kararını kim verir ve bu karar ne sıklıkla değerlendirilir?",
+      "reference": "Yeterlilik kararı Kurul tarafından verilir ve Resmî Gazete'de yayımlanır. Karar en geç dört yılda bir değerlendirilir; Kurul gerekirse kararı ileriye etkili olmak üzere değiştirebilir, askıya alabilir veya kaldırabilir.",
+      "answer": "Yeterlilik kararı, **Kurul** tarafından verilir [2]. Karar, en geç **dört yılda bir** değerlendirilir [1][3].",
+      "contexts": [
+        "Amaç\nMADDE 9(Değişik:2/3/2024-7499/34 md.)\n\nKurul, ihtiyaç duyması halinde ilgili kurum ve kuruluşların görüşünü alır. Yeterlilik kararı, en geç dört yılda bir değerlendirilir. Kurul, değerlendirme sonucunda veya gerekli gördüğü diğer hallerde, yeterlilik kararını ileriye etkili olmak üzere değiştirebilir, askıya alabilir veya kaldırabilir. - Yeterlilik kararı verilirken öncelikle aşağıdaki hususlar dikkate alınır:\n- Kişisel verilerin aktarılacağı ülke, ülke içerisindeki sektörler veya uluslararası kuruluşlar ile Türkiye arasında kişisel veri aktarımına ilişkin karşılıklılık durumu.",
+        "Amaç\nMADDE 9(Değişik:2/3/2024-7499/34 md.)\n\n- Kişisel veriler, 5 inci ve 6 ncı maddelerde belirtilen şartlardan birinin varlığı ve aktarımın yapılacağı ülke, ülke içerisindeki sektörler veya uluslararası kuruluşlar hakkında yeterlilik kararı bulunması halinde, veri sorumluları ve veri işleyenler tarafından yurt dışına aktarılabilir. (2) Yeterlilik kararı, Kurul tarafından verilir ve Resmî Gazete'de yayımlanır.",
+        "Amaç\nMADDE 9(Değişik:2/3/2024-7499/34 md.)\n\n- Türkiye'nin taraf olduğu uluslararası sözleşmeler. - Kişisel veriler, yeterlilik kararının bulunmaması durumunda, 5 inci ve 6 ncı maddelerde belirtilen şartlardan birinin varlığı, ilgili kişinin aktarımın yapılacağı ülkede de haklarını kullanma ve etkili kanun yollarına başvurma imkânının bulunması kaydıyla, aşağıda belirtilen uygun güvencelerden birinin taraflarca sağlanması halinde veri sorumluları ve veri işleyenler tarafından yurt dışına aktarılabilir:\n- Yurt dışındaki kamu kurum ve kuruluşları veya uluslararası kuruluşlar ile Türkiye'deki kamu kurum ve kuruluşları veya kamu kurumu niteliğindeki meslek kuruluşları arasında yapılan uluslararası sözleşme niteliğinde olmayan anlaşmanın varlığı ve Kurul tarafından aktarıma izin verilmesi."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.4",
+        "kvkk_6698.pdf p.4",
+        "kvkk_6698.pdf p.4"
+      ],
+      "retrieval_ms": 3002.796367999991,
+      "generation_ms": 5019.872910000004,
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8668583181527322
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t29",
+      "language": "tr",
+      "question": "Kişisel verilere ilişkin suçlarda hangi kanunun hangi maddeleri uygulanır?",
+      "reference": "Kişisel verilere ilişkin suçlarda 5237 sayılı Türk Ceza Kanununun 135 ila 140. madde hükümleri uygulanır. Kanunun 7. maddesine aykırı olarak kişisel verileri silmeyen veya anonim hâle getirmeyenler 5237 sayılı Kanunun 138. maddesine göre cezalandırılır.",
+      "answer": "Kişisel verilere ilişkin suçlarda, **26/9/2004 tarihli ve 5237 sayılı Türk Ceza Kanunu'nun 135. ila 140. maddeleri** uygulanır [1]. Ayrıca kişisel verileri silmeyen veya anonim hâle getirmeyenler, bu kanunun **138. maddesi** kapsamında cezalandırılır [1].",
+      "contexts": [
+        "Amaç\nSuçlar\n\nMADDE 17(1) Kişisel verilere ilişkin suçlar bakımından 26/9/2004 tarihli ve 5237 sayılı Türk Ceza Kanununun 135 ila 140 ıncı madde hükümleri uygulanır. (2) Bu Kanunun 7 nci maddesi hükmüne aykırı olarak; kişisel verileri silmeyen veya anonim hâle getirmeyenler 5237 sayılı Kanunun 138 inci maddesine göre cezalandırılır.",
+        "Amaç\nİstisnalar\n\n- Kişisel verilerin soruşturma, kovuşturma, yargılama veya infaz işlemlerine ilişkin olarak yargı makamları veya infaz mercileri tarafından işlenmesi. (2) Bu Kanunun amacına ve temel ilkelerine uygun ve orantılı olmak kaydıyla veri sorumlusunun aydınlatma yükümlülüğünü düzenleyen 10 uncu, zararın giderilmesini talep etme hakkı hariç, ilgili kişinin haklarını düzenleyen 11 inci ve Veri Sorumluları Siciline kayıt yükümlülüğünü düzenleyen 16 ncı maddeleri aşağıdaki hâllerde uygulanmaz:\n- Kişisel veri işlemenin suç işlenmesinin önlenmesi veya suç soruşturması için gerekli olması.",
+        "Amaç\nTanımlar\n\nMADDE 3(1) Bu Kanunun uygulanmasında;\n- Açık rıza: Belirli bir konuya ilişkin, bilgilendirilmeye dayanan ve özgür iradeyle açıklanan rızayı,\n- Anonim hâle getirme: Kişisel verilerin, başka verilerle eşleştirilerek dahi hiçbir surette kimliği belirli veya belirlenebilir bir gerçek kişiyle ilişkilendirilemeyecek hâle getirilmesini,\n- Başkan: Kişisel Verileri Koruma Kurumu Başkanını,\n- ç) İlgili kişi: Kişisel verisi işlenen gerçek kişiyi,\n- Kişisel veri: Kimliği belirli veya belirlenebilir gerçek kişiye ilişkin her türlü bilgiyi,\n- Kişisel verilerin işlenmesi: Kişisel verilerin tamamen veya kısmen otomatik olan ya da herhangi bir veri kayıt sisteminin parçası olmak kaydıyla otomatik olmayan yollarla elde edilmesi, kaydedilmesi, depolanması, muhafaza edilmesi, değiştirilmesi, yeniden düzenlenmesi, açıklanması, aktarılması, devralınması, elde edilebilir hâle getirilmesi, sınıflandırılması ya da kullanılmasının engellenmesi gibi veriler üzerinde gerçekleştirilen her türlü işlemi,\n- Kurul: Kişisel Verileri Koruma Kurulunu,\n- Kurum: Kişisel Verileri Koruma Kurumunu,\n- ğ) Veri işleyen: Veri sorumlusunun verdiği yetkiye dayanarak onun adına kişisel verileri işleyen gerçek veya tüzel kişiyi,\n- Veri kayıt sistemi: Kişisel verilerin belirli kriterlere göre yapılandırılarak işlendiği kayıt sistemini,"
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.8",
+        "kvkk_6698.pdf p.16",
+        "kvkk_6698.pdf p.1"
+      ],
+      "retrieval_ms": 2809.7135829999897,
+      "generation_ms": 8401.737844999985,
+      "scores": {
+        "answer_relevancy": 0.9245204730033127,
+        "faithfulness": 1.0
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t30",
+      "language": "tr",
+      "question": "Web sitelerinde çerez kullanımı için KVKK'ya göre ayrıca onay almak gerekir mi?",
+      "reference": "Kanun metninde çerezlere ilişkin özel bir hüküm yer almaz.",
+      "answer": "Verilen bağlamda, KVKK'ya göre web sitelerinde çerez kullanımında onay alınması gerektiği veya gerekmediğiyle ilgili bilgi bulunmamaktadır. Metin verilerinizin işlenme şartları [2] ve istisnaları [3], ayrıca kuruma duyurulara dair genel yükümlülüklere dokunmaktadır [1], ancak çerezler özel bir örnekte ele alınmamıştır.\n\nDon't know.",
+      "contexts": [
+        "Amaç\nVeri güvenliğine ilişkin yükümlülükler\n\nKurul, gerekmesi hâlinde bu durumu, kendi internet sitesinde ya da uygun göreceği başka bir yöntemle ilan edebilir.",
+        "Amaç\nÖzel nitelikli kişisel verilerin işlenme şartları\n\nAncak bu verilerin işlenmesi;\n- İlgili kişinin açık rızasının olması,\n- Kanunlarda açıkça öngörülmesi,\n- Fiili imkânsızlık nedeniyle rızasını açıklayamayacak durumda bulunan veya rızasına hukuki geçerlilik tanınmayan kişinin, kendisinin ya da bir başkasının hayatı veya beden bütünlüğünün korunması için zorunlu olması,\n- ç) İlgili kişinin alenileştirdiği kişisel verilere ilişkin ve alenileştirme iradesine uygun olması,\n- Bir hakkın tesisi, kullanılması veya korunması için zorunlu olması,\n- Sır saklama yükümlülüğü altında bulunan kişiler veya yetkili kurum ve kuruluşlarca, kamu sağlığının korunması, koruyucu hekimlik, tıbbi teşhis, tedavi ve bakım hizmetlerinin yürütülmesi ile sağlık hizmetlerinin planlanması, yönetimi ve finansmanı amacıyla gerekli olması,\n- İstihdam, iş sağlığı ve güvenliği, sosyal güvenlik, sosyal hizmetler ve sosyal yardım alanlarındaki hukuki yükümlülüklerin yerine getirilmesi için zorunlu olması,\n- Siyasi, felsefi, dini veya sendikal amaçlarla kurulan vakıf, dernek ve diğer kâr amacı gütmeyen kuruluş ya da oluşumların, tâbi oldukları mevzuata ve amaçlarına uygun olmak, faaliyet alanlarıyla sınırlı olmak ve üçüncü kişilere açıklanmamak kaydıyla; mevcut veya eski üyelerine ve mensuplarına veyahut bu kuruluş ve oluşumlarla düzenli olarak temasta olan kişilere yönelik olması,\nhalinde mümkündür.",
+        "Amaç\nİstisnalar\n\n- Kişisel verilerin millî savunmayı, millî güvenliği, kamu güvenliğini, kamu düzenini, ekonomik güvenliği, özel hayatın gizliliğini veya kişilik haklarını ihlal etmemek ya da suç teşkil etmemek kaydıyla, sanat, tarih, edebiyat veya bilimsel amaçlarla ya da ifade özgürlüğü kapsamında işlenmesi. - ç) Kişisel verilerin millî savunmayı, millî güvenliği, kamu güvenliğini, kamu düzenini veya ekonomik güvenliği sağlamaya yönelik olarak kanunla görev ve yetki verilmiş kamu kurum ve kuruluşları tarafından yürütülen önleyici, koruyucu ve istihbari faaliyetler kapsamında işlenmesi."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.6",
+        "kvkk_6698.pdf p.2",
+        "kvkk_6698.pdf p.16"
+      ],
+      "retrieval_ms": 2638.205072000005,
+      "generation_ms": 8614.300232999994,
+      "scores": {
+        "answer_relevancy": 0.0,
+        "faithfulness": 0.6666666666666666
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t31",
+      "language": "tr",
+      "question": "KVKK ile Avrupa Birliği'nin GDPR düzenlemesi arasındaki farklar nelerdir?",
+      "reference": "Kanun metni GDPR ile bir karşılaştırma içermez.",
+      "answer": "Verilen bağlam KVKK'da kişisel verilerin aktarımını düzenleyen şartları ve istisnaları listelerken; KVKK ile Avrupa Birliği (AB) Genel Veri Koruma Yönergesi (GDPR) arasındaki farklara doğrudan girmez veya bu iki yasal çerçevenin karşılaştırılmasına dair bilgi içermez.\n\nBağlam şu konuları ele alır:\n- Kişisel verilerin aktarımının şartları [1] ve [3].\n- Kişisel verilerin kullanımıyla ilgili istisnalar, özellikle güvenlik amaçlı veya sanat/bilim gibi amaçlarla işlenmesi [2].\n\nYalnızca verilen metinlerde GDPR'nin KVKK ile nasıl farklıladığına dair bir açıklama bulunmamaktadır.",
+      "contexts": [
+        "Amaç\nMADDE 9(Değişik:2/3/2024-7499/34 md.)\n\n- Kişisel verilerin aktarılacağı ülkenin ilgili mevzuatı ve uygulaması ile kişisel verilerin aktarılacağı uluslararası kuruluşun tâbi olduğu kurallar. - Kişisel verilerin aktarılacağı ülkede veya uluslararası kuruluşun tâbi olduğu bağımsız ve etkin bir veri koruma kurumunun varlığı ile idari ve adli başvuru yollarının bulunması.",
+        "Amaç\nİstisnalar\n\n- Kişisel verilerin millî savunmayı, millî güvenliği, kamu güvenliğini, kamu düzenini, ekonomik güvenliği, özel hayatın gizliliğini veya kişilik haklarını ihlal etmemek ya da suç teşkil etmemek kaydıyla, sanat, tarih, edebiyat veya bilimsel amaçlarla ya da ifade özgürlüğü kapsamında işlenmesi. - ç) Kişisel verilerin millî savunmayı, millî güvenliği, kamu güvenliğini, kamu düzenini veya ekonomik güvenliği sağlamaya yönelik olarak kanunla görev ve yetki verilmiş kamu kurum ve kuruluşları tarafından yürütülen önleyici, koruyucu ve istihbari faaliyetler kapsamında işlenmesi.",
+        "Amaç\nMADDE 9(Değişik:2/3/2024-7499/34 md.)\n\n- ç) Kişisel verilerin aktarılacağı ülkenin veya uluslararası kuruluşun, kişisel verilerin korunmasıyla ilgili uluslararası sözleşmelere taraf veya uluslararası kuruluşlara üye olma durumu. - Kişisel verilerin aktarılacağı ülkenin veya uluslararası kuruluşun, Türkiye'nin üye olduğu küresel veya bölgesel kuruluşlara üye olma durumu."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.4",
+        "kvkk_6698.pdf p.16",
+        "kvkk_6698.pdf p.4"
+      ],
+      "retrieval_ms": 6147.4859040000065,
+      "generation_ms": 24489.603382000012,
+      "scores": {
+        "answer_relevancy": 0.0,
+        "faithfulness": 0.8888888888888888
+      },
+      "errors": {}
+    },
+    {
+      "sample_id": "t32",
+      "language": "tr",
+      "question": "Kurul toplantılarındaki görüşmeler herkese açık mıdır?",
+      "reference": "Hayır. Aksi kararlaştırılmadıkça Kurul toplantılarındaki görüşmeler gizlidir.",
+      "answer": "Hayır, kurul toplantılarındaki görüşmeler herkese açıktir; aksine bu görüşmeler gizlidir. [1]",
+      "contexts": [
+        "Amaç\nKurulun çalışma esasları\n\nKararlar ve varsa karşı oy gerekçeleri karar tarihinden itibaren en geç on beş gün içinde yazılır. Kurul, gerekli gördüğü kararları kamuoyuna duyurur. (6) Aksi kararlaştırılmadıkça, Kurul toplantılarındaki görüşmeler gizlidir. (7) Kurulun çalışma usul ve esasları ile kararların yazımı ve diğer hususlar yönetmelikle düzenlenir.",
+        "Amaç\nKurulun çalışma esasları\n\nMADDE 23(1) Kurulun toplantı günlerini ve gündemini Başkan belirler. Başkan gereken hâllerde Kurulu olağanüstü toplantıya çağırabilir. (2) Kurul, başkan dâhil en az altı üye ile toplanır ve üye tam sayısının salt çoğunluğuyla karar alır. Kurul üyeleri çekimser oy kullanamaz. (3) Kurul üyeleri; kendilerini, üçüncü dereceye kadar kan ve ikinci dereceye kadar kayın hısımlarını, evlatlıklarını ve aralarındaki evlilik bağı kalkmış olsa bile eşlerini ilgilendiren konularla ilgili toplantı ve oylamaya katılamaz.",
+        "Amaç\nBaşkan\n\nBu sorumluluk, Kurum çalışmalarının düzenlenmesi, yürütülmesi, denetlenmesi, değerlendirilmesi ve gerektiğinde kamuoyuna duyurulması görev ve yetkilerini kapsar. (3) Başkanın görevleri şunlardır:\n- Kurul toplantılarını idare etmek. - Kurul kararlarının tebliğini ve Kurulca gerekli görülenlerin kamuoyuna duyurulmasını sağlamak ve uygulanmalarını izlemek."
+      ],
+      "sources": [
+        "kvkk_6698.pdf p.13",
+        "kvkk_6698.pdf p.13",
+        "kvkk_6698.pdf p.14"
+      ],
+      "retrieval_ms": 2627.7229160000106,
+      "generation_ms": 4374.975685999971,
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.9845699119359524
+      },
+      "errors": {}
+    }
+  ]
+}

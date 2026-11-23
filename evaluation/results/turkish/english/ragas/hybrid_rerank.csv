@@ -1,0 +1,63 @@
+id,language,question,faithfulness,answer_relevancy,sources,answer,errors
+r01,en,What are the four core functions of the NIST AI Risk Management Framework?,1.0000,0.9570,nist.ai.100-1.pdf p.25; nist.ai.100-1.pdf p.6; NIST.CSWP.29.pdf p.16,"The four core functions of the NIST AI Risk Management Framework (AI RMF) are GOVERN, MAP, MEASURE, and MANAGE.",
+r02,en,How does the AI RMF define risk?,1.0000,1.0000,nist.ai.100-1.pdf p.9; nist.ai.100-1.pdf p.9; nist.ai.100-1.pdf p.12,"According to the AI RMF, risk refers to the composite measure of an event's probability of occurring and the magnitude or degree of the consequences of the corresponding event. [1]
+
+Additionally, risk is a function of the negative impact, or magnitude of harm, that would arise if the circumstance or event occurs, and the likelihood of occurrence. [2]
+
+In other words, risk is a combination of the probability and impact of an event.",
+r03,en,What are the characteristics of trustworthy AI systems?,1.0000,1.0000,nist.ai.100-1.pdf p.17; nist.ai.100-1.pdf p.6; nist.ai.100-1.pdf p.5,"The characteristics of trustworthy AI systems include: valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with harmful bias managed.
+
+[1][2]",
+r04,en,What are common security concerns for AI systems?,1.0000,1.0000,nist.ai.100-1.pdf p.20; nist.ai.100-1.pdf p.13; nist.ai.100-1.pdf p.43,"Common security concerns for AI systems relate to adversarial examples, data poisoning, and the exfiltration of models, training data, or other intellectual property through AI system endpoints.",
+r05,en,What is the difference between explainability and interpretability?,1.0000,0.9144,nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.21,"According to the provided context, explainability refers to the representation of the mechanisms underlying AI systems' operation, whereas interpretability refers to the meaning of AI systems' output in the context of their designed functional purposes.
+
+In other words, explainability answers the question of ""how"" a decision was made in the system, whereas interpretability answers the question of ""why"" a decision was made by the system and its meaning or context to the user.
+
+[2]",
+r06,en,What are the three major categories of AI bias identified by NIST?,1.0000,1.0000,nist.ai.100-1.pdf p.22; nist.ai.100-1.pdf p.22; nist.ai.100-1.pdf p.22,"According to the context, the three major categories of AI bias identified by NIST are:
+
+* Systemic bias
+* Computational and statistical bias
+* Human-cognitive bias
+
+[Citing [1], page 22]",
+r07,en,What should happen when an AI system presents unacceptable negative risk levels?,1.0000,0.9973,nist.ai.100-1.pdf p.12; nist.ai.100-1.pdf p.21; nist.ai.100-1.pdf p.20,"According to the context, when an AI system presents unacceptable negative risk levels, development and deployment should cease in a safe manner until risks can be sufficiently managed. [1]",
+r08,en,"Which AI RMF function is described as cross-cutting, and why?",1.0000,0.9783,nist.ai.100-1.pdf p.5; nist.ai.100-1.pdf p.26; nist.ai.100-1.pdf p.14,"The AI RMF function described as cross-cutting is GOVERN [2]. This function is designed to be infused throughout the other three functions and enables the other functions of the process. It is a continual and intrinsic requirement for effective AI risk management, and aspects of it should be integrated into each of the other functions [2].",
+r09,en,What does the MEASURE function do?,0.6667,0.8863,nist.ai.100-1.pdf p.33; nist.ai.100-1.pdf p.33; nist.ai.100-1.pdf p.33,"The MEASURE function employs quantitative, qualitative, or mixed-method tools, techniques, and methodologies to analyze, assess, benchmark, and monitor AI risk and related impacts. [1][2][3]
+
+(Note: The answer is supported by the text in [1], [2], and [3], which all describe the MEASURE function's purpose and activities.)",
+r10,en,What are the six Functions of the NIST Cybersecurity Framework 2.0 Core?,1.0000,1.0000,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.8,"According to the provided context, the six Functions of the NIST Cybersecurity Framework 2.0 Core are:
+
+1. Govern
+2. Identify
+3. Protect
+4. Detect
+5. Respond
+6. Recover
+
+[Citations: [2], [3]]",
+r11,en,Why is GOVERN shown at the center of the CSF Functions wheel?,0.8571,1.0000,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8,"GOVERN is shown at the center of the CSF Functions wheel because it informs how an organization will implement the other five Functions. [1]
+
+This answer is supported by the text in [1] and [3], which state that GOVERN establishes the organization's cybersecurity risk management strategy, expectations, and policy, and provides outcomes to inform what an organization may do to achieve and prioritize the outcomes of the other five Functions.",
+r12,en,What are the four CSF Tiers?,1.0000,1.0000,NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.12; NIST.CSWP.29.pdf p.29,"The four CSF Tiers are: Partial (Tier 1), Risk Informed (Tier 2), Repeatable (Tier 3), and Adaptive (Tier 4) [1][2][3].",
+r13,en,What is a CSF Community Profile and how can an organization use one?,1.0000,0.9945,NIST.CSWP.29.pdf p.11; NIST.CSWP.29.pdf p.31; NIST.CSWP.29.pdf p.11,"A CSF Community Profile is a baseline of CSF outcomes that is created and published to address shared interests and goals among a number of organizations. It is typically developed for a particular sector, subsector, technology, threat type, or other use case. An organization can use a Community Profile as the basis for its own Target Profile.
+
+[1][2]
+
+An organization can use a Community Profile as the basis for its own Target Profile.",
+r14,en,In which ways can an organization handle risk according to the CSF?,1.0000,0.8880,NIST.CSWP.29.pdf p.15; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.5,"According to the provided context, an organization may handle risk in the following ways: mitigating, transferring, avoiding, or accepting negative risks, and realizing, sharing, enhancing, or accepting positive risks. [1]
+
+This is because the CSF allows an organization to ""handle risk in one or more ways"" depending on the potential impacts and likelihoods, which implies that the organization has the flexibility to choose from these various approaches. [1]
+
+No other ways to handle risk are mentioned in the provided context.",
+r15,en,What was the Cybersecurity Framework called before version 2.0?,1.0000,1.0000,NIST.CSWP.29.pdf p.2; NIST.CSWP.29.pdf p.6; NIST.CSWP.29.pdf p.5,The Cybersecurity Framework was called the 'Framework for Improving Critical Infrastructure Cybersecurity' before version 2.0. [1],
+r16,en,What does the DETECT Function enable?,1.0000,0.8225,NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.8; NIST.CSWP.29.pdf p.31,"The DETECT Function enables the timely discovery and analysis of anomalies, indicators of compromise, and other potentially adverse events that may indicate that cybersecurity attacks and incidents are occurring. [1]
+
+This enables successful incident response and recovery activities. [1]",
+r17,en,"By how much did the FOMC lower the federal funds rate in September 2024, and to what target range?",1.0000,0.9370,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,The FOMC lowered the federal funds rate by ½ percentage point to a target range of 4¾ percent to 5 percent. [1],
+r18,en,What was the peak of inflation and where did it stand as of August 2024?,1.0000,0.9493,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"The peak of inflation was 7 percent, and as of August 2024, it stood at an estimated 2.2 percent. [1]",
+r19,en,What federal funds rate did the median participant project for the end of 2024 and the end of 2025?,1.0000,0.9801,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"According to the context, the median participant projected that the appropriate level of the federal funds rate will be 4.4 percent at the end of this year (2024) and 3.4 percent at the end of 2025 [1].",
+r20,en,Why is the housing market partly frozen?,1.0000,0.8541,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"The housing market is partly frozen because of lock-in with low rates. People don't want to sell their homes because they have a very low mortgage, and it would be quite expensive to refinance. [1]",
+r21,en,Does the Fed think it has fallen behind on rate cuts?,1.0000,0.8562,FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1; FOMCpresconf20240918.pdf p.1,"According to Chair Powell, the Fed has been ""very patient"" about reducing the policy rate, suggesting that it hasn't fallen behind on rate cuts. [3]
+
+This is supported by the statement ""We've waited. Other central banks around the world have cut, many of them several times. We've waited..."" which implies that the Fed hasn't felt pressured to cut rates as quickly as others.",

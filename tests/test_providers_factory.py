@@ -59,3 +59,26 @@ def test_unknown_provider_is_rejected():
 
     with pytest.raises(ValueError, match="Unknown embedding provider 'x'"):
         factory.build_embedder(provider="x", model="y")
+
+
+def test_passes_the_think_setting_to_the_ollama_chat_client(monkeypatch):
+    monkeypatch.setattr(factory, "OLLAMA_THINK", "false")
+
+    chat = factory.build_chat_client(provider="ollama", model="qwen3.5:4b")
+
+    assert chat.think is False
+
+
+def test_ollama_chat_client_keeps_the_model_default_without_think_setting(monkeypatch):
+    monkeypatch.setattr(factory, "OLLAMA_THINK", "")
+
+    assert factory.build_chat_client(provider="ollama", model="llama3").think is None
+
+
+def test_think_argument_overrides_the_global_setting(monkeypatch):
+    monkeypatch.setattr(factory, "OLLAMA_THINK", "")
+
+    chat = factory.build_chat_client(provider="ollama", model="qwen3.5:4b", think="false")
+
+    assert chat.think is False
+    assert factory.build_chat_client(provider="ollama", model="m").think is None

@@ -104,6 +104,20 @@ def parse_events(lines: Iterable[bytes | str]) -> Iterator[dict]:
             yield json.loads(line)
 
 
+def turkish_route(info: dict) -> str:
+    """The components Turkish questions use instead of the defaults, from the
+    /info response, as a Markdown list; "" when they use the same ones."""
+
+    turkish = info.get("turkish") or {}
+    lines = [
+        f"- **{label}:** `{turkish[key]}`"
+        for key, label in (("chat_model", "Chat model"), ("reranker", "Reranker"))
+        if turkish.get(key) and turkish[key] != info.get(key)
+    ]
+
+    return "\n".join(lines)
+
+
 def _error_detail(response: requests.Response) -> str:
     try:
         detail = response.json()["detail"]

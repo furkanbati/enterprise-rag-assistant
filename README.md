@@ -238,7 +238,7 @@ Endpoint:
 POST /upload
 ```
 
-The endpoint accepts `.pdf`, `.docx`, `.html`, `.htm`, `.md` and `.txt` files, processes their content, generates embeddings, and indexes the chunks in ChromaDB. Other file types are rejected with status 400, and a file with no extractable text with status 422. A PDF without a text layer, such as a scan, is read a second time with OCR (RapidOCR through Docling by default; see `OCR_ENGINE`) before it is rejected; OCR is skipped for PDFs that already contain text because it is much slower. The upload is written to a temporary directory and removed once it is indexed.
+The endpoint accepts `.pdf`, `.docx`, `.html`, `.htm`, `.md` and `.txt` files, processes their content, generates embeddings, and indexes the chunks in ChromaDB. Other file types are rejected with status 400, and a file with no extractable text with status 422. A PDF without a text layer, such as a scan, is read a second time with OCR (RapidOCR through Docling by default; see `OCR_ENGINE`) before it is rejected; OCR is skipped for PDFs that already contain text because it is much slower. Tables are indexed as Markdown, each in its own section with the page it is on; in PDFs only when `TABLE_STRUCTURE` is on. The upload is written to a temporary directory and removed once it is indexed.
 
 Uploading a file with the same name as an indexed document replaces it. The new version is parsed and embedded first, and the old chunks are removed only then, so a file that fails to process leaves the indexed version untouched. The response reports the result:
 
@@ -390,6 +390,7 @@ Settings live in `config.py` and can be overridden with environment variables or
 | `SEMANTIC_PERCENTILE` | Semantic chunking: split at boundaries above this percentile of embedding distances in the document |
 | `SEMANTIC_WINDOW` | Semantic chunking: sentences on each side embedded with each sentence |
 | `OCR_ENGINE` | OCR for PDFs without a text layer: `rapidocr` (default), `easyocr` or `off`. On two scanned pages RapidOCR took about 9 s per page and EasyOCR about 27 s |
+| `TABLE_STRUCTURE` | Read the cells of PDF tables with Docling's TableFormer model (default `false`). The model (about 360 MB) is downloaded on first use and makes PDF indexing slower. DOCX, HTML and Markdown tables are read either way. See [Tables](#tables) |
 | `JUDGE_PROVIDER` / `JUDGE_MODEL` | Evaluation only: judge model for `--judge` and RAGAS (default `openai` / `gpt-6.1-sol`) |
 | `RAGAS_EMBED_PROVIDER` / `RAGAS_EMBED_MODEL` | Evaluation only: embedding model RAGAS uses for answer relevancy; defaults to the application's embedding model |
 
@@ -645,6 +646,36 @@ To reproduce the Turkish measurements:
 docker compose run --rm eval python -m evaluation --dataset evaluation/datasets/kvkk_tr_dev.jsonl
 docker compose run --rm eval python -m evaluation.ragas_eval --config hybrid_rerank --dataset evaluation/datasets/kvkk_tr_dev.jsonl --metrics faithfulness answer_relevancy
 ```
+
+### Tables
+
+Until now the parser skipped tables, so the content of a table could not be retrieved. In the NIST AI RMF, the subcategories of the four core functions (Tables 1 to 4, PDF pages 27 to 38) exist only as table cells. Tables are now indexed as Markdown. Each table becomes its own section under the current heading, with the page it is on, so sources point to the table rather than to the page of its heading; Docling splits a table that runs over several pages into one table per page.
+
+DOCX, HTML and Markdown tables carry their cells, so they are read with the default settings. PDF tables only get cells from Docling's TableFormer model, which is off by default (`TABLE_STRUCTURE`): it is downloaded on first use (about 360 MB) and slows PDF indexing.
+
+Measured on [`nist_tables.jsonl`](evaluation/datasets/nist_tables.jsonl), 6 questions answered only in the NIST tables, with `nist_ai_rmf.jsonl` as the regression check. Embeddings and answers ran on the GPU through Ollama on Windows with `llama3`; no judge was used.
+
+| Run | Chunks | Tables: MRR@5 | Hit@1 | Hit@3 | Keyword recall | Answer rate | NIST set: MRR@5 |
+|---|---|---|---|---|---|---|---|
+| Before (tables skipped) | 221 | 0.000 | 0.00 | 0.00 | 0.00 | 0.50 | 1.000 |
+| `TABLE_STRUCTURE=false` (default) | 221 | 0.000 | 0.00 | 0.00 | 0.00 | 0.33 | 1.000 |
+| `TABLE_STRUCTURE=true` | 288 | 0.917 | 0.83 | 1.00 | 1.00 | 1.00 | 1.000 |
+
+With the default settings the PDF index is unchanged (same 221 chunks, same retrieval results); the answer rate differs only because `llama3` answered the same context differently. With TableFormer every table question is answered with the right subcategory and a citation, and the NIST set does not change. TableFormer keeps line-break hyphens inside cells ("decom- missioning"), so 3 of the 6 evidence sentences do not match the indexed text word for word; the answers are not affected.
+
+The other retrieval sets were run with all four PDFs indexed, with TableFormer off and on (retrieval only, same GPU setup). TableFormer adds chunks to the NIST AI RMF (221 → 288), the NIST CSF (124 → 143) and the KVKK (120 → 122); the FOMC transcript has no tables.
+
+| Set | Strategy | `TABLE_STRUCTURE=false` MRR@5 | `TABLE_STRUCTURE=true` MRR@5 | Evidence@5 (false → true) |
+|---|---|---|---|---|
+| `kvkk_tr_dev.jsonl` (20) | `hybrid_rrf_rerank` | 1.000 | 1.000 | 0.921 → 0.921 |
+| `chunking_benchmark.jsonl` (52) | `hybrid_rrf_rerank` | 1.000 | 1.000 | 0.930 → 0.930 |
+| `chunking_benchmark.jsonl` (52) | `vector` | 0.948 | 0.931 | 0.878 → 0.857 |
+| `chunking_benchmark.jsonl` (52) | `bm25` | 0.927 | 0.872 | 0.809 → 0.809 |
+| `chunking_benchmark.jsonl` (52) | `hybrid_rrf` | 0.958 | 0.931 | 0.903 → 0.882 |
+
+The strategy the application uses, `hybrid_rrf_rerank`, gives the same results on both sets. Without the reranker, the questions about what the MAP, MEASURE and MANAGE functions do (q12 to q15) lose a few ranks: the table rows repeat the function names and compete with the paragraphs that describe each function. The reranker puts those paragraphs back on top. Reports: [`evaluation/results/tables`](evaluation/results/tables).
+
+To index PDF tables, set `TABLE_STRUCTURE=true` in `.env`, restart the API and upload the documents again: documents indexed earlier are not read again.
 
 ## Chunking
 

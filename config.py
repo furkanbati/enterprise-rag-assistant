@@ -92,3 +92,7 @@ MIN_CHUNK_SIZE = _env_int("MIN_CHUNK_SIZE", 300)
 
 # OCR engine for PDFs without a text layer: "rapidocr", "easyocr" or "off".
 OCR_ENGINE = os.getenv("OCR_ENGINE", "rapidocr")
+
+# Read the cells of PDF tables with Docling's TableFormer model. Slower, and
+# the model (about 360 MB) is downloaded on first use.
+TABLE_STRUCTURE = _env_bool("TABLE_STRUCTURE", False)

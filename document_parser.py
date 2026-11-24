@@ -30,7 +30,15 @@ OCR_DISABLED = "off"
 
 
 class DocumentParser:
-    def __init__(self, ocr_engine: str = "rapidocr") -> None:
+    def __init__(
+        self,
+        ocr_engine: str = "rapidocr",
+        table_structure: bool = False,
+    ) -> None:
+        # DOCX, HTML and Markdown tables always keep their cells. PDF tables
+        # only get cells from Docling's TableFormer model, which is slower
+        # and downloaded on first use, so it is opt-in.
+        self.table_structure = table_structure
         self.converter = self._build_converter(ocr_options=None)
         # Scanned PDFs have no text layer. OCR is slow, so it only runs
         # when the regular pass finds no text.
@@ -48,15 +56,14 @@ class DocumentParser:
 
         return OCR_ENGINES[engine](force_full_page_ocr=True)
 
-    @staticmethod
-    def _build_converter(ocr_options: OcrOptions | None) -> DocumentConverter:
+    def _build_converter(self, ocr_options: OcrOptions | None) -> DocumentConverter:
         options = PdfPipelineOptions()
         # We only need document structure for heading-aware chunking.
         # Disable expensive features to improve ingestion performance.
         options.do_ocr = ocr_options is not None
         if ocr_options is not None:
             options.ocr_options = ocr_options
-        options.do_table_structure = False
+        options.do_table_structure = self.table_structure
         options.generate_parsed_pages = False
 
         options.do_picture_description = False
@@ -132,6 +139,29 @@ class DocumentParser:
 
                 case DocItemLabel.LIST_ITEM:
                     current_text.append(f"- {item.text}")
+
+                # A PDF table without TableFormer has no cells and is skipped.
+                # A table becomes its own section under the current heading,
+                # so its chunks carry the table's page rather than the
+                # heading's; Docling splits multi-page tables by page.
+                case DocItemLabel.TABLE if item.data.table_cells:
+                    self._flush_section(
+                        sections,
+                        current_heading,
+                        current_level,
+                        current_page,
+                        current_text,
+                    )
+
+                    current_page = self._get_page(item)
+                    self._flush_section(
+                        sections,
+                        current_heading,
+                        current_level,
+                        current_page,
+                        [item.export_to_markdown(doc=document)],
+                    )
+                    current_text = []
 
         self._flush_section(
             sections,

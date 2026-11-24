@@ -20,12 +20,13 @@ class Ingestion:
         chunker: Chunker,
         keyword_search: KeywordSearch,
         ocr_engine: str = "rapidocr",
+        table_structure: bool = False,
     ) -> None:
         self.embedder = embedder
         self.vector_store = vector_store
         self.chunker = chunker
         self.keyword_search = keyword_search
-        self.document_parser = DocumentParser(ocr_engine)
+        self.document_parser = DocumentParser(ocr_engine, table_structure)
 
     def ingest(self, path: str) -> IngestionResult:
         """Index a document, replacing an earlier version with the same name.

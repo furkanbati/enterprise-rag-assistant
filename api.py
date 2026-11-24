@@ -26,6 +26,7 @@ from config import (
     MIN_CHUNK_SIZE,
     OLLAMA_THINK_TR,
     OCR_ENGINE,
+    TABLE_STRUCTURE,
     SEMANTIC_PERCENTILE,
     SEMANTIC_WINDOW,
     RERANK_MODEL,
@@ -140,6 +141,7 @@ ingestion = Ingestion(
     vector_store=vector_store,
     chunker=chunker,
     ocr_engine=OCR_ENGINE,
+    table_structure=TABLE_STRUCTURE,
 )
 
 

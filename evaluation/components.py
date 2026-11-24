@@ -14,6 +14,7 @@ from config import (
     MAX_CHUNK_SIZE,
     MIN_CHUNK_SIZE,
     OCR_ENGINE,
+    TABLE_STRUCTURE,
     RETRIEVAL_TOP_K,
     SEMANTIC_PERCENTILE,
     SEMANTIC_WINDOW,
@@ -150,4 +151,5 @@ def build_ingestion(components: RetrievalComponents) -> Ingestion:
         ),
         keyword_search=components.keyword_search,
         ocr_engine=OCR_ENGINE,
+        table_structure=TABLE_STRUCTURE,
     )

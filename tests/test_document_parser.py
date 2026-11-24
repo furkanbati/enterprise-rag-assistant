@@ -291,3 +291,93 @@ def test_parse_real_documents_in_each_supported_format(tmp_path, name):
         ("Handbook", "Intro paragraph."),
         ("Leave policy", "Employees get 20 days."),
     ]
+
+
+def make_table(markdown, cells=True, page=1):
+    return SimpleNamespace(
+        label=DocItemLabel.TABLE,
+        data=SimpleNamespace(table_cells=["cell"] if cells else []),
+        prov=[SimpleNamespace(page_no=page)],
+        export_to_markdown=lambda doc: markdown,
+    )
+
+
+def test_parse_puts_each_table_in_its_own_section_on_its_own_page():
+    first = "| Function | Subcategory |\n|---|---|\n| GOVERN | GOVERN 1.1 |"
+    second = "| Function | Subcategory |\n|---|---|\n| GOVERN | GOVERN 1.7 |"
+    parser = make_parser(
+        [
+            make_item(DocItemLabel.SECTION_HEADER, "Govern", page=26),
+            make_item(DocItemLabel.TEXT, "Table 1 lists the subcategories.", page=26),
+            make_table(first, page=27),
+            make_table(second, page=28),
+            make_item(DocItemLabel.TEXT, "Text after the table.", page=28),
+        ]
+    )
+
+    sections = parser.parse("framework.pdf")
+
+    assert [(s.heading, s.page, s.text) for s in sections] == [
+        ("Govern", 26, "Table 1 lists the subcategories."),
+        ("Govern", 27, first),
+        ("Govern", 28, second),
+        ("Govern", 28, "Text after the table."),
+    ]
+
+
+def test_parse_skips_tables_without_cells():
+    parser = make_parser(
+        [
+            make_item(DocItemLabel.TEXT, "Text."),
+            make_table("Table 1: caption only", cells=False),
+        ]
+    )
+
+    assert [s.text for s in parser.parse("framework.pdf")] == ["Text."]
+
+
+@pytest.mark.parametrize("enabled", [False, True])
+def test_table_structure_setting_reaches_the_pdf_pipelines(enabled):
+    parser = DocumentParser(ocr_engine="rapidocr", table_structure=enabled)
+
+    for converter in (parser.converter, parser.ocr_converter):
+        options = converter.format_to_options[InputFormat.PDF].pipeline_options
+        assert options.do_table_structure is enabled
+
+
+@pytest.mark.parametrize("name", ["rates.md", "rates.html", "rates.docx"])
+def test_parse_reads_table_cells_in_each_format(tmp_path, name):
+    path = tmp_path / name
+
+    if name.endswith(".md"):
+        path.write_text(
+            "# Rates\n\n| Plan | Price |\n|---|---|\n| Basic | 10 EUR |\n| Pro | 25 EUR |\n",
+            encoding="utf-8",
+        )
+    elif name.endswith(".html"):
+        path.write_text(
+            "<html><body><h1>Rates</h1><table>"
+            "<tr><th>Plan</th><th>Price</th></tr>"
+            "<tr><td>Basic</td><td>10 EUR</td></tr>"
+            "<tr><td>Pro</td><td>25 EUR</td></tr>"
+            "</table></body></html>",
+            encoding="utf-8",
+        )
+    else:
+        document = docx.Document()
+        document.add_heading("Rates", 0)
+        table = document.add_table(rows=3, cols=2)
+        for row, values in zip(
+            table.rows, [("Plan", "Price"), ("Basic", "10 EUR"), ("Pro", "25 EUR")]
+        ):
+            for cell, value in zip(row.cells, values):
+                cell.text = value
+        document.save(path)
+
+    sections = DocumentParser().parse(str(path))
+
+    assert len(sections) == 1
+    assert sections[0].heading == "Rates"
+    for value in ("Plan", "Price", "Basic", "10 EUR", "Pro", "25 EUR"):
+        assert value in sections[0].text
+    assert "| Pro" in sections[0].text

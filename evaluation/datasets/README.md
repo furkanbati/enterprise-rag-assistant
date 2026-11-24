@@ -6,6 +6,7 @@ Each file is JSON Lines: one labelled question per line. See `EvalSample` in [`.
 |---|---|---|---|
 | [`nist_ai_rmf.jsonl`](nist_ai_rmf.jsonl) | 22 (20 answerable) | NIST AI RMF 1.0 | Regression baseline for retrieval and answers, labelled at page level |
 | [`chunking_benchmark.jsonl`](chunking_benchmark.jsonl) | 52 (48 answerable) | NIST AI RMF 1.0, NIST CSF 2.0, FOMC press conference | Comparing chunking strategies across documents with different structure |
+| [`nist_tables.jsonl`](nist_tables.jsonl) | 6 | NIST AI RMF 1.0 | Questions answered only in table cells (the core-function subcategories); checks that tables are indexed |
 | [`ragas_testset.jsonl`](ragas_testset.jsonl) | 29 (21 English, 8 Turkish) | NIST AI RMF 1.0, NIST CSF 2.0, FOMC press conference, KVKK (Law No. 6698) | RAGAS ablation of the retrieval configurations, with a reference answer per question |
 
 ## RAGAS test set

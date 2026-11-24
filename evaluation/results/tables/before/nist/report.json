@@ -1,0 +1,3267 @@
+{
+  "metadata": {
+    "Date": "2026-11-24 06:52 UTC",
+    "Dataset": "nist_ai_rmf.jsonl",
+    "Embedding model": "ollama/nomic-embed-text",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Reranker (Turkish questions)": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+    "Chat model": "not evaluated",
+    "Judge model": "not used",
+    "Candidates per retriever": 12
+  },
+  "ks": [
+    1,
+    3,
+    5
+  ],
+  "num_samples": 22,
+  "num_answerable": 20,
+  "strategies": [
+    {
+      "strategy": "vector",
+      "hit": {
+        "1": 0.9,
+        "3": 0.9,
+        "5": 0.95
+      },
+      "recall": {
+        "1": 0.85,
+        "3": 0.875,
+        "5": 0.9
+      },
+      "precision": {
+        "1": 0.9,
+        "3": 0.75,
+        "5": 0.66
+      },
+      "mrr": 0.91,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 414.95,
+        "3": 1340.0,
+        "5": 2245.85
+      },
+      "mean_latency_ms": 1.8802254498950788
+    },
+    {
+      "strategy": "bm25",
+      "hit": {
+        "1": 0.8,
+        "3": 0.9,
+        "5": 0.9
+      },
+      "recall": {
+        "1": 0.7,
+        "3": 0.85,
+        "5": 0.9
+      },
+      "precision": {
+        "1": 0.8,
+        "3": 0.6666666666666666,
+        "5": 0.5700000000000001
+      },
+      "mrr": 0.85,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 444.9,
+        "3": 1347.1,
+        "5": 2287.15
+      },
+      "mean_latency_ms": 0.39023210028972244
+    },
+    {
+      "strategy": "hybrid_rrf",
+      "hit": {
+        "1": 0.85,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.775,
+        "3": 0.925,
+        "5": 0.95
+      },
+      "precision": {
+        "1": 0.85,
+        "3": 0.75,
+        "5": 0.68
+      },
+      "mrr": 0.9083333333333333,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 394.3,
+        "3": 1343.2,
+        "5": 2250.95
+      },
+      "mean_latency_ms": 2.098465799826954
+    },
+    {
+      "strategy": "hybrid_rrf_rerank",
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.9,
+        "3": 0.975,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.8,
+        "5": 0.71
+      },
+      "mrr": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "mean_context_chars": {
+        "1": 448.75,
+        "3": 1400.05,
+        "5": 2365.35
+      },
+      "mean_latency_ms": 983.5732463999193
+    }
+  ],
+  "retrieval_results": [
+    {
+      "sample_id": "q01",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        1,
+        24,
+        47,
+        36,
+        25
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.2,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 77,
+        "3": 774,
+        "5": 1596
+      },
+      "latency_ms": 2.4383460004173685
+    },
+    {
+      "sample_id": "q01",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        25,
+        6,
+        25,
+        25,
+        25
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 431,
+        "3": 1494,
+        "5": 2548
+      },
+      "latency_ms": 0.5281520006974461
+    },
+    {
+      "sample_id": "q01",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        1,
+        25,
+        25,
+        6,
+        6
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 77,
+        "3": 1085,
+        "5": 1895
+      },
+      "latency_ms": 2.518989998861798
+    },
+    {
+      "sample_id": "q01",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        25,
+        6,
+        36,
+        25,
+        24
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 431,
+        "3": 1203,
+        "5": 2068
+      },
+      "latency_ms": 1277.4878769996576
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        9,
+        6,
+        9,
+        47,
+        42
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 458,
+        "3": 1370,
+        "5": 2169
+      },
+      "latency_ms": 1.681908001046395
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        45,
+        45,
+        12,
+        45,
+        22
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 504,
+        "3": 1386,
+        "5": 2424
+      },
+      "latency_ms": 0.35592099993664306
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        47,
+        12,
+        9,
+        45,
+        6
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 413,
+        "3": 1279,
+        "5": 2225
+      },
+      "latency_ms": 2.032617001532344
+    },
+    {
+      "sample_id": "q02",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        9,
+        9,
+        12,
+        9,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 458,
+        "3": 1381,
+        "5": 2295
+      },
+      "latency_ms": 1166.2282970009983
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        17,
+        17,
+        17,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1653,
+        "5": 2542
+      },
+      "latency_ms": 1.5940260000206763
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        17,
+        5,
+        6,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1334,
+        "5": 2316
+      },
+      "latency_ms": 0.32224700044025667
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        17,
+        17,
+        5,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1559,
+        "5": 2565
+      },
+      "latency_ms": 1.7143869990832172
+    },
+    {
+      "sample_id": "q03",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        17,
+        6,
+        5,
+        17,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 422,
+        "3": 1328,
+        "5": 2508
+      },
+      "latency_ms": 556.0456340008386
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        40,
+        18,
+        14,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 468,
+        "3": 1556,
+        "5": 2747
+      },
+      "latency_ms": 1.8991110009665135
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        14,
+        40,
+        40,
+        40,
+        12
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 477,
+        "3": 1426,
+        "5": 2313
+      },
+      "latency_ms": 0.34074699942721054
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        14,
+        18,
+        5,
+        18
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 474,
+        "3": 1419,
+        "5": 2290
+      },
+      "latency_ms": 2.2297270006674808
+    },
+    {
+      "sample_id": "q04",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        14,
+        40,
+        18,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 468,
+        "3": 1419,
+        "5": 2508
+      },
+      "latency_ms": 1176.0376099991845
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        18,
+        18,
+        18,
+        20
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1341,
+        "5": 2059
+      },
+      "latency_ms": 1.9225119995098794
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        42,
+        18,
+        18,
+        18,
+        10
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 386,
+        "3": 1306,
+        "5": 2187
+      },
+      "latency_ms": 0.4859389991906937
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        18,
+        18,
+        42,
+        18
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1387,
+        "5": 2194
+      },
+      "latency_ms": 2.093786999466829
+    },
+    {
+      "sample_id": "q05",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        18,
+        18,
+        18,
+        18,
+        18
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1341,
+        "5": 2276
+      },
+      "latency_ms": 1170.4624940011854
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        20,
+        13,
+        6,
+        6,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 440,
+        "3": 1474,
+        "5": 2785
+      },
+      "latency_ms": 2.321384999959264
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        20,
+        13,
+        43,
+        43,
+        47
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 440,
+        "3": 1919,
+        "5": 3017
+      },
+      "latency_ms": 0.5752380002377322
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        20,
+        13,
+        43,
+        22,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 440,
+        "3": 1919,
+        "5": 2961
+      },
+      "latency_ms": 2.3134800012485357
+    },
+    {
+      "sample_id": "q06",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        20,
+        13,
+        43,
+        43,
+        22
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 440,
+        "3": 1919,
+        "5": 3040
+      },
+      "latency_ms": 1097.6929459993698
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        21,
+        21
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 550,
+        "3": 1448,
+        "5": 2280
+      },
+      "latency_ms": 1.7287859991483856
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        10,
+        17
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 523,
+        "3": 1448,
+        "5": 2285
+      },
+      "latency_ms": 0.2932339994003996
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        10,
+        21
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 550,
+        "3": 1448,
+        "5": 2270
+      },
+      "latency_ms": 2.049934999377001
+    },
+    {
+      "sample_id": "q07",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        21,
+        21,
+        21,
+        21,
+        21
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 550,
+        "3": 1448,
+        "5": 2280
+      },
+      "latency_ms": 1062.673623999217
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        22,
+        22,
+        22
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1272,
+        "5": 2136
+      },
+      "latency_ms": 1.4695949994347757
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        3,
+        2,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1207,
+        "5": 2230
+      },
+      "latency_ms": 0.4398740002216073
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        22,
+        22,
+        22
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1217,
+        "5": 2136
+      },
+      "latency_ms": 1.9260270000813762
+    },
+    {
+      "sample_id": "q08",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        22,
+        22,
+        22,
+        22,
+        36
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1238,
+        "5": 1917
+      },
+      "latency_ms": 1039.2951110006834
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1281,
+        "5": 2093
+      },
+      "latency_ms": 1.8620570008351933
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1233,
+        "5": 2249
+      },
+      "latency_ms": 0.25848000041150954
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1281,
+        "5": 2093
+      },
+      "latency_ms": 1.7960400000447407
+    },
+    {
+      "sample_id": "q09",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1281,
+        "5": 2093
+      },
+      "latency_ms": 1063.745609999387
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        9,
+        6,
+        29,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1336,
+        "5": 2270
+      },
+      "latency_ms": 1.8746469995676307
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        29,
+        6,
+        20,
+        20
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1343,
+        "5": 2390
+      },
+      "latency_ms": 0.5286350005917484
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        29,
+        9,
+        21,
+        9
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1310,
+        "5": 2210
+      },
+      "latency_ms": 2.093287999741733
+    },
+    {
+      "sample_id": "q10",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        12,
+        21,
+        9,
+        43,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 390,
+        "3": 1198,
+        "5": 2152
+      },
+      "latency_ms": 1105.6268810007168
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        25,
+        6,
+        38,
+        38,
+        25
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 515,
+        "3": 1377,
+        "5": 2231
+      },
+      "latency_ms": 1.7522159996588016
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        5,
+        36,
+        26,
+        29,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 210,
+        "3": 839,
+        "5": 1648
+      },
+      "latency_ms": 0.4293550009606406
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        5,
+        14,
+        25,
+        6,
+        36
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 210,
+        "3": 1194,
+        "5": 1881
+      },
+      "latency_ms": 2.1633649994328152
+    },
+    {
+      "sample_id": "q11",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        5,
+        26,
+        38,
+        25,
+        14
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 210,
+        "3": 1123,
+        "5": 2107
+      },
+      "latency_ms": 1079.300477000288
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        29,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 393,
+        "3": 1285,
+        "5": 1817
+      },
+      "latency_ms": 1.987571000427124
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        29,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 393,
+        "3": 1285,
+        "5": 2227
+      },
+      "latency_ms": 0.4815680003957823
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        29,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 393,
+        "3": 1285,
+        "5": 2197
+      },
+      "latency_ms": 3.1075959996087477
+    },
+    {
+      "sample_id": "q12",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        29,
+        29,
+        29,
+        45,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 507,
+        "3": 1315,
+        "5": 2204
+      },
+      "latency_ms": 550.6936649999261
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 445,
+        "3": 1057,
+        "5": 2071
+      },
+      "latency_ms": 1.8784849999065045
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 445,
+        "3": 1057,
+        "5": 1896
+      },
+      "latency_ms": 0.23633199998585042
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 445,
+        "3": 1057,
+        "5": 2068
+      },
+      "latency_ms": 1.7159449998871423
+    },
+    {
+      "sample_id": "q13",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        33,
+        33,
+        33,
+        33,
+        33
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 445,
+        "3": 1434,
+        "5": 2068
+      },
+      "latency_ms": 1042.7653509996162
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        6,
+        36,
+        26,
+        36
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 245,
+        "3": 1212,
+        "5": 2259
+      },
+      "latency_ms": 1.7139640003733803
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        36,
+        33,
+        36,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 554,
+        "3": 1244,
+        "5": 2077
+      },
+      "latency_ms": 0.2546250016166596
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        36,
+        36,
+        29,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 245,
+        "3": 1239,
+        "5": 2159
+      },
+      "latency_ms": 1.9182060004823143
+    },
+    {
+      "sample_id": "q14",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        36,
+        36,
+        36,
+        33,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 554,
+        "3": 1463,
+        "5": 2414
+      },
+      "latency_ms": 571.3851099990279
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        38,
+        38,
+        38,
+        38,
+        38
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1146,
+        "5": 2084
+      },
+      "latency_ms": 2.002888999413699
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        38,
+        38,
+        38,
+        38,
+        47
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1146,
+        "5": 2077
+      },
+      "latency_ms": 0.29518600058509037
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        38,
+        38,
+        38,
+        38,
+        38
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1146,
+        "5": 2084
+      },
+      "latency_ms": 2.05484399884881
+    },
+    {
+      "sample_id": "q15",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        38,
+        38,
+        38,
+        38,
+        38
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 423,
+        "3": 1485,
+        "5": 2429
+      },
+      "latency_ms": 1033.1745570001658
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        14,
+        40,
+        40,
+        14,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 543,
+        "3": 1484,
+        "5": 2389
+      },
+      "latency_ms": 1.7283990000578342
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        40,
+        40,
+        14,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 474,
+        "3": 1496,
+        "5": 2514
+      },
+      "latency_ms": 0.3249630008212989
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        14,
+        40,
+        40,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 474,
+        "3": 1484,
+        "5": 2514
+      },
+      "latency_ms": 1.709188998574973
+    },
+    {
+      "sample_id": "q16",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        40,
+        40,
+        40,
+        14,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 474,
+        "3": 1416,
+        "5": 2394
+      },
+      "latency_ms": 563.7788889998774
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        3,
+        3,
+        6,
+        38
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1276,
+        "5": 2141
+      },
+      "latency_ms": 2.2660059985355474
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        20,
+        13,
+        33,
+        3
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1456,
+        "5": 2382
+      },
+      "latency_ms": 0.40701600119064096
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        3,
+        20,
+        3,
+        13
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1351,
+        "5": 2308
+      },
+      "latency_ms": 2.273677000630414
+    },
+    {
+      "sample_id": "q17",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        3,
+        3,
+        3,
+        20,
+        13
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 424,
+        "3": 1276,
+        "5": 2308
+      },
+      "latency_ms": 1068.8471349985775
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        14,
+        40,
+        42,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1414,
+        "5": 2427
+      },
+      "latency_ms": 1.8123720001312904
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        14,
+        6,
+        5,
+        45,
+        6
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 470,
+        "3": 1302,
+        "5": 2248
+      },
+      "latency_ms": 0.31301399940275587
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        14,
+        14,
+        40,
+        5
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1248,
+        "5": 2260
+      },
+      "latency_ms": 1.8595729998196475
+    },
+    {
+      "sample_id": "q18",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        6,
+        14,
+        40,
+        40,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 382,
+        "3": 1414,
+        "5": 2625
+      },
+      "latency_ms": 1185.4165849999845
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        43,
+        10,
+        6
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 455,
+        "3": 1692,
+        "5": 2603
+      },
+      "latency_ms": 1.9454749999567866
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        10,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 728,
+        "3": 1589,
+        "5": 2432
+      },
+      "latency_ms": 0.5439420001494
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        10,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.8
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 455,
+        "3": 1589,
+        "5": 2491
+      },
+      "latency_ms": 2.6201079999736976
+    },
+    {
+      "sample_id": "q19",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        43,
+        43,
+        43,
+        43,
+        43
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 728,
+        "3": 1767,
+        "5": 3226
+      },
+      "latency_ms": 623.806956999033
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "vector",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1352,
+        "5": 2218
+      },
+      "latency_ms": 1.7247589985345257
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "bm25",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1432,
+        "5": 2283
+      },
+      "latency_ms": 0.3901740001310827
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "hybrid_rrf",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1367,
+        "5": 2218
+      },
+      "latency_ms": 1.7785349991754629
+    },
+    {
+      "sample_id": "q20",
+      "strategy": "hybrid_rrf_rerank",
+      "source": null,
+      "retrieved_pages": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": null,
+        "3": null,
+        "5": null
+      },
+      "context_chars": {
+        "1": 389,
+        "3": 1552,
+        "5": 2395
+      },
+      "latency_ms": 1237.0001180006511
+    }
+  ],
+  "generation": null,
+  "answer_results": [],
+  "missing_evidence": []
+}

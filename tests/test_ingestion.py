@@ -82,7 +82,7 @@ def make_ingestion(monkeypatch, chunker):
     monkeypatch.setattr(
         ingestion_module,
         "DocumentParser",
-        lambda ocr_engine: parser,
+        lambda ocr_engine, table_structure: parser,
     )
 
     embedder = FakeEmbedder()
@@ -188,3 +188,24 @@ def test_document_without_text_is_rejected_and_nothing_changes(monkeypatch):
     assert embedder.documents is None
     assert vector_store.events == []
     assert not keyword_search.rebuild_called
+
+
+def test_ingestion_passes_the_parser_settings(monkeypatch):
+    received = {}
+
+    def fake_parser(ocr_engine, table_structure):
+        received.update(ocr_engine=ocr_engine, table_structure=table_structure)
+        return FakeParser()
+
+    monkeypatch.setattr(ingestion_module, "DocumentParser", fake_parser)
+
+    Ingestion(
+        embedder=FakeEmbedder(),
+        vector_store=FakeVectorStore(),
+        chunker=None,
+        keyword_search=FakeKeywordSearch(),
+        ocr_engine="off",
+        table_structure=True,
+    )
+
+    assert received == {"ocr_engine": "off", "table_structure": True}

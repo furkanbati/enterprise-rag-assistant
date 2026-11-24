@@ -1,0 +1,1198 @@
+{
+  "metadata": {
+    "Date": "2026-11-24 07:13 UTC",
+    "Dataset": "nist_tables.jsonl",
+    "Embedding model": "ollama/nomic-embed-text",
+    "Chunking": "sentence-ctx",
+    "Reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "Reranker (Turkish questions)": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+    "Chat model": "ollama/llama3",
+    "Judge model": "not used",
+    "Candidates per retriever": 12
+  },
+  "ks": [
+    1,
+    3,
+    5
+  ],
+  "num_samples": 6,
+  "num_answerable": 6,
+  "strategies": [
+    {
+      "strategy": "vector",
+      "hit": {
+        "1": 0.6666666666666666,
+        "3": 0.8333333333333334,
+        "5": 0.8333333333333334
+      },
+      "recall": {
+        "1": 0.6666666666666666,
+        "3": 0.8333333333333334,
+        "5": 0.8333333333333334
+      },
+      "precision": {
+        "1": 0.6666666666666666,
+        "3": 0.4444444444444444,
+        "5": 0.3
+      },
+      "mrr": 0.75,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 0.3333333333333333,
+        "5": 0.3333333333333333
+      },
+      "mean_context_chars": {
+        "1": 396.6666666666667,
+        "3": 1171.0,
+        "5": 2041.8333333333333
+      },
+      "mean_latency_ms": 2.7576649999900837
+    },
+    {
+      "strategy": "bm25",
+      "hit": {
+        "1": 0.8333333333333334,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.8333333333333334,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.8333333333333334,
+        "3": 0.38888888888888884,
+        "5": 0.26666666666666666
+      },
+      "mrr": 0.9166666666666666,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "mean_context_chars": {
+        "1": 415.5,
+        "3": 1402.8333333333333,
+        "5": 2382.8333333333335
+      },
+      "mean_latency_ms": 0.665600832689961
+    },
+    {
+      "strategy": "hybrid_rrf",
+      "hit": {
+        "1": 0.8333333333333334,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.8333333333333334,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.8333333333333334,
+        "3": 0.5,
+        "5": 0.3666666666666667
+      },
+      "mrr": 0.9166666666666666,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "mean_context_chars": {
+        "1": 446.5,
+        "3": 1266.3333333333333,
+        "5": 2088.6666666666665
+      },
+      "mean_latency_ms": 2.7812885003489405
+    },
+    {
+      "strategy": "hybrid_rrf_rerank",
+      "hit": {
+        "1": 0.8333333333333334,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.8333333333333334,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.8333333333333334,
+        "3": 0.4444444444444444,
+        "5": 0.33333333333333337
+      },
+      "mrr": 0.9166666666666666,
+      "evidence_recall": {
+        "1": 0.3333333333333333,
+        "3": 0.5,
+        "5": 0.5
+      },
+      "mean_context_chars": {
+        "1": 433.8333333333333,
+        "3": 1364.1666666666667,
+        "5": 1980.3333333333333
+      },
+      "mean_latency_ms": 1484.432508000585
+    }
+  ],
+  "retrieval_results": [
+    {
+      "sample_id": "tb01",
+      "strategy": "vector",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        27,
+        28,
+        28,
+        28,
+        29
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 137,
+        "3": 796,
+        "5": 2053
+      },
+      "latency_ms": 3.131225999823073
+    },
+    {
+      "sample_id": "tb01",
+      "strategy": "bm25",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        28,
+        25,
+        36,
+        38,
+        45
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 398,
+        "3": 1467,
+        "5": 2545
+      },
+      "latency_ms": 0.623748999714735
+    },
+    {
+      "sample_id": "tb01",
+      "strategy": "hybrid_rrf",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        28,
+        28,
+        29,
+        27,
+        28
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 398,
+        "3": 1334,
+        "5": 1608
+      },
+      "latency_ms": 2.16930300121021
+    },
+    {
+      "sample_id": "tb01",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        28,
+        26,
+        29,
+        27,
+        28
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 398,
+        "3": 1641,
+        "5": 1915
+      },
+      "latency_ms": 1781.3263110001571
+    },
+    {
+      "sample_id": "tb02",
+      "strategy": "vector",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        28,
+        29,
+        28,
+        29,
+        26
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 466,
+        "3": 1418,
+        "5": 2348
+      },
+      "latency_ms": 3.9831040012359153
+    },
+    {
+      "sample_id": "tb02",
+      "strategy": "bm25",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        28,
+        6,
+        28,
+        28,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.6
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 446,
+        "3": 1246,
+        "5": 2230
+      },
+      "latency_ms": 0.9543939995637629
+    },
+    {
+      "sample_id": "tb02",
+      "strategy": "hybrid_rrf",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        28,
+        28,
+        6,
+        29,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 446,
+        "3": 1370,
+        "5": 2185
+      },
+      "latency_ms": 3.6535059989546426
+    },
+    {
+      "sample_id": "tb02",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        28,
+        40,
+        28,
+        29,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 446,
+        "3": 1430,
+        "5": 2268
+      },
+      "latency_ms": 1332.9199140007404
+    },
+    {
+      "sample_id": "tb03",
+      "strategy": "vector",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "reciprocal_rank": 0.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 408,
+        "3": 1292,
+        "5": 2093
+      },
+      "latency_ms": 2.698361999136978
+    },
+    {
+      "sample_id": "tb03",
+      "strategy": "bm25",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        31,
+        12,
+        12,
+        29,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 435,
+        "3": 1295,
+        "5": 2089
+      },
+      "latency_ms": 0.7319859996641753
+    },
+    {
+      "sample_id": "tb03",
+      "strategy": "hybrid_rrf",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        12,
+        31,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 466,
+        "3": 1295,
+        "5": 2121
+      },
+      "latency_ms": 2.6776009999593953
+    },
+    {
+      "sample_id": "tb03",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        31,
+        29,
+        32,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 435,
+        "3": 1544,
+        "5": 2346
+      },
+      "latency_ms": 1363.3685790009622
+    },
+    {
+      "sample_id": "tb04",
+      "strategy": "vector",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        35,
+        34,
+        35,
+        36,
+        34
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 743,
+        "5": 1295
+      },
+      "latency_ms": 2.1414250004454516
+    },
+    {
+      "sample_id": "tb04",
+      "strategy": "bm25",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        35,
+        20,
+        40,
+        40,
+        13
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1257,
+        "5": 2242
+      },
+      "latency_ms": 0.6019819993525743
+    },
+    {
+      "sample_id": "tb04",
+      "strategy": "hybrid_rrf",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        35,
+        34,
+        20,
+        35,
+        40
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1032,
+        "5": 1535
+      },
+      "latency_ms": 2.9115460001776228
+    },
+    {
+      "sample_id": "tb04",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        35,
+        6,
+        34,
+        35,
+        36
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 465,
+        "3": 1154,
+        "5": 1432
+      },
+      "latency_ms": 1648.898712001028
+    },
+    {
+      "sample_id": "tb05",
+      "strategy": "vector",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        37,
+        12,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 452,
+        "3": 1512,
+        "5": 2346
+      },
+      "latency_ms": 1.9319099992571864
+    },
+    {
+      "sample_id": "tb05",
+      "strategy": "bm25",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        37,
+        38,
+        33,
+        38,
+        5
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 452,
+        "3": 1996,
+        "5": 3009
+      },
+      "latency_ms": 0.6872759986435995
+    },
+    {
+      "sample_id": "tb05",
+      "strategy": "hybrid_rrf",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        37,
+        37,
+        12,
+        38,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 452,
+        "3": 1398,
+        "5": 3008
+      },
+      "latency_ms": 2.68564300131402
+    },
+    {
+      "sample_id": "tb05",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        37,
+        37,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      },
+      "context_chars": {
+        "1": 452,
+        "3": 1260,
+        "5": 1955
+      },
+      "latency_ms": 1620.08689600043
+    },
+    {
+      "sample_id": "tb06",
+      "strategy": "vector",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        37,
+        9,
+        12,
+        9,
+        29
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 452,
+        "3": 1265,
+        "5": 2116
+      },
+      "latency_ms": 2.6599630000418983
+    },
+    {
+      "sample_id": "tb06",
+      "strategy": "bm25",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        12,
+        37,
+        35,
+        45,
+        28
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 297,
+        "3": 1156,
+        "5": 2182
+      },
+      "latency_ms": 0.3942179992009187
+    },
+    {
+      "sample_id": "tb06",
+      "strategy": "hybrid_rrf",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        37,
+        12,
+        12,
+        12,
+        9
+      ],
+      "hit": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 1.0,
+      "evidence_recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 452,
+        "3": 1169,
+        "5": 2075
+      },
+      "latency_ms": 2.5901320004777517
+    },
+    {
+      "sample_id": "tb06",
+      "strategy": "hybrid_rrf_rerank",
+      "source": "nist.ai.100-1.pdf",
+      "retrieved_pages": [
+        35,
+        37,
+        12,
+        12,
+        12
+      ],
+      "hit": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "precision": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2
+      },
+      "reciprocal_rank": 0.5,
+      "evidence_recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "context_chars": {
+        "1": 407,
+        "3": 1156,
+        "5": 1966
+      },
+      "latency_ms": 1159.9946360001923
+    }
+  ],
+  "generation": {
+    "strategy": "hybrid_rrf_rerank",
+    "top_k": 3,
+    "answerable_questions": 6,
+    "unanswerable_questions": 0,
+    "mean_keyword_recall": 1.0,
+    "answer_rate": 1.0,
+    "abstention_rate": null,
+    "mean_latency_ms": 6395.255142833473,
+    "citation_rate": 1.0,
+    "invalid_citation_answers": 0,
+    "judged_correct_rate": null,
+    "judged_grounded_rate": null,
+    "judged_citations_rate": null,
+    "judge_no_decision": 0
+  },
+  "answer_results": [
+    {
+      "sample_id": "tb01",
+      "question": "Which GOVERN subcategory covers decommissioning and phasing out AI systems?",
+      "answer": "GOVERN 1.7: Processes and procedures are in place for decom- missioning and phasing out AI systems safely and in a man- ner that does not increase risks or decrease the organization's trustworthiness. [1][3]\n\nAnswer: GOVERN 1.7",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 13854.26160499992,
+      "citations": [
+        1,
+        3
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "tb02",
+      "question": "According to GOVERN 2.3, who takes responsibility for decisions about risks associated with AI system development and deployment?",
+      "answer": "According to GOVERN 2.3, Executive leadership of the organization takes responsibility for decisions about risks associated with AI system development and deployment. [2]",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 4438.603452001189,
+      "citations": [
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "tb03",
+      "question": "What does MAP 1.5 say about organizational risk tolerances?",
+      "answer": "According to the provided context [1], MAP 1.5 states: \"Organizational risk tolerances are determined and documented.\"",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 4110.761955000271,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "tb04",
+      "question": "Which MEASURE subcategory addresses the environmental impact and sustainability of AI model training?",
+      "answer": "According to the provided context, MEASURE 2.12: Environmental impact and sustainability of AI model training and management activities, as identified in the MAP function, are assessed and documented. [1][3]\n\nAnswer: MEASURE 2.12",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 6452.017094999974,
+      "citations": [
+        1,
+        3
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "tb05",
+      "question": "What risk response options does MANAGE 1.3 list for high-priority AI risks?",
+      "answer": "According to the provided context, MANAGE 1.3 lists the following risk response options for high-priority AI risks:\n\n* Mitigating\n* Transferring\n* Avoiding\n* Accepting\n\n[1]",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 6013.280929000757,
+      "citations": [
+        1
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    },
+    {
+      "sample_id": "tb06",
+      "question": "How does the AI RMF define negative residual risks?",
+      "answer": "According to the context, negative residual risks are defined as the sum of all unmitigated risks [2].",
+      "answerable": true,
+      "keyword_recall": 1.0,
+      "abstained": false,
+      "latency_ms": 3502.605820998724,
+      "citations": [
+        2
+      ],
+      "invalid_citations": [],
+      "judgement": null
+    }
+  ],
+  "missing_evidence": [
+    [
+      "tb01",
+      "Processes and procedures are in place for decommissioning and phasing out AI systems safely"
+    ],
+    [
+      "tb02",
+      "Executive leadership of the organization takes responsibility for decisions about risks associated with AI system"
+    ],
+    [
+      "tb05",
+      "Risk response options can include mitigating, transferring, avoiding, or accepting"
+    ]
+  ]
+}
